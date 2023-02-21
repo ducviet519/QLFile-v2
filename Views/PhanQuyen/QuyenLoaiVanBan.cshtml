@@ -1,0 +1,267 @@
+﻿
+@{ ViewData["Title"] = "Văn bản nội bộ";
+                Layout = "~/Views/Shared/_Layout.cshtml"; }
+<link rel="stylesheet" type="text/css" href="~/css/checkbox.css">
+<style>
+    .tab-custom-content {
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid #dee2e6;
+        font-size: 22px;
+        font-family: 'Times New Roman', Times, serif
+    }
+
+    .col-110 {
+        width: 120px;
+        padding-right: 7.5px;
+        padding-left: 7.5px;
+    }
+
+    .dataTables_length .custom-select {
+        padding: 0.375rem 1.75rem 0.375rem 0.75rem;
+    }
+
+    td .form-check {
+        display: flex;
+        justify-content: center;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+
+    table.dataTable > thead > tr .no-order {
+        vertical-align: middle;
+        text-align: center;
+        padding-right: 10px !important;
+        padding-left: 10px;
+    }
+
+    .dataTables_filter, .dataTables_length {
+        display: none;
+    }
+    .fa-check-square{
+        font-weight:bold;
+        font-size:20px;
+        color:forestgreen;
+    }
+    .fa-window-close {
+        font-weight: bold;
+        font-size: 20px;
+        color:crimson;
+    }
+</style>
+<div class="row">
+    <div class="card col-12">
+        <div class="card-body">
+            <div class="tab-custom-content"><label class="col-form-label col-12 text-center font-weight-bold">Phân quyền theo loại văn bản</label></div>
+            <div class="mb-3">
+                <button type="button" class="btn btn-success" data-toggle="ajax-modal" data-target="#modelPhanQuyenLoaiVB" data-url="/PhanQuyen/CapNhat_PhanQuyenVanBan"><i class="fas fa-plus"></i> Thêm quyền</button>
+            </div>
+            <form id="frmQuyenLoaiVanBan">
+                <input type="hidden" id="count" name="count" />
+                <table class="table table-bordered table-striped" width="100%" id="tbQuyenLoaiVanBan">
+                    <thead class="thead">
+                        <tr>
+                            <th class="w-auto no-order">STT</th>
+                            <th class="w-auto">Phân cấp</th>
+                            <th class="w-auto">Tên văn bản/Cabin</th>
+                            <th class="w-auto">Khoa/Phòng/Nhân viên</th>
+                            <th class="w-auto">Đối tượng</th>
+                            <th class="w-auto no-order">Xem</th>
+                            <th class="w-auto no-order">In</th>
+                            <th class="w-auto no-order">Tải về</th>
+                        </tr>
+                    </thead>
+                </table>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var columnData = [
+                {
+                    "data": "stt",
+                    "className": "text-center"
+                },
+                { "data": "phanCap" },
+                { "data": "tenVanBan" },
+                { "data": "tenKhoaPhongNV" },
+                { "data": "doiTuong" },
+                {
+                    "data": { readR: "readR", id: "id" },
+                    "render": function (data, type, full, meta) {
+                        var item = '<input type="hidden" id="PermissionID-' + meta.row + '" name="PermissionID-' + meta.row + '" value="' + data.id + '" />';
+                        if (data.readR === "1") {
+                            item += '<i class="fas fa-check-square"></i>';
+                        }
+                        else {
+                            item += '<i class="fas fa-window-close"></i>';
+                        }
+                        return item;
+                    },
+                    "className": "text-center"
+                },
+                {
+                    "data": { printR: "printR" },
+                    "render": function (data, type, full, meta) {
+                        var item = '';
+                        if (data.printR === "1") {
+                            item += '<i class="fas fa-check-square"></i>';
+                        }
+                        else {
+                            item += '<i class="fas fa-window-close"></i>';
+                        }
+                        return item;
+                    },
+                    "className": "text-center"
+                },
+                {
+                    "data": { downloadR: "downloadR" },
+                    "render": function (data, type, full, meta) {
+                        var item = '';
+                        if (data.downloadR === "1") {
+                            item += '<i class="fas fa-check-square"></i>';
+                        }
+                        else {
+                            item += '<i class="fas fa-window-close"></i>';
+                        }
+                        return item;
+                    },
+                    "className": "text-center"
+                },
+            ]
+
+            function tableBangtinVanBan(id, columnData, url) {
+
+                var table = $(id).DataTable();
+                if ($.fn.dataTable.isDataTable(id)) {
+                    table.destroy();
+                    $(id).find('thead .filters').remove();
+                    $(id).find('tbody').empty();
+                }
+                $(id + ' thead tr')
+                    .clone(true)
+                    .addClass('filters')
+                    .appendTo(id + ' thead');
+
+                var table = $(id).DataTable({
+                    "paging": true,
+                    "lengthChange": true,
+                    "searching": true,
+                    "processing": true,
+                    "ordering": true,
+                    "info": true,
+                    "autoWidth": true,
+                    "responsive": true,
+                    "orderCellsTop": true,
+                    "order": [[0, 'asc']],
+                    "columnDefs": [
+                        { "orderable": false, "targets": 'no-order' },
+                        { "className": "text-wrap", "targets": "_all" },
+                        { "defaultContent": '', "targets": "_all" },
+                    ],
+                    "ajax": {
+                        "url": url,
+                        "type": "GET",
+                        "datatype": "json"
+                    },
+                    "columns": columnData,
+                    "language": {
+                        "sProcessing": "Đang tải dữ liệu...",
+                        "sLengthMenu": "Xem _MENU_ mục",
+                        "sZeroRecords": "Không tìm thấy dòng nào phù hợp",
+                        "sInfo": "Đang xem _START_ đến _END_ trong tổng số _TOTAL_ mục",
+                        "sInfoEmpty": "Đang xem 0 đến 0 trong tổng số 0 mục",
+                        "sInfoFiltered": "(được lọc từ _MAX_ mục)",
+                        "sInfoPostFix": "",
+                        "sSearch": "Tìm:",
+                        "sUrl": "",
+                        "oPaginate": {
+                            "sFirst": "Đầu",
+                            "sPrevious": "Trước",
+                            "sNext": "Tiếp",
+                            "sLast": "Cuối"
+                        }
+                    },
+                    "initComplete": function (settings, json) {
+                        var api = this.api();
+
+                        // For each column
+                        api
+                            .columns()
+                            .eq(0)
+                            .each(function (colIdx) {
+                                // Set the header cell to contain the input element
+                                if (colIdx >= 1 && colIdx <= 4) {
+                                    var cell = $('.filters th').eq(
+                                        $(api.column(colIdx).header()).index()
+                                    );
+                                    var title = $(cell).text();
+                                    $(cell).html('<input type="text" class="form-control p-0 m-0" />');
+                                }
+                                //else if (colIdx >= 5 && colIdx <= 7) {
+                                //    var cell = $('.filters th').eq(
+                                //        $(api.column(colIdx).header()).index()
+                                //    );
+                                //    $(cell).html('<div class="form-check form-check-inline mr-0"><input class="form-check-input position-static" type="checkbox" value="" id="checkall-' + colIdx + '"></div>');
+                                //}
+                                else {
+                                    var cell = $('.filters th').eq(
+                                        $(api.column(colIdx).header()).index()
+                                    );
+                                    $(cell).empty();
+
+                                }
+                                // On every keypress in this input
+                                $(
+                                    'input[type="text"]',
+                                    $('.filters th').eq($(api.column(colIdx).header()).index())
+                                )
+                                    .off('keyup change')
+                                    .on('change', function (e) {
+                                        // Get the search value
+                                        $(this).attr('title', $(this).val());
+                                        var regexr = '({search})'; //$(this).parents('th').find('select').val();
+
+                                        var cursorPosition = this.selectionStart;
+                                        // Search the column for that value
+                                        api
+                                            .column(colIdx)
+                                            .search(
+                                                this.value != ''
+                                                    ? regexr.replace('{search}', '(((' + this.value + ')))')
+                                                    : '',
+                                                this.value != '',
+                                                this.value == ''
+                                            )
+                                            .draw();
+                                    })
+                                    .on('keyup', function (e) {
+                                        e.stopPropagation();
+
+                                        $(this).trigger('change');
+                                        $(this)
+                                            .focus()[0]
+                                            .setSelectionRange(cursorPosition, cursorPosition);
+                                    });
+                            });
+                    }
+                });
+                return table;
+            }
+            var table = tableBangtinVanBan("#tbQuyenLoaiVanBan", columnData, "/PhanQuyen/Get_ListPhanQuyenVanBan");
+
+            $('body').on('click', 'button[data-toggle="ajax-modal"]', function (e) {
+                var url = $(this).data('url');
+                $(this).callModal(url);
+            });
+            $(document).on('hidden.bs.modal', '#modelPhanQuyenLoaiVB', function (e) {
+                tableBangtinVanBan("#tbQuyenLoaiVanBan", columnData, "/PhanQuyen/Get_ListPhanQuyenVanBan");
+            });
+        });
+    </script>
+}
+
+

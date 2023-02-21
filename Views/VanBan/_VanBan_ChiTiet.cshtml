@@ -1,0 +1,146 @@
+﻿@using WebTools.Models.ViewModel
+@model VanBanChiTietVM
+<style>
+    .col-120 {
+        width: 135px;
+        padding-left: 7.5px;
+        padding-right: 7.5px;
+    }
+
+    .text-content {
+        font-weight: bold !important;
+        color: dodgerblue;
+    }
+</style>
+<!-- Modal -->
+<div class="modal fade bd-example-modal-xl" id="modalChiTietVanBan" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"><i class="fas fa-file-excel"></i> Chi tiết văn bản</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group row">
+                    <label class="col-form-label col-120">Tên văn bản:</label>
+                    <label class="col-form-label col-auto text-content">@Model.VanBanInfo.TenVanBan</label>
+                </div>
+                <div class="form-group row">
+                    <label class="col-form-label col-120">Mã văn bản:</label>
+                    <label class="col-form-label col-auto text-content">@Model.VanBanInfo.MaVanBan</label>
+                </div>
+                <div class="form-group row">
+                    <label class="col-form-label col-120">Đơn vị áp dụng:</label>
+                    <label class="col-form-label col-auto text-content">@Model.VanBanInfo.DonViApDung</label>
+                </div>
+                <div class="form-group row">
+                    <label class="col-form-label col-120">Đối tượng áp dụng:</label>
+                    <label class="col-form-label col-auto text-content">@Model.VanBanInfo.DoiTuongApDung</label>
+                </div>
+                <div class="form-group row">
+                    <label class="col-form-label col-120">Bộ phận soạn thảo:</label>
+                    <label class="col-form-label col-auto text-content">@Model.VanBanInfo.BPSoanThao</label>
+                </div>
+                <div class="form-group row">
+                    <label class="col-form-label col-120">Ghi chú:</label>
+                    <label class="col-form-label col-auto text-content">@Model.VanBanInfo.ThongTinCNTT</label>
+                </div>
+                <div class="mt-5">
+                    <table class="table table-bordered table-striped" width="100%" id="tbChiTiet">
+                        <thead class="thead">
+                            <tr>
+                                <th>STT</th>
+                                <th>Phiên bản</th>
+                                <th>Ngày ban hành</th>
+                                <th>Ngày áp dụng</th>
+                                <th>Ngày XLKT</th>
+                                <th>Ngày XL</th>
+                                <th>Người soạn thảo</th>
+                                <th>Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.ListPhienBan != null && Model.ListPhienBan.Count > 0)
+                            {
+                                foreach (var item in Model.ListPhienBan)
+                                {
+                <tr>
+                    <td class="text-center">@item.STT</td>
+                    <td class="text-center">
+                        @if (String.IsNullOrEmpty(item.FileLink))
+                        {<button class="btn btn-link p-0 text-left text-danger" data-toggle="preview-modal" data-target="#modalctvbpreview-@item.STT" data-url="/Preview/Preview?readed=1&filePath=@item.FileLink&filename=@item.TenVanBan">@item.PhienBan</button> }
+                    else
+                    { <button class="btn btn-link p-0 text-left text-primary" data-toggle="preview-modal" data-target="#modalctvbpreview-@item.STT" data-url="/Preview/Preview?readed=1&filePath=@item.FileLink&filename=@item.TenVanBan">@item.PhienBan</button>}
+                    </td>
+                    <td>@item.NgayBanHanh</td>
+                    <td>@item.NgayApDung</td>
+                    <td>@item.NgayXLKeTiep</td>
+                    <td>@item.NgayXL</td>
+                    <td>@item.NguoiSoanThao</td>
+                    <td class="text-center">@item.TrangThai</td>
+                </tr>
+}
+        }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Đóng</button>
+            </div>
+        </div>
+    </div>
+    <div class="second-preview-modal"></div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('body .modal').on('click', 'button[data-toggle="preview-modal"]', function (event) {
+            var url = $(this).data('url');
+            $(this).callMultipleModal(url, ".second-preview-modal");
+        });
+
+        var table = $('#tbChiTiet').DataTable({
+            "scrollY": '370px',
+            "scrollCollapse": true,
+            "paging": false,
+            "lengthChange": false,
+            "searching": true,
+            "processing": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": true,
+            "responsive": true,
+            "order": [[0, 'asc']],
+            "columnDefs": [
+                { "orderable": false, "targets": 'no-order' },
+                { "className": "text-wrap", "targets": "_all" },
+                { "defaultContent": '', "targets": "_all" },
+            ],
+            "language": {
+                "sProcessing": "Đang tải dữ liệu...",
+                "sLengthMenu": "Xem _MENU_ mục",
+                "sZeroRecords": "Không tìm thấy dòng nào phù hợp",
+                "sInfo": "Đang xem _START_ đến _END_ trong tổng số _TOTAL_ mục",
+                "sInfoEmpty": "Đang xem 0 đến 0 trong tổng số 0 mục",
+                "sInfoFiltered": "(được lọc từ _MAX_ mục)",
+                "sInfoPostFix": "",
+                "sSearch": "Tìm:",
+                "sUrl": "",
+                "oPaginate": {
+                    "sFirst": "Đầu",
+                    "sPrevious": "Trước",
+                    "sNext": "Tiếp",
+                    "sLast": "Cuối"
+                }
+            },
+
+        });
+
+        $('#modalChiTietVanBan').on('shown.bs.modal', function (e) {
+            $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();
+        });
+    });
+</script>

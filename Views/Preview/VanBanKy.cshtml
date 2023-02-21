@@ -1,0 +1,193 @@
+﻿@model WebTools.Models.DocumentVM
+@{ ViewData["Title"] = "VanBan";
+                Layout = "~/Views/Shared/_Layout.cshtml"; }
+<style>
+    .card {
+        width: 650px;
+        padding: 10px;
+        background-color: ghostwhite;
+    }
+
+    .card-body {
+        padding-left: 7.5px;
+        padding-right: 7.5px;
+    }
+
+    .container-canvas {
+        /*width: 90%;*/
+        overflow: hidden;
+        /*padding: 10px;*/
+        box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+    }
+
+    canvas {
+        image-rendering: -moz-crisp-edges; /* Firefox */
+        image-rendering: pixelated; /* Chrome */
+        width: 100%;
+        height: auto;
+    }
+</style>
+<div class="container d-flex justify-content-center p-0">
+    <div class="card mt-2">
+        <div class="card-body">
+            <div class="row d-flex justify-content-between">
+                <label class="col-auto font-weight-bold">Ký</label>
+                <div class="col-auto">
+                    <button class="btn btn-link" id="btnClear">Xóa chữ ký</button>
+                </div>
+            </div>
+            <form id="frmSignature">
+                <div class="container-canvas">
+                    <canvas id="canvasId" width="600" height="280"></canvas>
+                </div>
+                <div class="form-group row mt-2">
+                    <label class="col-form-label col-auto font-weight-bold">Mã xác thực: </label>
+                    <div class="col-auto">
+                        <input type="text" class="form-control" id="SignatureCode" name="SignatureCode" required />
+                        <input type="hidden" class="form-control" id="SignatureID" name="SignatureID" />
+                    </div>
+                </div>
+            </form>
+            <div class="row d-flex justify-content-center">
+                <button class="btn btn-success mr-5" id="btnXacNhan">Xác nhận</button>
+                <button class="btn btn-secondary" onclick="self.close()">Đóng</button>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/js/fabric.js"></script>
+    <script type="text/javascript">
+        function callToast(status, title, msg) {
+            toastr.options = {
+                "closeButton": false,
+                "debug": true,
+                "newestOnTop": false,
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "preventDuplicates": false,
+                "onclick": null,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "5000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut",
+            }
+            if (status == "success") {
+                toastr.success(msg, title)
+            }
+            else if (status == "info") {
+                toastr.info(msg, title)
+            }
+            else if (status == "warning") {
+                toastr.warning(msg, title)
+            }
+            else if (status == "error") {
+                toastr.error(msg, title)
+            }
+        }
+
+        //Chu Ky
+
+        var canvas = new fabric.Canvas(document.getElementById('canvasId'));
+        //canvas.width = innerWidth;
+        //canvas.height = innerHeight;
+
+        canvas.isDrawingMode = true;
+        //canvas.centeredScaling = true;
+        //canvas.enableRetinaScaling = true;
+        canvas.freeDrawingBrush.width = 5;
+        canvas.freeDrawingBrush.color = '#00aeff';
+
+        canvas.on('path:created', function (e) {
+            e.path.set();
+            canvas.renderAll();
+        });
+        function rescale_canvas_if_needed() {
+            var optimal_dimensions = [600, 300];
+            var scaleFactorX = window.innerWidth / optimal_dimensions[0];
+            var scaleFactorY = window.innerHeight / optimal_dimensions[1];
+            if (scaleFactorX < scaleFactorY && scaleFactorX < 1) {
+                canvas.setWidth(optimal_dimensions[0] * scaleFactorX);
+                canvas.setHeight(optimal_dimensions[1] * scaleFactorX);
+                canvas.setZoom(scaleFactorX);
+            } else if (scaleFactorX > scaleFactorY && scaleFactorY < 1) {
+                canvas.setWidth(optimal_dimensions[0] * scaleFactorY);
+                canvas.setHeight(optimal_dimensions[1] * scaleFactorY);
+                canvas.setZoom(scaleFactorY);
+            } else {
+                canvas.setWidth(optimal_dimensions[0]);
+                canvas.setHeight(optimal_dimensions[1]);
+                canvas.setZoom(1);
+            }
+
+            canvas.calcOffset();
+            canvas.renderAll();
+        }
+
+
+        function handle_resize() {
+            $(".canvas-container").hide();
+            rescale_canvas_if_needed();
+            $(".canvas-container").show();
+
+        }
+        var resizeId = null;
+        $(function () {
+            $(window).resize(function () {
+                if (resizeId != null)
+                    clearTimeout(resizeId);
+                resizeId = setTimeout(handle_resize, 500);
+            });
+            console.log("ready!");
+            /* auto size it right away... */
+            resizeId = setTimeout(handle_resize, 500);
+        });
+
+        $('body').on('click', '#btnClear', function () {
+            canvas.clear();
+        });
+
+        $('body').on('click', '#btnXacNhan', function () {
+            var signatureData = canvas.toDataURL("image/png").replace("img/png", "image/octet-string");
+            var form = $("#frmSignature");
+            if (form[0].checkValidity() === true) {
+                callToast('success', 'Thành công', 'Chữ ký đã tạo:</br><div class="bg-white"><img src="' + signatureData +'" width="180" height="100" alt="image" /></div>');
+                var formData = new FormData();
+                formData.append("SignatureID", $("#SignatureID").val());
+                formData.append("SignatureData", signatureData);
+                formData.append("SignatureCode", $("#SignatureCode").val());
+                $.ajax({
+                    type: 'POST',
+                    url: '/Home/SendSignature',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    beforeSend: function () {
+                        $('#btnXacNhan').attr("disabled", true);
+                    },
+                    success: function (data) {
+                        callToast(data.result, data.title, data.message);
+                    },
+                    error: function (data) {
+                        callToast(data.result, data.title, data.message);
+                    },
+                    complete: function () {
+                        $('#btnXacNhan').attr("disabled", false);
+                    },
+                })
+            }
+            else {
+                event.preventDefault()
+                event.stopPropagation()
+                form.addClass('was-validated');
+            }
+        });
+    </script>
+}
+

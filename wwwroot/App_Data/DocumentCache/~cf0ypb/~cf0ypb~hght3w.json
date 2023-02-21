@@ -1,0 +1,54 @@
+{
+  "CacheSourceKey": "cf0ypb",
+  "CachePdfKey": "cf0ypb/cf0ypb-7njvf.pdf",
+  "CacheXpzKey": "cf0ypb/cf0ypb-hght3w.xpz",
+  "CacheInfoKey": "cf0ypb/cf0ypb-hght3w.json",
+  "CacheCopyKey": null,
+  "Document": "08022023101713_BIỂU MẪU 2.docx",
+  "DocumentHandlerType": null,
+  "DocumentHandlerParameters": null,
+  "DocumentLocation": "D:\\VanBan",
+  "DocumentFileName": "08022023101713_BIỂU MẪU 2.docx",
+  "InputOptions": {
+    "$type": "GleamTech.DocumentUltimate.WordProcessingInputOptions, GleamTech.DocumentUltimate",
+    "FieldFileName": null,
+    "UpdateFields": true,
+    "Encoding": null,
+    "Format": "Docx",
+    "Password": null
+  },
+  "PdfOutputOptions": {
+    "Watermarks": [
+      {
+        "$type": "GleamTech.DocumentUltimate.ImageWatermark, GleamTech.DocumentUltimate",
+        "ImageFile": "D:\\Project\\QLFile\\wwwroot\\images\\logo_300x300.png",
+        "Version": ".png63811268391000000015301",
+        "HorizontalAlignment": "Center",
+        "VerticalAlignment": "Center",
+        "HorizontalDistance": 0.0,
+        "VerticalDistance": 0.0,
+        "DistanceIsPercentage": false,
+        "Width": 0.0,
+        "Height": 100.0,
+        "SizeIsPercentage": false,
+        "Rotation": 0.0,
+        "Opacity": 20.0,
+        "InBackground": false,
+        "AnnotationMode": false,
+        "PrintVisible": true,
+        "ScreenVisible": true,
+        "PageRange": "all"
+      }
+    ],
+    "FastWebViewEnabled": false,
+    "Password": null,
+    "Attachments": [],
+    "Format": "Pdf"
+  },
+  "XpzOutputOptions": {
+    "Password": "cf0ypb",
+    "HighQualityEnabled": false,
+    "Format": "Xpz"
+  },
+  "Attachments": null
+}

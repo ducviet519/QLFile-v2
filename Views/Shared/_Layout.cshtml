@@ -1,0 +1,143 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Tâm Anh Hospital</title>
+    <!-- Plugins -->
+    @await Html.PartialAsync("_Plugins_Styles")
+    <!-- DataTables -->
+    @await Html.PartialAsync("_Datatable_Styles")
+    <!-- EasyUI -->
+    @await Html.PartialAsync("_EasyUI_Styles")
+    <!-- Theme style -->
+    <link rel="stylesheet" href="~/css/loading.css">
+    <link rel="stylesheet" href="~/lib/admin-lte/css/adminlte.min.css">
+    <link rel="stylesheet" href="~/css/site_default.css">
+    <style>
+        .narh-50 {
+            height: 50px;
+        }
+    </style>
+</head>
+<body class="control-sidebar-slide-open layout-navbar-fixed sidebar-collapse">
+    <div class="wrapper">
+        @if (User.Identity.IsAuthenticated)
+        {
+            <header>
+                <nav class="main-header navbar navbar-expand navbar-dark border-bottom-0 narh-50">
+                    <ul class="navbar-nav narh-50">
+                        <li class="nav-item narh-50">
+                            <a class="navbar-brand" role="button" asp-area="" asp-controller="Home" asp-action="Index">
+                                <img src="~/images/logo_compact_white_200x200.png" width="38" height="38" style="vertical-align: middle;" alt="">
+                            </a>
+                        </li>
+                        <li class="nav-item dropdown dropdown-hover narh-50">
+                            <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">Văn bản</a>
+                            <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
+                                <li><a asp-area="" asp-controller="VanBan" asp-action="DanhMuc_VanBan" class="dropdown-item">Bảng tin văn bản</a></li>
+                                <li><a asp-area="" asp-controller="VanBan" asp-action="DanhSach_VanBanChiTiet" class="dropdown-item">Danh sách chi tiết văn bản</a></li>
+                                @if (User.IsInRole("Admin"))
+                                {
+                                <li><a asp-area="" asp-controller="Report" asp-action="Index" class="dropdown-item">Danh sách tổng hợp</a></li>
+                                }
+                                @if (User.IsInRole("Admin") || User.IsInRole("Document"))
+                                {
+                                <li class="nav-item dropdown-submenu dropdown-hover">
+                                    <a class="dropdown-item">Báo cáo Thống kê</a>
+                                    <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
+                                        <li><a asp-area="" asp-controller="ThongKe" asp-action="ThongKePhamViVanBan" class="dropdown-item">Thống kê theo phạm vi văn bản</a></li>
+                                        <li><a asp-area="" asp-controller="ThongKe" asp-action="ThongKeSoLuongXacNhan" class="dropdown-item">Thống kê đã đọc và hiểu văn bản</a></li>
+                                        <li><a asp-area="" asp-controller="ThongKe" asp-action="ThongKeTongHop" class="dropdown-item">Thống kê tổng hợp</a></li>
+                                        <li><a asp-area="" asp-controller="ThongKe" asp-action="BieuDoThongKe" class="dropdown-item">Biểu đồ tròn</a></li>
+                                    </ul>
+                                </li>
+                                }
+                            </ul>
+                        </li>
+                        <li class="nav-item d-none d-sm-inline-block narh-50">
+                            <a class="nav-link narh-50" data-toggle="ajax-modal" data-target="#GopY-0" data-url="GopY/Index">Góp ý</a>
+                        </li>
+                        @if (User.IsInRole("Admin") || User.IsInRole("Document"))
+                        {
+                        <li class="nav-item dropdown dropdown-hover narh-50">
+                            <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">Phân quyền</a>
+                            <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
+                                @if (User.IsInRole("Admin") || User.IsInRole("Document"))
+                                {
+                                <li><a asp-area="" asp-controller="PhanQuyen" asp-action="QuyenLoaiVanBan" class="dropdown-item">Theo loại văn bản</a></li>
+                                        }
+                                @if (User.IsInRole("Admin"))
+                                {
+                                <li><a asp-area="" asp-controller="PhanQuyen" asp-action="QuyenHeThong" class="dropdown-item">Theo hệ thống</a></li>
+                                    }
+                            </ul>
+                        </li>
+                        }
+                        @if (User.IsInRole("Admin"))
+                        {
+                        <li class="nav-item dropdown dropdown-hover narh-50">
+                            <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">Test</a>
+                            <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
+                                <li><a asp-area="" asp-controller="Preview" asp-action="VanBanKy" class="dropdown-item">Chữ ký Demo</a></li>
+                                <li><a asp-area="" asp-controller="VanBan" asp-action="GoogleDocs" class="dropdown-item">Tạo File Google Docs</a></li>
+                            </ul>
+                        </li>
+                        }
+                    </ul>
+                    <ul class="navbar-nav ml-auto narh-50">
+                        <li class="nav-item narh-50">
+                            <partial name="_LoginStatusPartial" />
+                        </li>
+                    </ul>
+                </nav>
+            </header>
+            <div class="content-wrapper">
+                <div id="ReportPopup"></div>
+                @RenderBody()
+            </div>
+            <div class="modal-loading"><!-- Place at bottom of page --></div>
+            <div id="GopYPopup"></div>
+        }
+        <!-- Plugins -->
+        @await Html.PartialAsync("_Plugins_Scripts")
+        <!-- DataTables -->
+        @await Html.PartialAsync("_Datatable_Scripts")
+        <!-- EasyUI -->
+        @await Html.PartialAsync("_EasyUI_Scripts")
+        <!-- AdminLTE App -->
+        <script src="~/lib/admin-lte/js/adminlte.min.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+        <script type="text/javascript">
+            $('body').on('click', 'a[data-toggle="ajax-modal"]', function (event) {
+                var url = $(this).data('url');
+                var ReportPopupElement = $('#GopYPopup');
+                $.ajax({
+                    url: url,
+                    dataType: 'html',
+                    success: function (data) {
+                        $("body").find(".modal-backdrop").remove();
+                        ReportPopupElement.html(data);
+                        ReportPopupElement.find('.modal').modal('show');
+                    }, error: function (xhr, status) {
+                        switch (status) {
+                            case 404:
+                                $(this).callToast("error", 'Lỗi!', 'Đường dẫn không đúng hoặc tính năng không tồn tại!');
+                                break;
+                            case 500:
+                                $(this).callToast("error", 'Lỗi!', 'Không kết nối được tới Server!');
+                                break;
+                            case 0:
+                                $(this).callToast("error", 'Lỗi!', 'Hệ thống không phản hồi!');
+                                break;
+                            default:
+                                $(this).callToast("error", 'Lỗi!', 'Sự cố không xác định! Lỗi: ' + status);
+                        }
+                    }
+                });
+            });
+        </script>
+        @await RenderSectionAsync("Scripts", required: false)
+    </div>
+</body>
+</html>

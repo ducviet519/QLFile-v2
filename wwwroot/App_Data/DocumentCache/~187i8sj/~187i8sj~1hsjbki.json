@@ -1,0 +1,68 @@
+{
+  "CacheSourceKey": "187i8sj",
+  "CachePdfKey": "187i8sj/187i8sj-1k5xwrx.pdf",
+  "CacheXpzKey": "187i8sj/187i8sj-1hsjbki.xpz",
+  "CacheInfoKey": "187i8sj/187i8sj-1hsjbki.json",
+  "CacheCopyKey": null,
+  "Document": "File Mau.xlsx",
+  "DocumentHandlerType": null,
+  "DocumentHandlerParameters": null,
+  "DocumentLocation": "D:\\Project\\QLFile\\wwwroot\\files",
+  "DocumentFileName": "File Mau.xlsx",
+  "InputOptions": {
+    "$type": "GleamTech.DocumentUltimate.SpreadsheetInputOptions, GleamTech.DocumentUltimate",
+    "OutputSheetRange": "visible",
+    "RenderColumnsFitToPages": 1,
+    "RenderRowsFitToPages": 0,
+    "RenderHeadings": false,
+    "RenderGridlines": false,
+    "RenderTitleColumns": null,
+    "RenderTitleRows": null,
+    "RenderArea": null,
+    "RenderBlackAndWhite": false,
+    "RenderCenterHorizontally": false,
+    "RenderCenterVertically": false,
+    "RenderLeftHeader": null,
+    "RenderCenterHeader": null,
+    "RenderRightHeader": null,
+    "RenderLeftFooter": null,
+    "RenderCenterFooter": null,
+    "RenderRightFooter": null,
+    "Format": "Xlsx",
+    "Password": null
+  },
+  "PdfOutputOptions": {
+    "Watermarks": [
+      {
+        "$type": "GleamTech.DocumentUltimate.ImageWatermark, GleamTech.DocumentUltimate",
+        "ImageFile": "D:\\Project\\QLFile\\wwwroot\\images\\logo_300x300.png",
+        "Version": ".png63802438232580758215301",
+        "HorizontalAlignment": "Center",
+        "VerticalAlignment": "Center",
+        "HorizontalDistance": 0.0,
+        "VerticalDistance": 0.0,
+        "DistanceIsPercentage": false,
+        "Width": 0.0,
+        "Height": 100.0,
+        "SizeIsPercentage": false,
+        "Rotation": 0.0,
+        "Opacity": 20.0,
+        "InBackground": false,
+        "AnnotationMode": false,
+        "PrintVisible": true,
+        "ScreenVisible": true,
+        "PageRange": "all"
+      }
+    ],
+    "FastWebViewEnabled": false,
+    "Password": null,
+    "Attachments": [],
+    "Format": "Pdf"
+  },
+  "XpzOutputOptions": {
+    "Password": "187i8sj",
+    "HighQualityEnabled": false,
+    "Format": "Xpz"
+  },
+  "Attachments": []
+}

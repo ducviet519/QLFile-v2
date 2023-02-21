@@ -1,0 +1,573 @@
+﻿<link rel="stylesheet" type="text/css" href="~/css/checkbox.css">
+<style>
+    .col-120 {
+        width: 135px !important;
+        padding-left: 7.5px;
+        padding-right: 7.5px;
+    }
+
+    .col-90 {
+        width: 110px;
+        padding-left: 7.5px;
+        padding-right: 7.5px;
+    }
+
+    .end {
+        justify-content: flex-end;
+    }
+
+    .tab-advance {
+        display: none;
+        width: 100%;
+        border-radius: 3px;
+        padding: 7.5px;
+    }
+
+    .col-380 {
+        width: 380px;
+        padding-left: 7.5px;
+        padding-right: 7.5px;
+        margin-left: 20px;
+    }
+
+    .combo-p {
+        min-height: fit-content !important;
+        height: fit-content !important;
+        max-height: 305px !important;
+    }
+
+    .combo-panel {
+        height: auto !important;
+    }
+
+    .select2-container--default .select2-selection--single {
+        height: calc(2rem + 2px);
+    }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            margin-top: -5px;
+        }
+
+    #modalThemVanBan .select2-container--default .select2-selection--single {
+        border-radius: .25rem !important;
+    }
+</style>
+@await Html.PartialAsync("Shared/_StyleUI_ComboBox")
+<!-- Modal -->
+<div class="modal fade bd-example-modal-lg" id="modalThemVanBan" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"><i class="fas fa-file-medical"></i> Thêm mới văn bản</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="frmThemVanBan" enctype='multipart/form-data'>
+                    <div class="form-group row mr-2">
+                        <label class="col-form-label col-120">Tên văn bản:</label>
+                        <div class="col">
+                            <textarea class="form-control" id="TenVanBan" name="TenVanBan" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="row mr-2">
+                        <div class="form-group row col">
+                            <label class="col-form-label col-120" for="mavanban">Mã văn bản:</label>
+                            <div class="col">
+                                <input type="text" class="form-control" id="MaVanBan" name="MaVanBan" />
+                            </div>
+                        </div>
+                        <div class="form-group row col">
+                            <label class="col-form-label col-auto ml-5" for="mavanban">Loại biểu mẫu:</label>
+                            <div class="col">
+                                <select class="form-control" id="LoaiBieuMau" select2="loaibm"></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group row col">
+                            <label class="col-form-label col-120" for="loaivanban">Loại văn bản:</label>
+                            <div class="col">
+                                <input type="text" id="loaivanban" class="form-control w-100" combotree />
+                                <input type="hidden" id="LoaiVanBan" name="LoaiVanBan" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mr-2">
+                        <div class="form-group row col">
+                            <label class="col-form-label col-120">Ngày ban hành:</label>
+                            <div class="col-90">
+                                <input type="text" class="form-control datetimepicker-input" data-toggle="datetimepicker" data-target="#ngaybanhanh" id="NgayBanHanh" name="NgayBanHanh" autocomplete="off" datetimepicker />
+                            </div>
+                        </div>
+                        <div class="form-group row col end">
+                            <label for="ngayhieuluc" class="col-form-label col-auto">Ngày hiệu lực:</label>
+                            <div class="col-90">
+                                <input type="text" class="form-control datetimepicker-input" data-toggle="datetimepicker" data-target="#ngayhieuluc" id="NgayApDung" name="NgayApDung" autocomplete="off" datetimepicker />
+                            </div>
+                        </div>
+                        <div class="form-group row col end">
+                            <label for="phienban" class="col-form-label col-auto">Phiên bản:</label>
+                            <div class="col-90">
+                                <input type="text" class="form-control text-center" id="PhienBan" name="PhienBan" value="1" autocomplete="off" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group row col">
+                            <label for="DonViSoanThao2" class="col-form-label col-120">Bộ phận soạn thảo:</label>
+                            <div class="col">
+                                <select class="form-control" id="BPSoanThao2" select2="donvisoanthao" multiple></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group row col">
+                            <label for="BPSoanThao" class="col-form-label col-120">Người soạn thảo:</label>
+                            <div class="col">
+                                <select class="form-control" id="NguoiSoanThao2" select2="nguoisoanthao" multiple></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group row col">
+                            <label for="DonViApDung" class="col-form-label col-120">Đơn vị áp dụng:</label>
+                            <div class="col">
+                                <select class="form-control" id="DonViApDung2" select2="donviapdung" multiple></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group row col">
+                            <label for="DoiTuongApDung" class="col-form-label col-120">Đối tượng áp dụng:</label>
+                            <div class="col">
+                                <select class="form-control" id="DoiTuongApDung2" select2="doituong2" multiple></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group row col">
+                            <label class="col-form-label col-120">File:</label>
+                            <div class="col">
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input" id="fileUpload" name="fileUpload">
+                                    <label class="custom-file-label" for="fileUpload">Chọn file</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class="col-form-label col-120">Watermark:</label>
+                        <div class="col pl-0">
+                            <label class="label-checkbox"><input type="checkbox" id="Watermark" name="Watermark" />Gắn watermark bản quyền</label>
+                        </div>
+                    </div>
+                    <div class="row mb-3 d-flex justify-content-center">
+                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#modalThemTLLQ"><i class="fas fa-project-diagram"></i> Danh sách tài liệu liên quan</button>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-save="themvanban"><i class="fas fa-save"></i> Lưu</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+<div class="modal fade bd-example-modal-xl" id="modalThemTLLQ" tabindex="-1" role="dialog" aria-labelledby="ThemTLLQLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"> Tài liệu liên quan</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card-body m-0 p-0">
+                            <div class="fieldset">
+                                <h1>Chọn văn bản liên kết:</h1>
+                                <div class="row col-12">
+                                    <select class="form-control" id="vanban" name="vanban" select2="tenvanban"></select>
+                                </div>
+                                <div class="row d-flex justify-content-center col-12 mt-2">
+                                    <button type="button" class="btn btn-success" id="btnAddRow"><i class="fas fa-user-plus"></i> Thêm văn bản</button>
+                                </div>
+                            </div>
+                        </div>
+                        <h3>Danh sách tài liệu liên quan</h3>
+                        <table class="table table-bordered table-striped" id="tbTaiLieuLienQuan" width="100%">
+                            <thead class="thead">
+                                <tr>
+                                    <th class="w-auto" style="width: 80%;">Tên văn bản</th>
+                                    <th class="w-auto">Mã văn bản</th>
+                                    <th class="w-auto">ID</th>
+                                    <th class="w-auto no-order">Tiện ích</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+                <div class="" style="display:none;">
+                    <input type="hidden" id="TenVB" />
+                    <input type="hidden" id="MaVB" />
+                    <input type="hidden" id="IDVB" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="second-modal"></div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        bsCustomFileInput.init();
+
+        function selectList(selectName, url, placeholder) {
+            $('#modalThemVanBan select[select2="' + selectName + '"]').select2({
+                ajax: {
+                    url: url,
+                    dataType: 'json',
+                    data: function (params) {
+                        return {
+                            term: params.term,
+                            page: params.page || 1,
+                        }
+                    },
+                    processResults: function (data, params) {
+                        params.page = params.page || 1;
+                        return {
+                            results: $.map(data.data, function (item) {
+                                return {
+                                    id: item.id,
+                                    text: item.text,
+                                }
+                            }),
+                            pagination: {
+                                more: params.page < data.data.length
+                            }
+                        };
+                    },
+                    cache: true
+                },
+                placeholder: placeholder,
+                allowClear: true,
+                language: "vi",
+                dropdownParent: $('#modalThemVanBan')
+            });
+        }
+        selectList("donvisoanthao", "/DanhMuc/Get_Select_Depts", "Chọn đơn vị soạn thảo")
+        selectList("loaibm", "/DanhMuc/Get_Select_LoaiBieuMau", "Chọn loại biểu mẫu")
+        selectList("donviapdung", "/DanhMuc/Get_Select_Depts", "Chọn đơn vị áp dụng")
+        selectList("doituong2", "/DanhMuc/Get_Select_DoiTuongApDung", "Chọn đối tượng áp dụng")
+        $('select[select2="nguoisoanthao"]').select2({
+            placeholder: "Chọn người soạn thảo",
+            ajax: {
+                url: '/DanhMuc/Get_Select_NguoiSoanThao',
+                dataType: 'json',
+                data: function (params) {
+                    return {
+                        term: params.term,
+                        page: params.page || 1,
+                    }
+                },
+                processResults: function (data, params) {
+                    params.page = params.page || 1;
+                    return {
+                        results: $.map(data.data, function (item) {
+                            return {
+                                id: item.id,
+                                text: item.text,
+                            }
+                        }),
+                        pagination: {
+                            more: params.page < data.data.length
+                        }
+                    };
+                },
+                cache: true
+            },
+            allowClear: true,
+            language: "vi",
+            dropdownParent: $('#modalThemVanBan'),
+            templateResult: function (option) {
+                if (option.loading) {
+                    return option.text;
+                }
+                var item = option.text.split('|');
+                var ob = jQuery(
+                    '<div class="row justify-content-between">' +
+                    '<div class="col-3">' + item[0] + '</div>' +
+                    '<div class="col-9 text-wrap">' + item[1] + '</div>' +
+                    '</div>');
+                return ob;
+            },
+            templateSelection: function (option) {
+                var item = option.text.split('|');
+                return item[1];
+            },
+        });
+
+        $('#PhienBan').inputmask({ alias: 'numeric' });
+        $('input[datetimepicker]').datetimepicker({ format: 'DD/MM/YYYY', locale: 'vi', defaultDate: moment() });
+
+        $('body .modal').on('click', 'button[data-toggle="ajax-modal"]', function (event) {
+            var url = $(this).data('url');
+            $(this).callMultipleModal(url, ".second-modal");
+        });
+
+        $('#btnPhanQuyen').click(function () {
+            $('.tab-advance').animate({
+                height: "toggle",
+                opacity: "toggle"
+            }, "slow");
+        });
+
+        $('input[combotree]').combotree({
+            url: '/VanBan/Get_ThuMucCha?parentid=@ViewBag.ParentID',
+            method: 'get',
+            editable: true,
+            loadFilter: function (data) {
+                return convert(data.rows);
+            },
+        });
+        function convert(rows) {
+            function exists(rows, parentid) {
+                for (var i = 0; i < rows.length; i++) {
+                    if (rows[i].id == parentid) return true;
+                }
+                return false;
+            }
+
+            var nodes = [];
+            // get the top level nodes
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                if (!exists(rows, row.parentid)) {
+                    nodes.push({
+                        id: row.id,
+                        text: row.foldername
+                    });
+                }
+            }
+
+            var toDo = [];
+            for (var i = 0; i < nodes.length; i++) {
+                toDo.push(nodes[i]);
+            }
+            while (toDo.length) {
+                var node = toDo.shift();    // the parent node
+                // get the children nodes
+                for (var i = 0; i < rows.length; i++) {
+                    var row = rows[i];
+                    if (row.parentid == node.id) {
+                        var child = { id: row.id, text: row.foldername };
+                        if (node.children) {
+                            node.children.push(child);
+                        } else {
+                            node.children = [child];
+                        }
+                        toDo.push(child);
+                    }
+                }
+            }
+            return nodes;
+        }
+        $('#loaivanban').combotree({
+            onSelect: function (data) {
+                document.getElementById('modalThemVanBan').querySelector('#LoaiVanBan').value = data.id;
+            }
+        });
+
+        $('select[select2="tenvanban"]').select2({
+            dropdownParent: $('#modalThemTLLQ'),
+            ajax: {
+                url: '/DanhMuc/Get_Select_TenVanBan',
+                dataType: 'json',
+                data: function (params) {
+                    return {
+                        term: params.term,
+                        page: params.page || 1
+                    };
+                },
+                processResults: function (data, params) {
+                    params.page = params.page || 1;
+                    return {
+                        results: $.map(data.data, function (item) {
+                            return {
+                                id: item.id,
+                                text: item.maVB + '|' + item.tenVB,
+                            }
+                        }),
+                        pagination: {
+                            more: params.page < data.data.length
+                        }
+                    };
+                },
+                cache: true
+            },
+            placeholder: 'Chọn văn bản cần thêm',
+            allowClear: true,
+            //minimumInputLength: 1,
+            width: "100%",
+            language: "vi",
+            templateResult: function (option) {
+                if (option.loading) {
+                    return option.text;
+                }
+                var item = option.text.split('|');
+                var ob = jQuery(
+                    '<div class="row justify-content-between">' +
+                    '<div class="col-2">' + item[0] + '</div>' +
+                    '<div class="col-10 text-wrap">' + item[1] + '</div>' +
+                    '</div>');
+                return ob;
+            },
+            templateSelection: function (option) {
+                var item = option.text.split('|');
+                return item[1];
+            }
+        });
+
+        $('select[select2="tenvanban"]').on('select2:select', function (e) {
+            var data = e.params.data;
+            var item = data.text.split("|");
+            document.getElementById('IDVB').value = data.id;
+            document.getElementById('MaVB').value = item[0];
+            document.getElementById('TenVB').value = item[1];
+        });
+
+        var table = $('#tbTaiLieuLienQuan').DataTable({
+            "paging": true,
+            "lengthChange": true,
+            "searching": true,
+            "processing": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": true,
+            "responsive": true,
+            "order": [[0, 'asc']],
+            "columnDefs": [
+                { "orderable": false, "targets": 'no-order' },
+                { "className": "text-wrap", "targets": "_all" },
+                { "defaultContent": '', "targets": "_all" },
+            ],
+            "language": {
+                "sProcessing": "Đang tải dữ liệu...",
+                "sLengthMenu": "Xem _MENU_ mục",
+                "sZeroRecords": "Không tìm thấy dòng nào phù hợp",
+                "sInfo": "Đang xem _START_ đến _END_ trong tổng số _TOTAL_ mục",
+                "sInfoEmpty": "Đang xem 0 đến 0 trong tổng số 0 mục",
+                "sInfoFiltered": "(được lọc từ _MAX_ mục)",
+                "sInfoPostFix": "",
+                "sSearch": "Tìm:",
+                "sUrl": "",
+                "oPaginate": {
+                    "sFirst": "Đầu",
+                    "sPrevious": "Trước",
+                    "sNext": "Tiếp",
+                    "sLast": "Cuối"
+                }
+            },
+        });
+
+        table.column(2).visible(false);
+
+        var clicks = 0;
+        $("#btnAddRow").on('click', function () {
+            clicks++;
+            var IDVB = ((document.getElementById("IDVB") || {}).value) || "";
+            var MaVB = ((document.getElementById("MaVB") || {}).value) || "";
+            var TenVB = ((document.getElementById("TenVB") || {}).value) || "";
+            var exists = !! ~document.getElementById('tbTaiLieuLienQuan').innerHTML.indexOf(TenVB);
+            if (exists) {
+                $(this).callToast("info", "Thông báo!", "Văn bản:<b> " + TenVB + "</b> đã tồn tại.");
+            }
+            else {
+                var rowNode = table.row.add([
+                    TenVB, MaVB, IDVB,
+                    '<button id="deleteVB" class="btn btn-link btn-sm">Xóa</button>'
+                ]).node().id = 'rowID-' + clicks;
+                table.draw(false);
+                $(this).callToast("success", "Thành công", "Đã thêm văn bản: " + TenVB);
+            }
+        });
+        $('#tbTaiLieuLienQuan').on('click', '#deleteVB', function () {
+            var row = $(this).parents('tr');
+
+            if ($(row).hasClass('child')) {
+                table.row($(row).prev('tr')).remove().draw();
+            } else {
+                table
+                    .row($(this).parents('tr'))
+                    .remove()
+                    .draw();
+            }
+            $(this).callToast("success", "Thành công", "Đã xóa văn bản");
+        });
+        $('#modalThemVanBan').on('click', 'button[data-save="themvanban"]', function () {
+            var listID = new Array();
+            var listReport = new Array();
+            var postData = new Array();
+            table.rows().every(function () {
+                var data = this.data();
+                var id = {};
+                id.ReportID = data[2];
+                listID.push(id);
+            });
+
+            var form = $("#frmThemVanBan")
+            if (form[0].checkValidity() === true) {
+
+                var formData = new FormData();
+                formData.append("TenVanBan", $("#TenVanBan").val());
+                formData.append("MaVanBan", $("#MaVanBan").val());
+                formData.append("LoaiVanBan", $("#LoaiVanBan").val());
+                formData.append("LoaiBieuMau", $("#LoaiBieuMau").val());
+                formData.append("NgayBanHanh", $("#NgayBanHanh").val());
+                formData.append("NgayApDung", $("#NgayApDung").val());
+                formData.append("PhienBan", $("#PhienBan").val());
+                formData.append("BPSoanThao", $("#BPSoanThao2").val());
+                formData.append("NguoiSoanThao", $("#NguoiSoanThao2").val());
+                formData.append("DonViApDung", $("#DonViApDung2").val());
+                formData.append("DoiTuongApDung", $("#DoiTuongApDung2").val());
+                formData.append("Watermark", $("#Watermark").is(":checked"));
+                @*formData.append("ParentID", @ViewBag.ParentID);*@
+                formData.append("fileUpload", $("#fileUpload")[0].files[0]);
+                formData.append("listID", JSON.stringify(listID));
+                $.ajax({
+                    type: 'POST',
+                    url: '/VanBan/Upsert_VanBan',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    beforeSend: function () {
+                        $('button[data-save="modalFile"]').attr("disabled", true);
+                    },
+                    success: function (data) {
+                        $(this).callToast(data.result, data.title, data.message);
+                    },
+                    error: function (data) {
+                        $(this).callToast(data.result, data.title, data.message);
+                    },
+                    complete: function () {
+                        $('button[data-save="modalFile"]').attr("disabled", false);
+
+                    },
+                })
+            }
+            else {
+                event.preventDefault()
+                event.stopPropagation()
+                form.addClass('was-validated');
+            }
+        });
+    });
+</script>

@@ -1,0 +1,362 @@
+﻿@using WebTools.Models.ViewModel
+@model VanBanChiTietVM
+<style>
+    .col-115 {
+        width: 115px;
+        padding-left: 7.5px;
+        padding-right: 7.5px;
+    }
+
+    .col-110 {
+        width: 110px;
+        padding-left: 7.5px;
+        padding-right: 7.5px;
+    }
+
+    .col-90 {
+        width: 130px;
+        padding-left: 7.5px;
+        padding-right: 7.5px;
+    }
+</style>
+<!-- Modal -->
+<div class="modal fade bd-example-modal-xl" id="modalPhienBan" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"><i class="fas fa-th"></i> Thêm phiên bản - Upload lại văn bản</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="frmAddPhienBan" method="post" enctype="multipart/form-data">
+                    <div class="form-group row">
+                        <label class="col-form-label col-90">Tên văn bản:</label>
+                        <label class="col-form-label col-auto">@Model.VanBanInfo.TenVanBan</label>
+                        <input type="hidden" id="ID" name="ID" value="@Model.VanBanInfo.ID" />
+                    </div>
+                    <div class="row justify-content-between">
+                        <div class="form-group row col-6">
+                            <label class="col-form-label col-90">Mã văn bản:</label>
+                            <label class="col-form-label col-auto">@Model.VanBanInfo.MaVanBan</label>
+                        </div>
+                        <div class="form-group row col-3 justify-content-end">
+                            <label class="col-form-label col-115">Ngày phát hành:</label>
+                            <div class="col-110">
+                                <input type="text" class="form-control datetimepicker-input" data-toggle="datetimepicker" data-target="#ngayphathanh" id="NgayBanHanh" name="NgayBanHanh" autocomplete="off" datetimepicker />
+                            </div>
+                        </div>
+                        <div class="form-group row col-3 justify-content-end">
+                            <label class="col-form-label col-115">Ngày hiệu lực:</label>
+                            <div class="col-110">
+                                <input type="text" class="form-control datetimepicker-input" data-toggle="datetimepicker" data-target="#ngayhieuluc" id="NgayApDung" name="NgayApDung" autocomplete="off" datetimepicker />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row justify-content-between">
+                        <div class="form-group row col-6">
+                            <label class="col-form-label col-90">File:</label>
+                            <div class="col mr-3">
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input" id="fileUpload" name="fileUpload">
+                                    <label class="custom-file-label" for="fileUpload">Chọn file</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row col-3 justify-content-end">
+                            <label class="col-form-label col-115">Phiên bản:</label>
+                            <div class="col-110">
+                                <input type="text" class="form-control text-center" id="PhienBan" name="PhienBan" value="@ViewBag.PhienBan" required />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-form-label col-90">Ghi chú:</label>
+                        <div class="col">
+                            <input type="text" class="form-control" id="GhiChu" name="GhiChu" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="DonViSoanThao2" class="col-form-label col-90">Bộ phận soạn thảo:</label>
+                        <div class="col">
+                            <select class="form-control" id="BPSoanThao2" name="BPSoanThao2" select2="depts2" multiple></select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="BPSoanThao" class="col-form-label col-90">Người soạn thảo:</label>
+                        <div class="col">
+                            <select class="form-control" id="NguoiSoanThao" name="NguoiSoanThao" select2="nguoisoanthao2" multiple></select>
+                        </div>
+                    </div>
+                </form>
+                    <div class="row justify-content-between"></div>
+                    <div class="mt-5">
+                        <h3 class="text-center">Danh sách phiên bản</h3>
+                        <table class="table table-bordered table-striped" width="100%" id="tbPhienBan">
+                            <thead class="thead">
+                                <tr>
+                                    <th>STT</th>
+                                    <th>Phiên bản</th>
+                                    <th>Ngày phát hành</th>
+                                    <th>Ngày hiệu lực</th>
+                                    <th>Ngày upload</th>
+                                    <th>Ngày kiểm soát lại</th>
+                                    <th>Trạng thái</th>
+                                    <th>Ghi chú</th>
+                                    <th>Tiện ích</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary mr-3" data-save="phienban"><i class="fas fa-save"></i> Lưu</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="second-preview-modal"></div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#PhienBan').inputmask({ alias: 'numeric' });
+
+        bsCustomFileInput.init()
+        function selectList(selectName, url, placeholder) {
+            $('#modalPhienBan select[select2="' + selectName + '"]').select2({
+                ajax: {
+                    url: url,
+                    dataType: 'json',
+                    data: function (params) {
+                        return {
+                            term: params.term,
+                            page: params.page || 1,
+                        }
+                    },
+                    processResults: function (data, params) {
+                        params.page = params.page || 1;
+                        return {
+                            results: $.map(data.data, function (item) {
+                                return {
+                                    id: item.id,
+                                    text: item.text,
+                                }
+                            }),
+                            pagination: {
+                                more: params.page < data.data.length
+                            }
+                        };
+                    },
+                    cache: true
+                },
+                placeholder: placeholder,
+                allowClear: true,
+                language: "vi",
+                dropdownParent: $('#modalPhienBan')
+            });
+        }
+        selectList("depts2", "/DanhMuc/Get_Select_Depts", "Chọn bộ phận soạn thảo")
+        $('select[select2="nguoisoanthao2"]').select2({
+            placeholder: "Chọn người soạn thảo",
+            ajax: {
+                url: '/DanhMuc/Get_Select_NguoiSoanThao',
+                dataType: 'json',
+                data: function (params) {
+                    return {
+                        term: params.term,
+                        page: params.page || 1,
+                    }
+                },
+                processResults: function (data, params) {
+                    params.page = params.page || 1;
+                    return {
+                        results: $.map(data.data, function (item) {
+                            return {
+                                id: item.id,
+                                text: item.text,
+                            }
+                        }),
+                        pagination: {
+                            more: params.page < data.data.length
+                        }
+                    };
+                },
+                cache: true
+            },
+            allowClear: true,
+            language: "vi",
+            dropdownParent: $('#modalPhienBan'),
+            templateResult: function (option) {
+                if (option.loading) {
+                    return option.text;
+                }
+                var item = option.text.split('|');
+                var ob = jQuery(
+                    '<div class="row justify-content-between">' +
+                    '<div class="col-3">' + item[0] + '</div>' +
+                    '<div class="col-9 text-wrap">' + item[1] + '</div>' +
+                    '</div>');
+                return ob;
+            },
+            templateSelection: function (option) {
+                var item = option.text.split('|');
+                return item[1];
+            },
+        });
+
+        var columnData = [
+            {
+                "data": "stt"
+            },
+            {
+                "data": { phienBan: "phienBan", fileLink: "fileLink", tenVanBan: "tenVanBan" },
+                "render": function (data, type, full, meta) {
+                    if (data.fileLink === null || data.fileLink === "null") {
+                        return '<button class="btn btn-link p-0 text-left text-danger" data-toggle="preview-modal" data-target="#modalctvbpreview-' + meta.row + '" data-url="/Preview/Preview?readed=1&filePath=' + data.fileLink + '&filename=' + data.tenVanBan + '">' + data.phienBan + '</button>';
+                    }
+                    else {
+                        return '<button class="btn btn-link p-0 text-left text-primary" data-toggle="preview-modal" data-target="#modalctvbpreview-' + meta.row + '" data-url="/Preview/Preview?readed=1&filePath=' + data.fileLink + '&filename=' + data.tenVanBan + '">' + data.phienBan + '</button>';
+                    }
+                },
+                "className": "text-center"
+            },
+            {
+                "data": "ngayBanHanh",
+                "className": "text-center"
+            },
+            {
+                "data": "ngayApDung",
+                "className": "text-center"
+            },
+            {
+                "data": "ngayUpload",
+                "className": "text-center"
+            },
+            {
+                "data": "ngayXL",
+                "className": "text-center"
+            },
+            {
+                "data": { trangThai: "trangThai"},
+                "render": function (data, type, full, meta) {
+                    if (data.trangThai === "Đang sử dụng") {
+                        return '<span class="badge bg-success">' + data.trangThai + '</span>';
+                    }
+                    else if (data.trangThai === "Đã hủy") {
+                        return '<span class="badge bg-danger">' + data.trangThai + '</span>';
+                    }
+                    else { return data.trangThai; }
+                },
+                "className": "text-center"
+            },
+            {
+                "data": "ghiChu"
+            },
+            {
+                "data": { id: "id", phienBan: "phienBan", idPhienBan: "idPhienBan"},
+                "render": function (data, type, full, meta) {
+                    return '<button class="btn btn-outline-info btn-sm" data-toggle="preview-modal" data-target="#modaldoitrangthai-' + meta.row + '" data-url="/VanBan/VanBan_PhienBan_Delete?idvb=' + data.id + '&idphienban=' + data.idPhienBan + '&trangthai=' + data.trangThai + '">Cập nhật</button>';
+                },
+            },
+        ]
+
+        function tablePhienBan(id, columnData, url) {
+            var table = $(id).DataTable();
+            if ($.fn.dataTable.isDataTable(id)) {
+                table.destroy();
+                $(id).find('thead .filters').remove();
+                $(id).find('tbody').empty();
+            }
+            var table = $(id).DataTable({
+                "scrollY": '370px',
+                "scrollCollapse": true,
+                "paging": false,
+                "lengthChange": false,
+                "searching": true,
+                "processing": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": true,
+                "responsive": true,
+                "order": [[0, 'asc']],
+                "columnDefs": [
+                    { "orderable": false, "targets": 'no-order' },
+                    { "className": "text-wrap", "targets": "_all" },
+                    { "defaultContent": '', "targets": "_all" },
+                ],
+                "ajax": {
+                    "url": url,
+                    "type": "GET",
+                    "datatype": "json"
+                },
+                "columns": columnData,
+                "language": {
+                    "sProcessing": "Đang tải dữ liệu...",
+                    "sLengthMenu": "Xem _MENU_ mục",
+                    "sZeroRecords": "Không tìm thấy dòng nào phù hợp",
+                    "sInfo": "Đang xem _START_ đến _END_ trong tổng số _TOTAL_ mục",
+                    "sInfoEmpty": "Đang xem 0 đến 0 trong tổng số 0 mục",
+                    "sInfoFiltered": "(được lọc từ _MAX_ mục)",
+                    "sInfoPostFix": "",
+                    "sSearch": "Tìm:",
+                    "sUrl": "",
+                    "oPaginate": {
+                        "sFirst": "Đầu",
+                        "sPrevious": "Trước",
+                        "sNext": "Tiếp",
+                        "sLast": "Cuối"
+                    }
+                },
+
+            });
+            return table;
+        }
+        tablePhienBan("#tbPhienBan", columnData, "/VanBan/Get_DataPhienBan?idvb=@Model.VanBanInfo.ID")
+
+        $('body .modal').on('click', 'button[data-toggle="preview-modal"]', function (event) {
+            var url = $(this).data('url');
+            $(this).callMultipleModal(url, ".second-preview-modal");
+        });
+
+        $('input[datetimepicker]').datetimepicker({ format: 'DD/MM/YYYY', locale: 'vi', defaultDate: moment() });
+
+        $('body .modal').on('click', 'button[data-save="phienban"]', function (event) {
+            var form = $("#frmAddPhienBan");
+            if (form[0].checkValidity() === true) {
+                var formData = new FormData(document.getElementById("frmAddPhienBan"));
+                $.ajax({
+                    type: 'POST',
+                    url: '/VanBan/Add_PhienBanVB',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    beforeSend: function () {
+                        $('button[data-save="phienban"]').attr("disabled", true);
+                    },
+                    success: function (data) {
+                        $(this).callToast(data.result, data.title, data.message);
+                    },
+                    error: function (data) {
+                        $(this).callToast(data.result, data.title, data.message);
+                    },
+                    complete: function () {
+                        $('button[data-save="phienban"]').attr("disabled", false);
+
+                    },
+                })
+            }
+            else {
+                event.preventDefault()
+                event.stopPropagation()
+                form.addClass('was-validated');
+            }
+        });
+
+        $('#modalPhienBan').on('shown.bs.modal', function (e) {
+            $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();
+        });
+        
+    });
+</script>

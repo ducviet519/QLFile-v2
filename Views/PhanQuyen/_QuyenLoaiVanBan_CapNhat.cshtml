@@ -1,0 +1,772 @@
+﻿@using WebTools.Models.ViewModel
+@model ViewRoleVM
+<style>
+    .fieldset {
+        position: relative;
+        border: 1px solid #ddd;
+        padding: 10px;
+    }
+
+        .fieldset h1 {
+            position: absolute;
+            top: 0;
+            font-size: 14px;
+            line-height: 1;
+            margin: -9px 0 0; /* half of font-size */
+            background: #fff;
+            padding: 0 3px;
+        }
+
+    .tab-custom-content {
+        /*margin-bottom: 1rem;*/
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .bg-snow {
+        background-color: snow !important;
+        color: black !important;
+    }
+
+    td .form-check {
+        display: flex;
+        justify-content: center;
+    }
+
+    .input-group-text > input[type="checkbox"] {
+        height: unset;
+        width: unset;
+    }
+
+    .col-80 {
+        width: 80px;
+        padding-left: 7.5px;
+        padding-right: 7.5px;
+    }
+
+    .col-160 {
+        width: 160px;
+        padding-left: 7.5px;
+        padding-right: 7.5px;
+    }
+
+    .col-105 {
+        width: 105px;
+        padding-left: 7.5px;
+        padding-right: 7.5px;
+    }
+
+    .col-115 {
+        width: 115px;
+        padding-left: 7.5px;
+        padding-right: 7.5px;
+    }
+
+    #hide-cabin, #hide-document, #hide-user, #hide-department, #hide-group {
+        display: none;
+    }
+
+    .form-control {
+        line-height: 1.2 !important;
+        height: calc(2rem + 2px) !important;
+        padding: 0.25rem 0.25rem !important;
+    }
+
+    .select2-container--default .select2-selection--single {
+        height: calc(2rem + 2px) !important;
+        padding: 0.25rem 0.25rem !important;
+    }
+</style>
+@await Html.PartialAsync("Shared/_StyleUI_ComboBox")
+<!-- Modal -->
+<div class="modal fade bd-example-modal-xl" id="modelPhanQuyenLoaiVB" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"><i class="fas fa-users"></i> Phân quyền</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="frmPhanQuyenVanBan">
+                    <div class="fieldset ml-1 mr-1 mt-3 mb-3">
+                        <h1 class="search-panel">Thêm quyền</h1>
+                        <div class="row">
+                            <div class="col-3">
+                                <div class="form-group row">
+                                    <label class="col-form-label col-80" for="LevelType">Phân cấp:</label>
+                                    <div class="col">
+                                        <select class="form-control" id="LevelType" name="LevelType" select2="LevelType">
+                                            <option></option>
+                                            <option value="Cabinet">Cabin</option>
+                                            <option value="Document">Document</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-9">
+                                <div class="form-group row">
+                                    <label class="col-form-label col-105" for="cabin0">Cabin/Văn bản:</label>
+                                    <div class="col">
+                                        <div id="hide-cabin">
+                                            <input type="text" id="cabin0" name="cabin0" class="form-control w-100" combotree />
+                                        </div>
+                                        <div id="hide-document">
+                                            <select class="form-control" id="vanban0" name="vanban0" select2="vanban0"></select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row d-flex justify-content-between">
+                            <div class="col-4">
+                                <div class="form-group row">
+                                    <label class="col-form-label col-160" for="UserType">Đối tượng phân quyền:</label>
+                                    <div class="col">
+                                        <select class="form-control" id="UserType" name="UserType" select2="UserType">
+                                            <option></option>
+                                            <option value="Department">Đơn vị</option>
+                                            <option value="Group">Nhóm</option>
+                                            <option value="User">Nhân viên</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-group row">
+                                    <label class="col-form-label col-115" for="doituong0">Đối tượng HCNS:</label>
+                                    <div class="col">
+                                        <select class="form-control" id="doituong0" name="doituong0" select2="doituong0"></select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-form-label col-160" for="nhanvien0">Đơn vị/Nhân viên/Nhóm:</label>
+                            <div class="col">
+                                <div id="hide-user">
+                                    <select class="form-control" id="nhanvien0" name="nhanvien0" select2="nhanvien0"></select>
+                                </div>
+                                <div id="hide-department">
+                                    <select class="form-control" id="donvi0" name="donvi0" select2="donvi0"></select>
+                                </div>
+                                <div id="hide-group">
+                                    <select class="form-control" id="loaivanban0" name="loaivanban0" select2="loaivanban0"></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-around">
+                            <div class="col d-flex justify-content-center"><label class="label-checkbox"><input type="checkbox" id="ReadR" name="ReadR" />Đọc</label></div>
+                            <div class="col d-flex justify-content-center"><label class="label-checkbox"><input type="checkbox" id="PrintR" name="PrintR" />In</label></div>
+                            <div class="col d-flex justify-content-center"><label class="label-checkbox"><input type="checkbox" id="DownloadR" name="DownloadR" />Tải về</label></div>
+                        </div>
+                        <div class="form-group d-flex justify-content-center mb-0">
+                            <button type="button" class="btn btn-success" id="btnThemQuyenVB"><i class="fas fa-plus"></i> Thêm quyền</button>
+                        </div>
+                        <div style="display:none;">
+                            <input type="hidden" id="DocID" name="DocID" />
+                            <input type="hidden" id="Dept_UserID" name="Dept_UserID" />
+                            <input type="hidden" id="HRMUserType" name="HRMUserType" />
+                        </div>
+                    </div>
+                </form>
+                <table class="table table-bordered table-striped" width="100%" id="tbListViewRole">
+                    <thead class="thead">
+                        <tr>
+                            <th class="w-auto">Đối tượng phân quyền</th>
+                            <th class="w-auto">Khoa/ Phòng/ Nhân viên</th>
+                            <th class="w-auto">Đối tượng HCNS</th>
+                            <th class="w-auto no-order">Xem</th>
+                            <th class="w-auto no-order">In</th>
+                            <th class="w-auto no-order">Tải về</th>
+                            <th class="w-auto no-order"></th>
+                            <th class="w-auto no-order"></th>
+                            <th class="w-auto no-order"></th>
+                            <th class="w-auto no-order"></th>
+                            <th class="w-auto no-order"></th>
+                            <th class="w-auto no-order"></th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btnLuuQuyenVB"><i class="fas fa-save"></i> Lưu</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var columnData = [
+            { "data": "phanCap" },
+            { "data": "tenKhoaPhongNV" },
+            { "data": "doiTuong" },
+            {
+                "data": { readR: "readR" },
+                "render": function (data, type, full, meta) {
+                    var item = '';
+                    if (data.readR === "1") {
+                        item += '<i class="fas fa-check-square"></i>';
+                    }
+                    else {
+                        item += '<i class="fas fa-window-close"></i>';
+                    }
+                    return item;
+                },
+                "className": "text-center"
+            },
+            {
+                "data": { printR: "printR" },
+                "render": function (data, type, full, meta) {
+                    var item = '';
+                    if (data.printR === "1") {
+                        item += '<i class="fas fa-check-square"></i>';
+                    }
+                    else {
+                        item += '<i class="fas fa-window-close"></i>';
+                    }
+                    return item;
+                },
+                "className": "text-center"
+            },
+            {
+                "data": { downloadR: "downloadR" },
+                "render": function (data, type, full, meta) {
+                    var item = '';
+                    if (data.downloadR === "1") {
+                        item += '<i class="fas fa-check-square"></i>';
+                    }
+                    else {
+                        item += '<i class="fas fa-window-close"></i>';
+                    }
+                    return item;
+                },
+                "className": "text-center"
+            },
+            {
+                "data": {},
+                "render": function (data, type, full, meta) {
+                    return '<button id="deleteVB" class="btn btn-link btn-sm">Xóa</button>';
+                },
+                "className": "text-center"
+            },
+            { "data": "levelType" },
+            { "data": "docID" },
+            { "data": "userType" },
+            { "data": "dept_UserID" },
+            { "data": "hrmUserType" },
+        ]
+        function tableViewRole(id, columnData) {
+            var table = $(id).DataTable();
+            if ($.fn.dataTable.isDataTable(id)) {
+                table.destroy();
+                $(id).find('thead .filters').remove();
+                $(id).find('tbody').empty();
+            }
+            $(id + ' thead tr')
+                .clone(true)
+                .addClass('filters')
+                .appendTo(id + ' thead');
+
+            var table = $(id).DataTable({
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "processing": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": true,
+                "responsive": true,
+                "orderCellsTop": true,
+                "order": [[0, 'asc']],
+                "columnDefs": [
+                    { "orderable": false, "targets": 'no-order' },
+                    { "className": "text-wrap", "targets": "_all" },
+                    { "defaultContent": '', "targets": "_all" },
+                ],
+                "columns": columnData,
+                "language": {
+                    "sProcessing": "Đang tải dữ liệu...",
+                    "sLengthMenu": "Xem _MENU_ mục",
+                    "sZeroRecords": "Không tìm thấy dòng nào phù hợp",
+                    "sInfo": "Đang xem _START_ đến _END_ trong tổng số _TOTAL_ mục",
+                    "sInfoEmpty": "Đang xem 0 đến 0 trong tổng số 0 mục",
+                    "sInfoFiltered": "(được lọc từ _MAX_ mục)",
+                    "sInfoPostFix": "",
+                    "sSearch": "Tìm:",
+                    "sUrl": "",
+                    "oPaginate": {
+                        "sFirst": "Đầu",
+                        "sPrevious": "Trước",
+                        "sNext": "Tiếp",
+                        "sLast": "Cuối"
+                    }
+                },
+                "initComplete": function (settings, json) {
+                    var api = this.api();
+
+                    // For each column
+                    api
+                        .columns()
+                        .eq(0)
+                        .each(function (colIdx) {
+                            if (colIdx >= 0 && colIdx <= 2) {
+                                var cell = $('.filters th').eq(
+                                    $(api.column(colIdx).header()).index()
+                                );
+                                var title = $(cell).text();
+                                $(cell).html('<input type="text" class="form-control p-0 m-0" />');
+                            }
+                            else {
+                                var cell = $('.filters th').eq(
+                                    $(api.column(colIdx).header()).index()
+                                );
+                                $(cell).empty();
+
+                            }
+                            // On every keypress in this input
+                            $(
+                                'input[type="text"]',
+                                $('.filters th').eq($(api.column(colIdx).header()).index())
+                            )
+                                .off('keyup change')
+                                .on('change', function (e) {
+                                    // Get the search value
+                                    $(this).attr('title', $(this).val());
+                                    var regexr = '({search})'; //$(this).parents('th').find('select').val();
+
+                                    var cursorPosition = this.selectionStart;
+                                    // Search the column for that value
+                                    api
+                                        .column(colIdx)
+                                        .search(
+                                            this.value != ''
+                                                ? regexr.replace('{search}', '(((' + this.value + ')))')
+                                                : '',
+                                            this.value != '',
+                                            this.value == ''
+                                        )
+                                        .draw();
+                                })
+                                .on('keyup', function (e) {
+                                    e.stopPropagation();
+
+                                    $(this).trigger('change');
+                                    $(this)
+                                        .focus()[0]
+                                        .setSelectionRange(cursorPosition, cursorPosition);
+                                });
+                        });
+                }
+            });
+            return table;
+        }
+        var tableVR = tableViewRole("#tbListViewRole", columnData);
+        tableVR.columns([7, 8, 9, 10, 11]).visible(false);
+
+        $('select[select2="LevelType"]').select2({
+            minimumResultsForSearch: Infinity,
+            placeholder: "Chọn",
+            allowClear: true
+        });
+        $('select[select2="UserType"]').select2({
+            minimumResultsForSearch: Infinity,
+            placeholder: "Chọn",
+            allowClear: true
+        });
+
+        function selectList(selectName, url, placeholder) {
+            $('#modelPhanQuyenLoaiVB select[select2="' + selectName + '"]').select2({
+                ajax: {
+                    url: url,
+                    dataType: 'json',
+                    data: function (params) {
+                        return {
+                            term: params.term,
+                            page: params.page || 1,
+                        }
+                    },
+                    processResults: function (data, params) {
+                        params.page = params.page || 1;
+                        return {
+                            results: $.map(data.data, function (item) {
+                                return {
+                                    id: item.id,
+                                    text: item.text,
+                                }
+                            }),
+                            pagination: {
+                                more: params.page < data.data.length
+                            }
+                        };
+                    },
+                    cache: true
+                },
+                placeholder: placeholder,
+                allowClear: true,
+                language: "vi",
+                dropdownParent: $('#modelPhanQuyenLoaiVB')
+            });
+        }
+
+        selectList("donvi0", "/DanhMuc/Get_Select_Depts", "")
+        selectList("doituong0", "/DanhMuc/Get_Select_DoiTuongApDung", "")
+        selectList("loaivanban0", "/DanhMuc/Get_Select_NhomQuyen", "")
+        $('select[select2="nhanvien0"]').select2({
+            ajax: {
+                url: '/DanhMuc/Get_Select_NguoiSoanThao',
+                dataType: 'json',
+                data: function (params) {
+                    return {
+                        term: params.term,
+                        page: params.page || 1,
+                    }
+                },
+                processResults: function (data, params) {
+                    params.page = params.page || 1;
+                    return {
+                        results: $.map(data.data, function (item) {
+                            return {
+                                id: item.id,
+                                text: item.text,
+                            }
+                        }),
+                        pagination: {
+                            more: params.page < data.data.length
+                        }
+                    };
+                },
+                cache: true
+            },
+            allowClear: true,
+            language: "vi",
+            dropdownParent: $('#modelPhanQuyenLoaiVB'),
+            templateResult: function (option) {
+                if (option.loading) {
+                    return option.text;
+                }
+                var item = option.text.split('|');
+                var ob = jQuery(
+                    '<div class="row justify-content-between">' +
+                    '<div class="col-3">' + item[0] + '</div>' +
+                    '<div class="col-9 text-wrap">' + item[1] + '</div>' +
+                    '</div>');
+                return ob;
+            },
+            templateSelection: function (option) {
+                var item = option.text.split('|');
+                return item[1];
+            },
+            placeholder: "Chọn nhân viên",
+        });
+
+        $('select[select2="LevelType"]').on('change', function (e) {
+            var data = $(this).val();
+            if (data === "Cabinet") {
+                document.getElementById('hide-cabin').style.display = "block";
+                document.getElementById('hide-document').style.display = "none";
+                $("#cabin0").attr("required", true);
+                $("#vanban0").attr("required", false);
+            }
+            else if (data === "Document") {
+                document.getElementById('hide-document').style.display = "block";
+                document.getElementById('hide-cabin').style.display = "none";
+                $("#cabin0").attr("required", false);
+                $("#vanban0").attr("required", true);
+            }
+            else {
+                document.getElementById('hide-document').style.display = "none";
+                document.getElementById('hide-cabin').style.display = "none";
+                $("#cabin0").attr("required", false);
+                $("#vanban0").attr("required", false);
+            }
+        });
+        $('select[select2="UserType"]').on('change', function (e) {
+            var data = $(this).val();
+            if (data === "Department") {
+                document.getElementById('hide-department').style.display = "block";
+                document.getElementById('hide-group').style.display = "none";
+                document.getElementById('hide-user').style.display = "none";
+                $("#donvi0").attr("required", true);
+                $("#nhanvien0").attr("required", false);
+                $("#loaivanban0").attr("required", false);
+            }
+            else if (data === "Group") {
+                document.getElementById('hide-department').style.display = "none";
+                document.getElementById('hide-group').style.display = "block";
+                document.getElementById('hide-user').style.display = "none";
+                $("#donvi0").attr("required", false);
+                $("#nhanvien0").attr("required", false);
+                $("#loaivanban0").attr("required", true);
+            }
+            else if (data === "User") {
+                document.getElementById('hide-department').style.display = "none";
+                document.getElementById('hide-group').style.display = "none";
+                document.getElementById('hide-user').style.display = "block";
+                $("#donvi0").attr("required", false);
+                $("#nhanvien0").attr("required", true);
+                $("#loaivanban0").attr("required", false);
+            }
+            else {
+                document.getElementById('hide-department').style.display = "none";
+                document.getElementById('hide-group').style.display = "none";
+                document.getElementById('hide-user').style.display = "none";
+                $("#donvi0").attr("required", false);
+                $("#nhanvien0").attr("required", false);
+                $("#loaivanban0").attr("required", false);
+            }
+        });
+
+        //ComboTree Thư mục
+        $('input[combotree]').combotree({
+            url: '/VanBan/Get_ThuMucCha',
+            method: 'get',
+            editable: true,
+            loadFilter: function (data) {
+                return convert(data.rows);
+            },
+        });
+        function convert(rows) {
+            function exists(rows, parentid) {
+                for (var i = 0; i < rows.length; i++) {
+                    if (rows[i].id == parentid) return true;
+                }
+                return false;
+            }
+
+            var nodes = [];
+            // get the top level nodes
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                if (!exists(rows, row.parentid)) {
+                    nodes.push({
+                        id: row.id,
+                        text: row.foldername
+                    });
+                }
+            }
+
+            var toDo = [];
+            for (var i = 0; i < nodes.length; i++) {
+                toDo.push(nodes[i]);
+            }
+            while (toDo.length) {
+                var node = toDo.shift();    // the parent node
+                // get the children nodes
+                for (var i = 0; i < rows.length; i++) {
+                    var row = rows[i];
+                    if (row.parentid == node.id) {
+                        var child = { id: row.id, text: row.foldername };
+                        if (node.children) {
+                            node.children.push(child);
+                        } else {
+                            node.children = [child];
+                        }
+                        toDo.push(child);
+                    }
+                }
+            }
+            return nodes;
+        }
+        $('input[combotree]').combotree({
+            onSelect: function (data) {
+                document.getElementById('modelPhanQuyenLoaiVB').querySelector('#DocID').value = data.id;
+                var leveltype = $('#LevelType').val();
+                tableVR.ajax.url('/PhanQuyen/Get_ListPhanQuyenVanBan?docid=' + data.id + '&leveltype=' + leveltype).load();
+            }
+        });
+
+        $('select[select2="vanban0"]').select2({
+            dropdownParent: $('#modelPhanQuyenLoaiVB'),
+            ajax: {
+                url: '/DanhMuc/Get_Select_TenVanBan',
+                dataType: 'json',
+                data: function (params) {
+                    return {
+                        term: params.term,
+                        page: params.page || 1
+                    };
+                },
+                processResults: function (data, params) {
+                    params.page = params.page || 1;
+                    return {
+                        results: $.map(data.data, function (item) {
+                            return {
+                                id: item.id,
+                                text: item.maVB + '|' + item.tenVB,
+                            }
+                        }),
+                        pagination: {
+                            more: params.page < data.data.length
+                        }
+                    };
+                },
+                cache: true
+            },
+            placeholder: 'Chọn văn bản cần thêm',
+            allowClear: true,
+            //minimumInputLength: 1,
+            width: "100%",
+            language: "vi",
+            templateResult: function (option) {
+                if (option.loading) {
+                    return option.text;
+                }
+                var item = option.text.split('|');
+                var ob = jQuery(
+                    '<div class="row justify-content-between">' +
+                    '<div class="col-3">' + item[0] + '</div>' +
+                    '<div class="col-9 text-wrap">' + item[1] + '</div>' +
+                    '</div>');
+                return ob;
+            },
+            templateSelection: function (option) {
+                var item = option.text.split('|');
+                return item[1];
+            }
+        });
+        $('select[select2="vanban0"]').on('select2:select', function (e) {
+            var data = e.params.data;
+            document.getElementById('DocID').value = data.id;
+            var leveltype = $('#LevelType').val();
+            tableVR.ajax.url('/PhanQuyen/Get_ListPhanQuyenVanBan?docid=' + data.id + '&leveltype=' + leveltype).load();
+        });
+
+        function SelectEvent(selectID, inputID) {
+            $('select[select2="' + selectID + '"]').on('select2:select', function (e) {
+                var data = e.params.data;
+                document.getElementById(inputID).value = data.id;
+                $('#DocID').trigger("change");
+            });
+        }
+        SelectEvent("vanban0", "DocID")
+        SelectEvent("donvi0", "Dept_UserID")
+        SelectEvent("loaivanban0", "Dept_UserID")
+        SelectEvent("nhanvien0", "Dept_UserID")
+        SelectEvent("doituong0", "HRMUserType")
+
+        $(document).on('select2:open', function (e) {
+            window.setTimeout(function () {
+                document.querySelector('input.select2-search__field').focus();
+            }, 0);
+        });
+
+        function handleInputs() {
+            $('input[type=checkbox]').each(function () {
+                if (!this.checked) {
+                    $(this).attr("value", "0");
+                } else {
+                    $(this).attr("value", "1");
+                }
+            });
+        }
+
+        $('#tbListViewRole').on('click', '#deleteVB', function () {
+            var row = $(this).parents('tr');
+
+            if ($(row).hasClass('child')) {
+                tableVR.row($(row).prev('tr')).remove().draw();
+            } else {
+                tableVR
+                    .row($(this).parents('tr'))
+                    .remove()
+                    .draw();
+            }
+            $(this).callToast("success", "Thành công", "Đã xóa");
+        });
+        var clicks = 0;
+        $('#btnThemQuyenVB').on('click', function () {
+            $(this).attr("disabled", true);
+            clicks++;
+            handleInputs()
+            var DocID = $('#DocID').val();
+            var Dept_UserID = $('#Dept_UserID').val();
+            var HRMUserType = $('#HRMUserType').val();
+            var LevelType = $('#LevelType').val();
+            var UserType = $('#UserType').val();
+            var ReadR = $('#ReadR').val();
+            var PrintR = $('#PrintR').val();
+            var DownloadR = $('#DownloadR').val();
+            var doituongPQ = $('#UserType').find('option:selected').text();
+            var doituongHCNS = $('#doituong0').find('option:selected').text();
+            var kpnv = "";
+            if (UserType === "Department") { kpnv = $('#donvi0').find('option:selected').text(); }
+            if (UserType === "Group") { kpnv = $('#loaivanban0').find('option:selected').text(); }
+            if (UserType === "User") { kpnv = $('#nhanvien0').find('option:selected').text(); }
+            if (kpnv === "") {
+                $(this).callToast("info", "Thông báo", "Đơn vị/Nhân viên/Nhóm đang trống");
+            }
+            else {
+                var exists = !! ~document.getElementById('tbListViewRole').innerHTML.indexOf(kpnv);
+                if (exists) {
+                    $(this).callToast("info", "Thông báo!", "Đơn vị/Nhân viên/Nhóm:<b> " + kpnv + "</b> đã tồn tại.");
+                }
+                else {
+                    tableVR.row.add({
+                        "phanCap": doituongPQ,
+                        "tenKhoaPhongNV": kpnv,
+                        "doiTuong": doituongHCNS,
+                        "readR": ReadR,
+                        "printR": PrintR,
+                        "downloadR": DownloadR,
+                        "levelType": LevelType,
+                        "docID": DocID,
+                        "userType": UserType,
+                        "dept_UserID": Dept_UserID,
+                        "hrmUserType": HRMUserType,
+                    }).draw();
+                    $(this).callToast("success", "Thành công", "Đã thêm");
+                }
+            }
+            $(this).attr("disabled", false);
+        });
+
+        $('#btnLuuQuyenVB').on('click', function (e) {
+            var listRole = new Array()
+            tableVR.rows().every(function () {
+                var data = this.data();
+                var item = {};
+                item.PhanCap = data.phanCap;
+                item.DoiTuong = data.doiTuong;
+                item.LevelType = data.levelType;
+                item.DocID = data.docID;
+                item.UserType = data.userType;
+                item.DeptUserGroupID = data.dept_UserID;
+                item.HRMUserType = data.hrmUserType;
+                item.ReadR = data.readR;
+                item.PrintR = data.printR;
+                item.DownloadR = data.downloadR;
+                item.TenKhoaPhongNV = data.tenKhoaPhongNV;
+                listRole.push(item);
+            });
+            if (listRole.length > 0) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/PhanQuyen/Upsert_PhanQuyenVanBan',
+                    contentType: 'application/json; charset=UTF-8',
+                    dataType: "json",
+                    data: JSON.stringify(listRole),
+                    beforeSend: function () {
+                        $('#btnLuuQuyenVB').attr("disabled", true);
+                    },
+                    success: function (data) {
+                        $(this).callToast(data.result, data.title, data.message);
+                    },
+                    error: function (data) {
+                        $(this).callToast(data.result, data.title, data.message);
+                    },
+                    complete: function () {
+                        $('#btnLuuQuyenVB').attr("disabled", false);
+                    },
+                });
+            }
+            else {
+                $(this).callToast("info", "Thông báo", "Không có gì để lưu");
+            }
+            e.preventDefault();
+        });
+    });
+</script>

@@ -1,0 +1,117 @@
+﻿
+@{ ViewData["Title"] = "Văn bản nội bộ";
+    Layout = "~/Views/Shared/_Layout.cshtml"; }
+
+<style>
+    .tab-custom-content {
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .col-65 {
+        width: 65px;
+        padding-left: 7.5px;
+        padding-right: 7.5px;
+    }
+    .dataTables_length .custom-select {
+        padding: 0.375rem 1.75rem 0.375rem 0.75rem;
+    }
+</style>
+<div class="card">
+    <div class="card-body">
+        <div class="tab-custom-content"><label class="col-form-label col-12 text-center">Phân quyền theo vai trò hệ thống</label></div>
+        <table class="table table-bordered table-striped" width="100%" role="grid" id="tbListHRMUsers">
+            <thead class="thead">
+                <tr>
+                    <th class="text-wrap w-auto">STT</th>
+                    <th class="text-wrap w-auto">Mã nhân viên</th>
+                    <th class="text-wrap w-auto">Tên nhân viên</th>
+                    <th class="text-wrap w-auto">Phân quyền</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+@section Scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            var columnData = [
+                {
+                    "data": "id",
+                    "render": function (data, type, full, meta) {
+                        return parseInt(meta.row) + 1;
+                    },
+                },
+                { "data": "maNV" },
+                { "data": "hoTen" },
+                {
+                    "data": { userName: "userName" },
+                    "render": function (data, type, full, meta) {
+                        return '<button class="btn btn-outline-info btn-sm" data-toggle="phanquyenmodal" data-target="#modalVaiTroNguoiDung-' + meta.row + '" data-url="/PhanQuyen/VaiTroNguoiDung?UserName=' + data.userName + '&HoTen=' + data.hoTen + '&MaNV=' + data.maNV + '">Phân quyền</button>';
+                    },
+                },
+            ]
+
+            function tableQuyenHeThong(id, columnData, url) {
+
+                var table = $(id).DataTable();
+                if ($.fn.dataTable.isDataTable(id)) {
+                    table.destroy();
+                    $(id).find('thead .filters').remove();
+                    $(id).find('tbody').empty();
+                }
+                var table = $(id).DataTable({
+                    "paging": true,
+                    "lengthChange": true,
+                    "searching": true,
+                    "processing": true,
+                    "ordering": true,
+                    "info": true,
+                    "autoWidth": true,
+                    "responsive": true,
+                    "order": [[0, 'asc']],
+                    "columnDefs": [
+                        { "orderable": false, "targets": 'filters' },
+                        { "className": "text-wrap", "targets": "_all" },
+                        { "defaultContent": '', "targets": "_all" },
+                    ],
+                    "ajax": {
+                        "url": url,
+                        "type": "GET",
+                        "datatype": "json"
+                    },
+                    "columns": columnData,
+                    "language": {
+                        "sProcessing": "Đang tải dữ liệu...",
+                        "sLengthMenu": "Xem _MENU_ mục",
+                        "sZeroRecords": "Không tìm thấy dòng nào phù hợp",
+                        "sInfo": "Đang xem _START_ đến _END_ trong tổng số _TOTAL_ mục",
+                        "sInfoEmpty": "Đang xem 0 đến 0 trong tổng số 0 mục",
+                        "sInfoFiltered": "(được lọc từ _MAX_ mục)",
+                        "sInfoPostFix": "",
+                        "sSearch": "Tìm:",
+                        "sUrl": "",
+                        "oPaginate": {
+                            "sFirst": "Đầu",
+                            "sPrevious": "Trước",
+                            "sNext": "Tiếp",
+                            "sLast": "Cuối"
+                        }
+                    },
+
+                });
+                return table;
+            }
+
+            tableQuyenHeThong("#tbListHRMUsers", columnData, "/PhanQuyen/GetListHRMUsers");
+
+            $('body').on('click', 'button[data-toggle="phanquyenmodal"]', function (e) {
+                var url = $(this).data('url');
+                $(this).callModal(url);
+            });
+        });
+    </script>
+}
+

@@ -1,0 +1,99 @@
+﻿
+@{
+    ViewData["Title"] = "GoogleDocs";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="row">
+    <div class="col-6">
+        <div class="card card-primary">
+            <div class="card-header">
+                <h3 class="card-title">Tạo file Google Doc</h3>
+            </div>
+            <div class="card-body">
+                <form id="frmCreate">
+                    <div class="form-group">
+                        <label class="col-form-label">Tên File:</label>
+                        <input type="text" class="form-control" id="doctitle" name="doctitle" required />
+                        <label class="col-form-label">Email phân quyền:</label>
+                        <input type="text" class="form-control" id="email" name="email" required />
+                    </div>
+                </form>
+                <button class="btn btn-secondary" id="btnCreate">Tạo file</button>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="card card-primary">
+            <div class="card-header">
+                <h3 class="card-title">List Comments</h3>
+            </div>
+            <div class="card-body">
+                <form id="frmGet">
+                    <div class="form-group">
+                        <label class="col-form-label">File ID:</label>
+                        <input type="text" class="form-control" id="fileId" name="fileId" required />
+                        <label class="col-form-label">Comments:</label>
+                        <textarea rows="10" id="comments" class="form-control"></textarea>
+                    </div>
+                </form>
+                <button class="btn btn-secondary" id="btnGet">Lấy Comments</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script type="text/javascript">
+        $(document).on({
+            ajaxStart: function () { $(document.body).addClass("loading"); },
+            ajaxStop: function () { $(document.body).removeClass("loading"); }
+        });
+        $('body').on('click', '#btnCreate', function () {
+            var form = $("#frmCreate")
+            if (form[0].checkValidity() === true) {
+                var data = form.serialize();
+                $.ajax({
+                    type: 'POST',
+                    url: '/VanBan/CreateGoogleDocs',
+                    contentType: 'application/x-www-form-urlencoded; charset=UTF-8', // when we use .serialize() this generates the data in query string format. this needs the default contentType (default content type is: contentType: 'application/x-www-form-urlencoded; charset=UTF-8') so it is optional, you can remove it
+                    data: data,
+                    success: function (data) {
+                        window.open("https://docs.google.com/document/u/2/d/" + data.data.documentId + "/edit", "_blank")
+                    },
+                    error: function (data) {
+                        $(this).callToast();
+                    },
+                });
+            }
+            else {
+                event.preventDefault()
+                event.stopPropagation()
+                form.addClass('was-validated');
+            }
+        });
+
+        $('body').on('click', '#btnGet', function () {
+            var form = $("#frmGet")
+            if (form[0].checkValidity() === true) {
+                var data = form.serialize();
+                $.ajax({
+                    type: 'POST',
+                    url: '/VanBan/GetFileComments',
+                    contentType: 'application/x-www-form-urlencoded; charset=UTF-8', // when we use .serialize() this generates the data in query string format. this needs the default contentType (default content type is: contentType: 'application/x-www-form-urlencoded; charset=UTF-8') so it is optional, you can remove it
+                    data: data,
+                    success: function (data) {
+                        document.getElementById('comments').value = JSON.stringify(data.data, null, "\t");
+                    },
+                    error: function (data) {
+                        $(this).callToast();
+                    },
+                });
+            }
+            else {
+                event.preventDefault()
+                event.stopPropagation()
+                form.addClass('was-validated');
+            }
+        });
+    </script>
+}

@@ -1,0 +1,145 @@
+﻿@using WebTools.Models.ViewModel
+@model ThongKeVM
+@{
+    ViewData["Title"] = "Văn bản nội bộ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<input type="hidden" id="count" value="@Model.countBC" />
+@{
+    int i = 1;
+    foreach(var item in Model.ListBieuDo)
+    {
+    <div class="card row">
+        <input type="hidden" id="LoaiBC-@i" value="@item.LoaiBC" />
+        <div class="card-body d-flex justify-content-center">
+            <div style="width: 100%; max-height: 500px; border-style: groove;">
+                <canvas id="myChart-@i" style="width:fit-content; max-width:1000px;"></canvas>
+            </div>
+        </div>
+    </div>
+        i++;
+    }
+}
+@section Scripts{
+    <script type="text/javascript" src="~/lib/chart.js/Chart.min.js"></script>
+    <script type="text/javascript" src="~/lib/chart.js/chartjs-plugin-datalabels.min.js"></script>
+    <script type="text/javascript" src="~/lib/chart.js/chartjs-plugin-piechart-outlabels.min.js"></script>
+    <script type="text/javascript" src="~/js/randomColor.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(document).on({
+                ajaxStart: function () { $(document.body).addClass("loading"); },
+                ajaxStop: function () { $(document.body).removeClass("loading"); }
+            });
+            function CallDashboard(id, url) {
+                var options = {
+                    tooltips: {
+                        enabled: true
+                    },
+                    title: {
+                        display: true,
+                        text: '',
+                        position: 'bottom',
+                        fontSize: 20,
+                        padding: 50
+                    },
+                    responsive: true,
+                    layout: {
+                        padding: {
+                            left: 50,
+                            right: 50,
+                            top: 200,
+                            bottom: 50
+                        }
+                    },
+                    legend: {
+                        position: 'right',
+                    },
+                    animation: {
+                        animateScale: true,
+                        animateRotate: true
+                    },
+                    plugins: {
+                        datalabels: {
+                            display: false,
+                            color: 'white',
+                            font: {
+                                weight: 'bold'
+                            },
+                            padding: 6,
+                            formatter: (value, ctx) => {
+                                let datasets = ctx.chart.data.datasets;
+                                if (datasets.indexOf(ctx.dataset) === datasets.length - 1) {
+                                    let sum = datasets[0].data.reduce((a, b) => a + b, 0);
+                                    let percentage = Math.round((value / sum) * 100) + '%';
+                                    return percentage;
+                                } else {
+                                    return percentage;
+                                }
+                            },
+                        },
+                        outlabels: {
+                            text: '%l - Số lượng: %v Tỉ lệ: %p', //%l: Label | %p: Percent | %v: Value
+                            color: 'white',
+                            stretch: 20,
+                            font: {
+                                resizable: true,
+                                minSize: 12,
+                                maxSize: 18
+                            },
+                            borderWidth: 2,
+                            lineWidth: 2,
+                            padding: 3,
+                            textAlign: 'center',
+                            stretch: 15,
+                            valuePrecision: 1,
+                            percentPrecision: 2,
+                            zoomOutPercentage: 100,
+
+                        }
+                    },
+                };
+
+                var ctx = document.getElementById(id);
+                var myChart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: [],
+                        datasets: [{
+                            backgroundColor: [],
+                            data: [],
+                            borderWidth: 0,
+                        }]
+                    },
+                    options: options,
+                });
+                // function to update our chart
+                function ajax_chart(chart, urlAjax, data) {
+                    var data = data || {};
+                    $.ajax({
+                        type: 'GET',
+                        url: urlAjax
+                    }).done(function (data) {
+                        chart.data.labels = data.data.map(row => row.tenLoai);
+                        chart.data.datasets[0].data = data.data.map(row => row.soLuong);                       
+                        chart.data.datasets[0].backgroundColor = randomColor({
+                            //luminosity: 'black',
+                            count: data.data.map(row => row.data).length
+                        });;
+                        chart.options.title.text = data.data[0].tenBC;
+                        chart.update(); // finally update our chart
+                    });
+                }
+                ajax_chart(myChart, url);
+            }
+
+            var count = document.getElementById('count').value;
+            for (let i = 1; i <= parseInt(count); i++) {
+                var loaibc = document.getElementById('LoaiBC-' + i).value;
+                CallDashboard('myChart-' + i, '/ThongKe/Get_DashboardData?loaibc=' + loaibc)
+            }
+
+        });
+    </script>
+}
+

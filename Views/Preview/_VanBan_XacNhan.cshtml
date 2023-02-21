@@ -1,0 +1,56 @@
+﻿@using WebTools.Models.Entities
+@model PreviewVanBan
+
+<link rel="stylesheet" href="~/css/checkbox.css">
+<!-- Modal -->
+<div class="modal fade" id="modalVBXacNhan" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Đánh giá</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="frmVBXacNhan">
+                    <div class="d-flex justify-content-center">
+                        <label class="label-checkbox"><input type="checkbox" id="dadoc" />Xác nhận đã đọc</label>
+                        <input type="hidden" id="idvb" name="idvb" value="@Model.IDVB" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-save="xacnhan"><i class="fas fa-save"></i> Lưu</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('body #modalVBXacNhan').on('click', 'button[data-save="xacnhan"]', function () {
+            var form = $("#frmVBXacNhan")
+                var data = form.serialize();
+                $.ajax({
+                    type: 'POST',
+                    url: '/Preview/Send_ViewLog',
+                    contentType: 'application/x-www-form-urlencoded; charset=UTF-8', // when we use .serialize() this generates the data in query string format. this needs the default contentType (default content type is: contentType: 'application/x-www-form-urlencoded; charset=UTF-8') so it is optional, you can remove it
+                    data: data,
+                    beforeSend: function () {
+                        $('button[data-save="xacnhan"]').attr("disabled", true);
+                    },
+                    success: function (data) {
+                        $(this).callToast(data.result, data.title, data.message);
+                    },
+                    error: function (data) {
+                        $(this).callToast(data.result, data.title, data.message);
+                    },
+                    complete: function () {
+                        $('button[data-save="xacnhan"]').attr("disabled", false);
+                    },
+                });
+        });
+    });
+</script>

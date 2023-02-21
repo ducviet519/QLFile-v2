@@ -1,0 +1,49 @@
+﻿@using GleamTech.AspNet.Core
+@using GleamTech.DocumentUltimate.AspNet.UI
+@model WebTools.Models.DocumentViewModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>@Model.FileName</title>
+    @this.RenderHead(Model.DocumentViewer)
+    <link rel="stylesheet" href="~/css/like.css">
+    <style>
+        .dv-control {
+            width: 100% !important;
+            height: 790px !important;
+        }
+
+    </style>
+    <script type="text/javascript" src="~/lib/jquery/jquery.min.js"></script>
+    <script type="text/javascript">
+        function documentViewerLoaded(sender, e) {
+            var documentViewer = sender;
+            document.getElementById('iframeid').value = documentViewer.rcId;
+        }
+
+        function documentViewerPageChanged(sender, e) {
+            var documentViewer = sender;
+            document.getElementById('page').value = e.pageNumber;
+        }
+
+        function documentViewerPageRendered(sender, e) {
+            var documentViewer = sender;
+            document.getElementById('totalpage').value = e.pageNumber;
+        }
+
+        function page(sender, e) {
+            return e;
+        }
+    </script>
+</head>
+<body>
+    @this.RenderBody(Model.DocumentViewer)
+    <input type="hidden" id="iframeid" />
+    <input type="hidden" id="totalpage" />
+    <input type="hidden" id="page" />
+</body>
+</html>

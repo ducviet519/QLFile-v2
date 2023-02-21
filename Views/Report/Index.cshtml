@@ -1,0 +1,322 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
+@model WebTools.Models.ReportListViewModel
+
+@{
+    ViewData["Title"] = "Văn bản nội bộ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .col-120 {
+        width: 120px;
+        padding-left: 7.5px;
+        padding-right: 7.5px;
+    }
+
+    .col-150 {
+        width: 150px;
+        padding-left: 7.5px;
+        padding-right: 7.5px;
+    }
+
+    .col-160 {
+        width: 170px;
+        padding-left: 7.5px;
+        padding-right: 7.5px;
+    }
+
+    .col-200 {
+        width: 200px;
+        padding-left: 7.5px;
+        padding-right: 7.5px;
+    }
+
+    .col-250 {
+        width: 250px;
+        padding-left: 7.5px;
+        padding-right: 7.5px;
+    }
+
+    .col-350 {
+        width: 350px;
+        padding-left: 7.5px;
+        padding-right: 7.5px;
+    }
+</style>
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-12 text-center">
+                <h1>Danh sách biểu mẫu</h1>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6">
+                @{
+                    if (TempData["SuccessMsg"] != null)
+                    {
+                        <script type="text/javascript">
+                                window.onload = function () { toastr["success"]('@TempData["SuccessMsg"]');}
+                        </script>
+
+                    }
+                    if (TempData["ErrorMsg"] != null)
+                    {
+                        <script type="text/javascript">
+                                window.onload = function () { toastr["error"]('@TempData["ErrorMsg"]');}
+                        </script>
+                    }
+                }
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <!--Tìm kiếm -->
+                        <form asp-action="Index" asp-controller="Report" id="searchForm" method="post">
+                            <div class="row justify-content-between">
+                                <div class="form-group row col-auto">
+                                    <label class="col-form-label col-auto">Tên/Mã biểu mẫu:</label>
+                                    <input type="text" class="form-control col-350" name="SearchString" id="SearchString" data-press="search" />
+                                    <select id="search" class="form-control col-120 ml-1 p-0">
+                                        <option value="1" selected>Theo tên</option>
+                                        <option value="2">Theo nội dung</option>
+                                    </select>
+                                </div>
+                                <div class="form-group row col-auto">
+                                    <label class="col-form-label col-auto">Ngày ban hành:</label>
+                                    <div class="input-group date col-120" id="reservationdate" data-target-input="nearest">
+                                        <input type="text" id="SearchDate" name="SearchDate" class="form-control datetimepicker-input SearchDate" data-toggle="datetimepicker" data-target="#SearchDate" autocomplete="off" data-press="search" />
+                                    </div>
+                                </div>
+                                <div class="form-group row col-auto">
+                                    <label class="col-form-label col-auto">Loại văn bản:</label>
+                                    <div class="col-200">
+                                        <select class="form-control" data-placeholder="Chọn" style="width: 100%;" asp-items="@Model.Cabinnet" name="SearcCabinnet" id="SearcCabinnet" data-press="search">
+                                            <option value="0" selected>Tất cả</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row justify-content-between">
+                                <div class="form-group row col-auto">
+                                    <label class="col-form-label col-auto">URD (Quy trình vận hành):</label>
+                                    <div class="col-auto" style="max-width:350px;">
+                                        <select class="form-control selectURD2" multiple="multiple" data-placeholder="Chọn" style="width: 100%;" asp-items="@Model.URDs" name="SearchURD" id="SearchURD" data-press="search"></select>
+                                        <input type="hidden" id="txtURD" name="txtURD" />
+                                    </div>
+                                </div>
+                                <div class="form-group row col-auto">
+                                    <label class="col-form-label col-auto">Trạng thái:</label>
+                                    <div class="col-auto">
+                                        <select id="SearchTrangThaiSD" class="form-control col-auto" data-press="search">
+                                            <option value="0" selected>Tất cả</option>
+                                            <option value="1">Đang sử dụng</option>
+                                            <option value="2">Chưa ban hành</option>
+                                            <option value="3">Đã hủy</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group row col-auto">
+                                    <label class="col-form-label col-auto">Trạng thái phần mềm:</label>
+                                    <div class="col-auto">
+                                        <select id="SearchTrangThaiPM" class="form-control col-auto" data-press="search">
+                                            <option value="0" selected>Tất cả</option>
+                                            <option value="1">Đã hoàn thành</option>
+                                            <option value="2">Chưa hoàn thành</option>
+                                            <option value="3">Chưa có</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row col-auto">
+                                    <div class="col-auto"><button type="button" class="btn btn-primary" id="btnSearch">Tìm kiếm</button></div>
+                                    @*@if (User.IsInRole("Editer") || User.IsInRole("Manager") || User.IsInRole("Admin"))*@
+                                    @if ((AuthorizationService.AuthorizeAsync(User, "Permission.Reports.Add")).Result.Succeeded)
+                                    {
+                                        <div class="col-auto"><button type="button" class="btn btn-success" data-toggle="ajax-modal" data-target="#addReport" data-url="@Url.Action("AddReport")">Thêm biểu mẫu</button></div>
+                                    }  
+                                    <div class="col-auto"><button type="button" class="btn btn-success" data-toggle="ajax-modal" data-target="#addReport" data-url="@Url.Action("AddReport")">Thêm biểu mẫu</button></div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card-body">
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <div class="row justify-content-end">
+                                <div class="col">
+                                    <a class="btn btn-primary" href="/ExportExcel/DanhSachBieuMauExcel">Xuất Excel Danh sách Biểu mẫu</a>
+                                </div>
+                            </div>
+                        }
+                        <!--Bảng biểu mẫu -->
+                        <div class="dataTables_wrapper dt-bootstrap4">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <table class="table table-striped table-bordered table-responsive nowrap" width="100%" role="grid" id="tableReport">
+                                        <thead class="thead">
+                                            <tr>
+                                                <th>STT</th>
+                                                <th>Tên biểu mẫu</th>
+                                                <th>Mã biểu mẫu</th>
+                                                <th>Phiên bản</th>
+                                                <th>Ngày phát hành</th>
+                                                <th>Trạng thái</th>
+                                                <th>Phần mềm</th>
+                                                <th>Trạng thái phần mềm</th>
+                                                <th>Ký số</th>
+                                                <th>Ký điện tử</th>
+                                                <th>Ký tay</th>
+                                                <th>HSBA Điện tử</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="ReportPopup"></div>
+</section>
+
+@section Scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(document).on({
+                ajaxStart: function () { $(document.body).removeClass("loading"); }
+            });
+            $('#SearchDate').datetimepicker({ format: 'DD/MM/YYYY', locale: 'vi' });
+
+            var string = $('#txtURD').val();
+            var array = string.split(",").map(Number);
+            //Dropdown
+            $('.selectURD2').select2()
+            $('#SearchURD').val(array);
+            $('#SearchURD').trigger('change');
+
+            var showVersion = ((document.getElementById("showVersion") || {}).value) || "";
+            var showSofts = ((document.getElementById("showSofts") || {}).value) || "";
+            var showDetails = ((document.getElementById("showDetails") || {}).value) || "";
+            var showReport = ((document.getElementById("showReport") || {}).value) || "";
+            var deleteReport = ((document.getElementById("deleteReport") || {}).value) || "";
+            var columnData = [
+                { "data": "stt", "orderable": "false", "class": "text-center"},
+                {
+                    "data": { tenBM: "tenBM", fileLink: "fileLink", idBieuMau: "idBieuMau"},
+                    "render": function (data, row) {
+                        if (data.fileLink === null || data.fileLink === "null") {
+                            return data.tenBM;
+                        }
+                        else {
+                            //var file = "<a class='btn btn-link pl-0 pr-0' data-toggle='ajax-modal' data-target='#documentView-" + data.idPhienBan + "' data-url='/Report/PopUpDocumentView?link=" + data.idPhienBan + "'>Preview</a>";
+                            return "<a class='btn btn-link p-0 text-left' href='/Preview/VanBan?file=" + data.idBieuMau + "' target='_blank'>" + data.tenBM + "</a>";
+                        }
+                    },
+                    "width": "100%"
+                },
+                { "data": "maBM" },
+                { "data": "phienBan", "class": "text-center" },
+                { "data": "ngayBanHanh", "class": "text-center" },
+                { "data": "trangThai", "class": "text-center" },
+                { "data": "phanMem", "class": "text-center" },
+                { "data": "trangThaiPM", "class": "text-center" },
+                { "data": "kySo", "class": "text-center" },
+                { "data": "kyDienTu", "class": "text-center" },
+                { "data": "kyTay", "class": "text-center" },
+                { "data": "hsbaDienTu", "class": "text-center" },
+
+                {
+                    "data": { idBieuMau: "idBieuMau", idPhienBan: "idPhienBan" },
+                    "render": function (data, row) {                        
+                        var software = "<a class='dropdown-item' data-toggle='ajax-modal' data-target='#reportSoft-" + data.idBieuMau + "' data-url='/Report/Soft?id=" + data.idBieuMau + "'>Phần mềm</a>";
+                        var detail = "<a class='dropdown-item' data-toggle='ajax-modal' data-target='#reportDetail-" + data.idBieuMau + "' data-url='/Report/Detail?id=" + data.idBieuMau + "'>Chi tiết</a>";
+                        var dropmenu = "<button type='button' class='btn btn-link dropdown-toggle' data-toggle='dropdown'>Chi tiết</button ><div class='dropdown-menu' role='menu'>" + software + " " + detail + "</div>";
+                        var result = "<div class='btn-group'>" + dropmenu + "</div>";
+                        return result;
+                    }
+                },
+            ]
+            searchDataTableWithInput("#tableReport", columnData, "/Report/SearchReportList?loai=1&searcCabinnet=0", 10, "0,8,9,10,11,12", 8);
+
+            $('[data-press="search"]').on('keypress', function (event) {
+                if (event.key === 'Enter' || event.keyCode === 13) {
+                    searchTable();
+                }
+            });
+
+            $('#btnSearch').on('click', function () {
+                searchTable();
+            });
+            function searchTable() {
+                var loai = $("#search").val() || "";
+                var searchString = ((document.getElementById("SearchString") || {}).value) || "";
+                var searchDate = ((document.getElementById("SearchDate") || {}).value) || "";
+                var searchTrangThaiSD = $("#SearchTrangThaiSD").val() || "";
+                var searchTrangThaiPM = $("#SearchTrangThaiPM").val() || "";
+                var searchURD = $("#SearchURD").val() || "";
+                var searcCabinnet = $("#SearcCabinnet").val() || "";
+
+                if (loai === "2" && searchString === "") { loai = "1" }
+                var searchTerm = "loai=" + loai;
+                if ($.trim(searchString) != "")
+                    searchTerm += "&searchString=" + encodeURIComponent($.trim(searchString));
+                if (searchDate != "")
+                    searchTerm += "&searchDate=" + searchDate;
+                if (searchTrangThaiSD != "")
+                    searchTerm += "&searchTrangThaiSD=" + searchTrangThaiSD;
+                if (searchTrangThaiPM != "")
+                    searchTerm += "&searchTrangThaiPM=" + searchTrangThaiPM;
+                if (searchURD != "")
+                    searchTerm += "&searchURD=" + searchURD;
+                if (searcCabinnet != "")
+                    searchTerm += "&searcCabinnet=" + searcCabinnet;
+
+                searchDataTableWithInput("#tableReport", columnData, "/Report/SearchReportList?" + searchTerm, 10, "0,8", 8);
+            }
+
+            $('body').on('click', 'a[data-toggle="delete"]', function (event) {
+                var url = $(this).data('url');
+                var result = confirm("Bạn có chắc chắn muốn xóa biểu mẫu này?");
+                if (result) {
+                    $.ajax({
+                        type: 'POST',
+                        url: url,
+                        success: function (data) {
+                            $(this).callToast(data.result, data.title, data.message);
+                            searchDataTableWithInput("#tableReport", columnData, "/Report/SearchReportList?loai=1&searcCabinnet=0", 10, "0,8,9,10,11,12", 8);
+                        },
+                        error: function (data) {
+                            $(this).callToast(data.result, data.title, data.message);
+                        }
+                    });
+                }
+
+            });
+           
+            $('body .dropdown-menu').on('click', 'a[data-toggle="ajax-modal"]', function (event) {
+                var url = $(this).data('url');
+                $(this).callModal(url);
+            });
+            $('body').on('click', 'button[data-toggle="ajax-modal"]', function (event) {
+                var url = $(this).data('url');
+                $(this).callModal(url);
+            });
+            
+            //$(document).on('hidden.bs.modal','#Popup', function (e) {
+            //    searchDataTableWithInput("#tableReport", columnData, "/Report/SearchReportList", 10, "0,8,9,10,11,12", 8);
+            //});
+        });
+    </script>
+}
+
+
+

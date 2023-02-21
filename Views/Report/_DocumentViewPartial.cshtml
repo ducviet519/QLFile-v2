@@ -1,0 +1,28 @@
+﻿@using GleamTech.AspNet.Core
+@using GleamTech.DocumentUltimate.AspNet.UI
+@model WebTools.Models.DocumentViewModel
+<div class="modal fade bd-example-modal-xl" tabindex="-1" role="dialog" aria-labelledby="@Model.FileName" aria-hidden="true" id="documentview">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-file-alt"></i> Đang xem file: @Model.FileName</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" style="color:white">&times;&nbsp;</span>
+                </button>
+
+            </div>
+            <div class="modal-body">
+                @this.RenderHead(Model.DocumentViewer)
+                <style>
+                    .dv-control {
+                        width: 100% !important;
+                        /*height: 1500px !important;*/
+                    }
+                </style>
+                @this.RenderBody(Model.DocumentViewer)
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>

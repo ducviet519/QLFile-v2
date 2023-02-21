@@ -1,0 +1,315 @@
+﻿@using WebTools.Models.ViewModel
+@model PhanQuyenVM
+<style>
+    .tab-custom-content {
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .col-65 {
+        width: 105px;
+        padding-left: 7.5px;
+        padding-right: 7.5px;
+    }
+
+    td .form-check {
+        display: flex;
+        justify-content: center;
+    }
+
+    #tbModulePhanMem tbody tr.selected {
+        color: unset !important;
+        background-color: unset !important;
+    }
+</style>
+<link rel="stylesheet" type="text/css" href="~/css/checkbox.css">
+<!-- Modal -->
+<div class="modal fade bd-example-modal-xl" id="modalModulePhanMem" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"><i class="fas fa-user"></i> Chỉnh sửa tính năng nhóm quyền: @Model.Role.RoleName</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-7">
+                        <div class="tab-custom-content"><label class="col-form-label col-12 text-center">Danh sách chức năng phần mềm</label></div>
+                            <table class="table table-bordered" id="tbModulePhanMem" width="100%">
+                                <thead class="thead">
+                                    <tr>
+                                        <th class="w-auto">STT</th>
+                                        <th class="w-auto">Area</th>
+                                        <th class="w-25">Tên chức năng</th>
+                                        <th class="w-50">Mô tả</th>
+                                        <th class="w-auto">Chọn</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        <input type="hidden" id="RoleID" name="RoleID" value="@Model.Role.RoleID" />
+                        <div class="row d-flex justify-content-center">
+                            <button type="button" class="btn btn-success" id="btnSavePermission"><i class="fas fa-save"></i> Lưu quyền</button>
+                        </div>
+                    </div>
+                    <div class="col-5">
+                        <div class="tab-custom-content"><label class="col-form-label col-12 text-center">Thêm chức năng</label></div>
+                        <form id="frmModulePhanMem" method="post">
+                            <div class="form-group row">
+                                <label for="txtSearch" class="col-form-label col-65">Area:</label>
+                                <div class="col">
+                                    <select class="custom-select custom-select-sm col" id="Area" name="Area" asp-items="@Model.Area" multiple select2="roles">
+                                        <option></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="txtSearch" class="col-form-label col-65">Tên chức năng:</label>
+                                <div class="col">
+                                    <input type="text" class="form-control" id="PermissionName" name="PermissionName" required />
+                                    <input type="hidden" class="form-control" id="PermissionKey" name="PermissionKey" />
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="txtSearch" class="col-form-label col-65">Mô tả:</label>
+                                <div class="col">
+                                    <textarea class="form-control" id="Description" name="Description" rows="3"></textarea>
+                                </div>
+                            </div>
+                            <div class="row d-flex justify-content-center">
+                                <button type="button" class="btn btn-success" id="btnAddModule"><i class="fas fa-plus"></i> Thêm chức năng</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="~/js/convert-vie.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('select[select2="roles"]').select2({
+            minimumResultsForSearch: Infinity,
+            placeholder: "Chọn",
+            allowClear: true
+        });
+        $('select[select2="roles"]').val('@Model.Role.RoleName').trigger('change');
+
+        var columnData = [
+            {
+                "data": {},
+                "render": function (data, type, full, meta) {
+                    return parseInt(meta.row) + 1;
+                },
+            },
+            {
+                "data": { area: "area" },
+                "render": function (data, type, full, meta) {
+                    var list = data.area.split(",");
+                    var result = '';
+                    for (const item of list) {
+                        result += '<span class="badge bg-primary">' + item + '</span>';
+                    }
+                    return result;
+                },
+                "visible": false
+            },
+            { "data": "permissionName" },
+            { "data": "description" },
+            { "data": "permissionID" },
+        ]
+
+        function tableModulePhanMem(id, columnData, url) {
+
+            var table = $(id).DataTable();
+            if ($.fn.dataTable.isDataTable(id)) {
+                table.destroy();
+                $(id).find('thead .filters').remove();
+                $(id).find('tbody').empty();
+            }
+            var table = $(id).DataTable({
+                "scrollY": '370px',
+                "scrollCollapse": true,
+                "paging": false,
+                "lengthChange": false,
+                "searching": true,
+                "processing": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": true,
+                "responsive": true,
+                "order": [[0, 'asc']],
+                "ajax": {
+                    "url": url,
+                    "type": "GET",
+                    "datatype": "json"
+                },
+                "columns": columnData,
+                'rowGroup': {
+                    'dataSrc': 'area',
+                    'startRender': function (rows, group) {
+                        // Assign class name to all child rows
+                        var item = group.split(",");
+                        var groupName = 'group-' + item[0].replace(/[^A-Za-z0-9]/g, '');
+                        var rowNodes = rows.nodes();
+                        rowNodes.to$().addClass(groupName);
+                        return '<label>' + item[0] + '(' + rows.count() + ')</label>';
+                    }
+                },
+                "columnDefs": [
+                    { "orderable": false, "targets": 'filters' },
+                    { "className": "text-wrap", "targets": "_all" },
+                    { "defaultContent": '', "targets": "_all" },
+                    {
+                        "targets": 4,
+                        "checkboxes": { "selectRow": true },
+                    }
+                ],
+                "select": {
+                    "style": "multi",
+                    "selector": '.dt-checkboxes'
+                },
+                "language": {
+                    "sProcessing": "Đang tải dữ liệu...",
+                    "sLengthMenu": "Xem _MENU_ mục",
+                    "sZeroRecords": "Không tìm thấy dòng nào phù hợp",
+                    "sInfo": "Đang xem _START_ đến _END_ trong tổng số _TOTAL_ mục",
+                    "sInfoEmpty": "Đang xem 0 đến 0 trong tổng số 0 mục",
+                    "sInfoFiltered": "(được lọc từ _MAX_ mục)",
+                    "sInfoPostFix": "",
+                    "sSearch": "Tìm:",
+                    "sUrl": "",
+                    "oPaginate": {
+                        "sFirst": "Đầu",
+                        "sPrevious": "Trước",
+                        "sNext": "Tiếp",
+                        "sLast": "Cuối"
+                    }
+                },
+                'initComplete': function (settings) {
+                    var api = this.api();
+
+                    api.cells(
+                        api.rows(function (idx, data, node) {
+                            return (data.status === '1' || data.status === 1) ? true : false;
+                        }).indexes(),
+                        4
+                    ).checkboxes.select();
+                },
+            });
+            return table;
+        }
+
+        var table = tableModulePhanMem("#tbModulePhanMem", columnData, "/PhanQuyen/GetListPermission?roleID=@Model.Role.RoleID&roleName=@Model.Role.RoleName")
+
+        $('body #modalModulePhanMem').on('input propertychange change paste', '#PermissionName', function () {
+            var name = document.getElementById('PermissionName').value;
+            var group = $('#Area').find('option:selected').text();
+            function ucwords(str) {
+                return (str + '').replace(/^([a-z])|\s+([a-z])/g, function ($1) {
+                    return $1.toUpperCase();
+                });
+            }
+            document.getElementById('PermissionKey').value = 'Permission.' + ucwords(removeVietnameseTones(name)).replace(/[^a-zA-Z]/g, '').replace(/ /g, '');
+        });
+
+        $('#modalModulePhanMem').on('shown.bs.modal', function (e) {
+            $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();
+        });
+
+        $('body #modalModulePhanMem').on('click', '#btnAddModule', function () {
+            var form = $("#frmModulePhanMem");
+            if (form[0].checkValidity() === true) {
+                var permissionname = document.getElementById('PermissionName').value;
+                var exists = !! ~document.getElementById('tbModulePhanMem').innerHTML.indexOf(permissionname);
+                if (exists) {
+                    $(this).callToast("info", "Thông báo!", "Nhóm: <b> " + permissionname + " </b>đã tồn tại. Vui lòng sử dụng tên khác");
+                }
+                else {
+                    var data = form.serialize();
+                    $.ajax({
+                        type: 'POST',
+                        url: '/PhanQuyen/AddPermission',
+                        contentType: 'application/x-www-form-urlencoded; charset=UTF-8', // when we use .serialize() this generates the data in query string format. this needs the default contentType (default content type is: contentType: 'application/x-www-form-urlencoded; charset=UTF-8') so it is optional, you can remove it
+                        data: data,
+                        beforeSend: function () {
+                            $('#btnAddRoleUser').attr("disabled", true);
+                        },
+                        success: function (data) {
+                            if (data.success === "OK") {
+                                $(this).callToast("success", "Thành công", "Đã thêm chức năng mới");
+                                tableModulePhanMem("#tbModulePhanMem", columnData, "/PhanQuyen/GetListPermission?roleID=@Model.Role.RoleID&roleName=@Model.Role.RoleName")
+                            }
+                            else {
+                                $(this).callToast("error", "Lỗi!", "Gặp sự cố khi thêm chức năng");
+                            }
+
+                        },
+                        error: function (data) {
+                            $(this).callToast("error", "Lỗi!", "Gặp sự cố khi thêm chức năng");
+                        },
+                        complete: function () {
+                            $('#btnAddRoleUser').attr("disabled", false);
+                        },
+                    });
+                }
+            }
+            else {
+                event.preventDefault()
+                event.stopPropagation()
+                form.addClass('was-validated');
+            }
+        });
+
+        $('body #modalModulePhanMem').on('click', '#btnSavePermission', function () {
+            var roleID = document.getElementById('RoleID').value;
+            var table = $('#tbModulePhanMem').DataTable()
+            var rows = table.rows({ selected: true }).data();
+            var listPermission = new Array();            
+            if (rows.length > 0) {
+                $.each(rows, function (index, value) {
+                    var permission = {};
+                    permission.RoleID = roleID;
+                    permission.PermissionID = value.permissionID;
+                    permission.Status = "1";
+                    listPermission.push(permission);
+                });
+            }
+            else {
+                var permission = {};
+                permission.PermissionID = value.permissionID;
+                listPermission.push(permission);
+            }
+            function SendAjax() {
+                $.ajax({
+                    type: 'POST',
+                    url: '/PhanQuyen/Upsert_PermissionsInRole',
+                    contentType: 'application/json; charset=UTF-8',
+                    dataType: "json",
+                    data: JSON.stringify(listPermission),
+                    beforeSend: function () {
+                        $('#btnSaveVaiTro').attr("disabled", true);
+                    },
+                    success: function (data) {
+                        $(this).callToast(data.result, data.title, data.message);
+                        tableModulePhanMem("#tbModulePhanMem", columnData, "/PhanQuyen/GetListPermission?roleID=@Model.Role.RoleID&roleName=@Model.Role.RoleName")
+                    },
+                    error: function (data) {
+                        $(this).callToast(data.result, data.title, data.message);
+                    },
+                    complete: function () {
+                        $('#btnSaveVaiTro').attr("disabled", false);
+                    },
+                });
+            }
+            SendAjax()
+        });
+    });
+</script>
+

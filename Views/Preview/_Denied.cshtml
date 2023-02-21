@@ -1,0 +1,56 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>View_Denied</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        p {
+            margin: 0;
+            font-size: 30px;
+            text-align: center;
+            color: red;
+        }
+
+        .layout-navbar-fixed .wrapper .content-wrapper {
+            margin-top: 50px;
+        }
+
+        .error-page > .error-content {
+            margin-left: 50px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="content-wrapper">
+        <!-- Main content -->
+        <section class="content">
+            <div class="error-page">
+                <br />
+                <div class="col">
+                    <div class="error-content text-center" style="font-size:14px; font-weight:bold">
+                        <p>
+                            Bạn không có quyền xem văn bản này.<br />Vui lòng liên hệ phòng IT - 8555
+                        </p>
+                    </div>
+                </div>
+                <div class="col"><img src="/images/403-error-forbidden.svg" alt="error-unauthorized" /></div>
+                <!-- /.error-content -->
+            </div>
+            <!-- /.error-page -->
+        </section>
+        <!-- /.content -->
+    </div>
+</body>
+</html>

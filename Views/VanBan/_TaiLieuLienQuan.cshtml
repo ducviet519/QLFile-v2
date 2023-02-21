@@ -1,0 +1,214 @@
+﻿<style>
+    .tab-custom-content {
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .col-70 {
+        width: 86px;
+        padding-left: 7.5px;
+        padding-right: 7.5px;
+    }
+
+    .modal-xl {
+        width: 1280px !important;
+        max-width: 1280px !important;
+    }
+
+    .bg-snow {
+        background-color: snow !important;
+        color: black !important;
+    }
+
+    td .form-check {
+        display: flex;
+        justify-content: center;
+    }
+</style>
+<!-- Modal -->
+<div class="modal fade bd-example-modal-xl" id="modalTaiLieuLienQuan" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"> Tài liệu liên quan</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card-body m-0 p-0">
+                            <div class="fieldset">
+                                <h1>Chọn văn bản liên kết:</h1>
+                                <div class="row col-12">
+                                    <select class="form-control" id="vanban" name="vanban" select2="tenvanban"></select>
+                                </div>
+                                <div class="row d-flex justify-content-center col-12 mt-2">
+                                    <button type="button" class="btn btn-success" id="btnAddRow"><i class="fas fa-user-plus"></i> Thêm văn bản</button>
+                                </div>
+                            </div>
+                        </div>
+                        <h3>Danh sách tài liệu liên quan</h3>
+                        <table class="table table-bordered table-striped" id="tbTaiLieuLienQuan" width="100%">
+                            <thead class="thead">
+                                <tr>
+                                    <th class="w-auto">STT</th>
+                                    <th class="w-50">Tên văn bản</th>
+                                    <th class="w-auto">Mã văn bản</th>
+                                    <th class="w-auto">ID</th>
+                                    <th class="w-auto no-order">Tiện ích</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+                <div class="" style="display:none;">
+                    <input type="hidden" id="TenVB" />
+                    <input type="hidden" id="MaVB" />
+                    <input type="hidden" id="IDVB" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-save="themvblienquan">Lưu</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('select[select2="tenvanban"]').select2({
+            dropdownParent: $('#modalTaiLieuLienQuan'),
+            ajax: {
+                url: '/DanhMuc/Get_Select_TenVanBan',
+                dataType: 'json',
+                data: function (params) {
+                    return {
+                        term: params.term,
+                        page: params.page || 1
+                    };
+                },
+                processResults: function (data, params) {
+                    params.page = params.page || 1;
+                    return {
+                        results: $.map(data.data, function (item) {
+                            return {
+                                id: item.id,
+                                text: item.maVB + '|' + item.tenVB,
+                            }
+                        }),
+                        pagination: {
+                            more: params.page < data.data.length
+                        }
+                    };
+                },
+                cache: true
+            },
+            placeholder: 'Chọn văn bản cần thêm',
+            allowClear: true,
+            //minimumInputLength: 1,
+            width: "100%",
+            language: "vi",
+            templateResult: function (option) {
+                if (option.loading) {
+                    return option.text;
+                }
+                var item = option.text.split('|');
+                var ob = jQuery(
+                    '<div class="row justify-content-between">' +
+                    '<div class="col-2">' + item[0] + '</div>' +
+                    '<div class="col-10 text-wrap">' + item[1] + '</div>' +
+                    '</div>');
+                return ob;
+            },
+            templateSelection: function (option) {
+                var item = option.text.split('|');
+                return item[1];
+            }
+        });
+
+        $('select[select2="tenvanban"]').on('select2:select', function (e) {
+            var data = e.params.data;
+            var item = data.text.split("|");
+            document.getElementById('IDVB').value = data.id;
+            document.getElementById('MaVB').value = item[0];
+            document.getElementById('TenVB').value = item[1];
+        });
+
+        var table = $('#tbTaiLieuLienQuan').DataTable({
+            "paging": true,
+            "lengthChange": true,
+            "searching": true,
+            "processing": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": true,
+            "responsive": true,
+            "order": [[0, 'asc']],
+            "columnDefs": [
+                { "orderable": false, "targets": 'no-order' },
+                { "className": "text-wrap", "targets": "_all" },
+                { "defaultContent": '', "targets": "_all" },
+            ],
+            "language": {
+                "sProcessing": "Đang tải dữ liệu...",
+                "sLengthMenu": "Xem _MENU_ mục",
+                "sZeroRecords": "Không tìm thấy dòng nào phù hợp",
+                "sInfo": "Đang xem _START_ đến _END_ trong tổng số _TOTAL_ mục",
+                "sInfoEmpty": "Đang xem 0 đến 0 trong tổng số 0 mục",
+                "sInfoFiltered": "(được lọc từ _MAX_ mục)",
+                "sInfoPostFix": "",
+                "sSearch": "Tìm:",
+                "sUrl": "",
+                "oPaginate": {
+                    "sFirst": "Đầu",
+                    "sPrevious": "Trước",
+                    "sNext": "Tiếp",
+                    "sLast": "Cuối"
+                }
+            },
+        });
+
+        table.column(3).visible(false);
+
+        var clicks = 0;
+        $("#btnAddRow").on('click', function () {
+            clicks++;
+            var IDVB = ((document.getElementById("IDVB") || {}).value) || "";
+            var MaVB = ((document.getElementById("MaVB") || {}).value) || "";
+            var TenVB = ((document.getElementById("TenVB") || {}).value) || "";
+            var exists = !! ~document.getElementById('tbTaiLieuLienQuan').innerHTML.indexOf(TenVB);
+            if (exists) {
+                $(this).callToast("info", "Thông báo!", "Văn bản:<b> " + TenVB + "</b> đã tồn tại.");
+            }
+            else {
+                var rowNode = table.row.add([
+                    clicks, TenVB, MaVB, IDVB,
+                    '<button id="deleteVB" class="btn btn-link btn-sm">Xóa</button>'
+                ]).node().id = 'rowID-' + clicks;
+                table.draw(false);                
+                $(this).callToast("success", "Thành công", "Đã thêm văn bản: " + TenVB);
+            }
+        });
+        $('#tbTaiLieuLienQuan').on('click', '#deleteVB', function () {
+            var row = $(this).parents('tr');
+
+            if ($(row).hasClass('child')) {
+                table.row($(row).prev('tr')).remove().draw();
+            } else {
+                table
+                    .row($(this).parents('tr'))
+                    .remove()
+                    .draw();
+            }
+            $(this).callToast("success", "Thành công", "Đã xóa văn bản");
+        });
+        $('#modalTaiLieuLienQuan').on('click', 'data-save="themvblienquan"', function () {
+            var data = table.rows().data();
+        });
+
+    });
+</script>

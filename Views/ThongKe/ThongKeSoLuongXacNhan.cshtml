@@ -1,0 +1,327 @@
+﻿@using WebTools.Models.ViewModel
+@model ThongKeVanBanVM
+@{ ViewData["Title"] = "Văn bản nội bộ";
+    Layout = "~/Views/Shared/_Layout.cshtml"; }
+<style>
+    .fieldset {
+        position: relative;
+        border: 1px solid #ddd;
+        padding: 10px;
+        width: 100%;
+    }
+
+        .fieldset h1 {
+            position: absolute;
+            top: 0;
+            font-size: 14px;
+            line-height: 1;
+            margin: -9px 0 0; /* half of font-size */
+            background: #fff;
+            padding: 0 3px;
+        }
+
+    .col-200 {
+        width: 200px;
+    }
+
+    .col-120 {
+        width: 120px;
+        padding-left: 7.5px;
+        padding-right: 7.5px;
+    }
+
+    .col-130 {
+        width: 130px;
+        padding-left: 7.5px;
+        padding-right: 7.5px;
+    }
+
+    .col-95 {
+        width: 95px;
+        padding-left: 7.5px;
+        padding-right: 7.5px;
+    }
+
+    .col-75 {
+        width: 75px;
+        padding-left: 7.5px;
+        padding-right: 7.5px;
+    }
+
+    .col-flex-2 {
+        flex: 0 0 15%;
+        max-width: 15%;
+    }
+
+    .search-panel {
+        cursor: pointer;
+    }
+
+    .panel-vanban {
+        width: 100%;
+        height: contain;
+        min-height: 550px;
+        max-height: 850px;
+    }
+
+    .select2-container .select2-selection {
+        height: calc(2rem + 2px) !important;
+        padding-top: 0.25rem;
+        padding-bottom: 0.25rem;
+        padding-left: 0.5rem;
+        border-radius: 0 !important;
+    }
+
+    .dataTables_filter {
+        display: none;
+    }
+</style>
+<div class="invoice p-3 mb-3">
+    <h2 class="text-center">Báo cáo thống kê Chi tiết Theo số lượng xác nhận</h2>
+</div>
+<div class="invoice p-3 mb-3">
+    <div class="row d-flex justify-content-center">
+        <div class="fieldset ml-1 mr-1 mt-3 mb-3">
+            <h1 class="search-panel">Chức năng tìm kiếm</h1>
+            <div class="search-advance">
+                <form id="frmThongKeSoLuongXacNhan">
+                    <div class="row">
+                        <div class="form-group row col-4">
+                            <label class="col-130 col-form-label"> Ngày ban hành: </label>
+                            <input type="text" id="tungay" name="tungay" class="form-control form-control-sm datetimepicker-input col rounded-0" data-toggle="datetimepicker" data-target="#tungay" autocomplete="off" data-timepicker="date">
+                            <label class="col-auto col-form-label"> - </label>
+                            <input type="text" id="denngay" name="denngay" class="form-control form-control-sm datetimepicker-input col rounded-0" data-toggle="datetimepicker" data-target="#denngay" autocomplete="off" data-timepicker="date">
+                        </div>
+                        <div class="form-group row col-4">
+                            <label class="col-130 col-form-label ml-3"> Ngày XN đọc: </label>
+                            <input type="text" id="tungay" name="tungay" class="form-control form-control-sm datetimepicker-input col rounded-0" data-toggle="datetimepicker" data-target="#tungay" autocomplete="off" data-timepicker="date">
+                            <label class="col-auto col-form-label"> - </label>
+                            <input type="text" id="denngay" name="denngay" class="form-control form-control-sm datetimepicker-input col rounded-0" data-toggle="datetimepicker" data-target="#denngay" autocomplete="off" data-timepicker="date">
+                        </div>
+                        <div class="form-group row col-4">
+                            <label class="col-130 col-form-label ml-3"> Ngày XN hiểu: </label>
+                            <input type="text" id="tungay" name="tungay" class="form-control form-control-sm datetimepicker-input col rounded-0" data-toggle="datetimepicker" data-target="#tungay" autocomplete="off" data-timepicker="date">
+                            <label class="col-auto col-form-label"> - </label>
+                            <input type="text" id="denngay" name="denngay" class="form-control form-control-sm datetimepicker-input col rounded-0" data-toggle="datetimepicker" data-target="#denngay" autocomplete="off" data-timepicker="date">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group row col-4">
+                            <label for="txtSearch" class="col-form-label col-130">Đối tượng áp dụng:</label>
+                            <select class="custom-select custom-select-sm col rounded-0" id="DoiTuongApDung" name="DoiTuongApDung" select2="doituong"></select>
+                        </div>
+                        <div class="form-group row col-4">
+                            <label for="txtSearch" class="col-form-label col-130 ml-3">Loại văn bản:</label>
+                            <div class="col">
+                                <select class="custom-select custom-select-sm col rounded-0" id="LoaiVB" name="LoaiVB" select2="loaivanban"></select>
+                            </div>
+                        </div>
+                        <div class="form-group row col-4">
+                            <label for="txtSearch" class="col-form-label col-130 ml-3">Đơn vị áp dụng:</label>
+                            <select class="custom-select custom-select-sm col rounded-0" id="DonViApDung" name="DonViApDung" select2="depts"></select>
+                        </div>
+                    </div>
+                </form>
+                <div class="row d-flex justify-content-center">
+                    <button type="button" class="btn btn-primary btn-flat ml-3" data-toggle="search"><i class="fas fa-search"></i> Tìm kiếm</button>
+                    <div class="" id="btn-export"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <table class="table table-bordered table-striped" width="100%" id="tbThongKeXacNhan">
+        <thead class="thead">
+            <tr>
+                <th>STT</th>
+                <th>Tên văn bản</th>
+                <th>Mã văn bản</th>
+                <th>Số lượng đọc</th>
+                <th>Số lượng hiểu</th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr class="tfoot">
+                <td colspan="3"></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </tfoot>
+    </table>
+
+</div>
+@section Scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.search-panel').click(function (e) {
+                $('.search-advance').toggle(500);
+            });
+
+            function selectList(selectName, url, placeholder) {
+                $('select[select2="' + selectName + '"]').select2({
+                    ajax: {
+                        url: url,
+                        dataType: 'json',
+                        data: function (params) {
+                            return {
+                                term: params.term,
+                                page: params.page || 1,
+                            }
+                        },
+                        processResults: function (data, params) {
+                            params.page = params.page || 1;
+                            return {
+                                results: $.map(data.data, function (item) {
+                                    return {
+                                        id: item.id,
+                                        text: item.text,
+                                    }
+                                }),
+                                pagination: {
+                                    more: params.page < data.data.length
+                                }
+                            };
+                        },
+                        cache: true
+                    },
+                    placeholder: placeholder,
+                    allowClear: true,
+                    language: "vi",
+                });
+            }
+            selectList("depts", "/DanhMuc/Get_Select_Depts", "--Chọn--")
+            selectList("loaivanban", "/DanhMuc/Get_Select_LoaiVanBan", "--Chọn--")
+            selectList("doituong", "/DanhMuc/Get_Select_DoiTuongApDung", "--Chọn--")
+
+            $('input[data-timepicker="date"]').datetimepicker({ format: 'DD/MM/YYYY', locale: 'vi', });
+
+            function tableThongKeVanBan(id, columnData, url, disableColumn) {
+                var array = [];
+                $.each(disableColumn.split(','), function (idx, val) {
+                    array.push(parseInt(val));
+                });
+                if (disableColumn == '') { disableColumn = 0; }
+                var table = $(id).DataTable();
+                if ($.fn.dataTable.isDataTable(id)) {
+                    table.destroy();
+                    $(id).find('thead .filters').remove();
+                    $(id).find('tbody').empty();
+                }
+                var table = $(id).DataTable({
+                    "paging": true,
+                    "lengthChange": false,
+                    "searching": true,
+                    "processing": true,
+                    "ordering": true,
+                    "info": true,
+                    "autoWidth": true,
+                    "responsive": false,
+                    "order": [[0, 'asc']],
+                    "columnDefs": [
+                        { orderable: false, targets: array },
+                        { orderable: false, targets: 'filters' },
+                        { className: "text-wrap", targets: "_all" },
+                        { defaultContent: '', targets: "_all" },
+                    ],
+                    "ajax": {
+                        "url": url,
+                        "type": "GET",
+                        "datatype": "json"
+                    },
+                    "columns": columnData,
+                    "language": {
+                        "sProcessing": "Đang tải dữ liệu...",
+                        "sLengthMenu": "Xem _MENU_ mục",
+                        "sZeroRecords": "Không tìm thấy dòng nào phù hợp",
+                        "sInfo": "Đang xem _START_ đến _END_ trong tổng số _TOTAL_ mục",
+                        "sInfoEmpty": "Đang xem 0 đến 0 trong tổng số 0 mục",
+                        "sInfoFiltered": "(được lọc từ _MAX_ mục)",
+                        "sInfoPostFix": "",
+                        "sSearch": "Tìm:",
+                        "sUrl": "",
+                        "oPaginate": {
+                            "sFirst": "Đầu",
+                            "sPrevious": "Trước",
+                            "sNext": "Tiếp",
+                            "sLast": "Cuối"
+                        }
+                    },
+                    "dom": 'Bfrtip',
+                    "buttons": [{
+                        "extend": 'excel',
+                        "text": '<i class="fas fa-file-download"></i> Xuất Excel</button>',
+                        "className": "btn btn-success btn-flat ml-3",
+                        "title": "Báo cáo thống kê theo nội dung đã đọc và hiểu văn bản",
+                        "sheetName": "Thống kê",
+                        "footer": true
+                        //"exportOptions": { columns: array },
+
+                    }],
+                    "footerCallback": function (row, data, start, end, display) {
+                        var api = this.api();
+                        // Remove the formatting to get integer data for summation
+                        var intVal = function (i) {
+                            return typeof i === 'string' ? i.replace(/[\$,]/g, '') * 1 : typeof i === 'number' ? i : 0;
+                        };
+                        //Tổng số user đọc
+                        totaldoc = api
+                            .column(3)
+                            .data()
+                            .reduce(function (a, b) {
+                                return intVal(a) + intVal(b);
+                            }, 0);
+                        //Tổng số user hiểu
+                        totalhieu = api
+                            .column(4)
+                            .data()
+                            .reduce(function (a, b) {
+                                return intVal(a) + intVal(b);
+                            }, 0);
+                        // Update footer
+                        $(api.column(1).footer()).html('Tổng số văn bản: ' + data.length);
+                        $(api.column(3).footer()).html('Tổng số user đã đọc: ' + totaldoc);
+                        $(api.column(4).footer()).html('Tổng số user đã hiểu: ' + totalhieu);
+                    },
+                    "initComplete": function (settings, json) {
+                        table.buttons().container().appendTo('#btn-export');
+                    }
+                });
+                return table;
+            }
+
+            var columnData = [
+                { "data": "stt" },
+                { "data": "tenBM" },
+                { "data": "maBM" },
+                { "data": "phienBan1" },
+                { "data": "phanMem1" },
+            ]
+
+            tableThongKeVanBan("#tbThongKeXacNhan", columnData, "/ThongKe/GetTable_ThongKeSoLuongXacNhan", "")
+
+            $('body').on('click', 'button[data-toggle="search"]', function () {
+                var tungay = ((document.getElementById("tungay") || {}).value) || "";
+                var denngay = ((document.getElementById("denngay") || {}).value) || "";
+                var doituongapdung = $("#doituongapdung").val() || "";
+                var donviapdung = $("#donviapdung").val() || "";
+                var loaivanban = $("#loaivanban").val() || "";
+
+                var searchTerm = "loai=1";
+                if (tungay != "")
+                    searchTerm += "&tungay=" + tungay;
+                if (denngay != "")
+                    searchTerm += "&denngay=" + denngay;
+                if (doituongapdung != "")
+                    searchTerm += "&doituongapdung=" + doituongapdung;
+                if (donviapdung != "")
+                    searchTerm += "&donviapdung=" + donviapdung;
+                if (loaivanban != "")
+                    searchTerm += "&loaivanban=" + loaivanban;
+
+                tableThongKeVanBan("#tbThongKeXacNhan", columnData, "/ThongKe/GetTable_ThongKeSoLuongXacNhan?" + searchTerm, "")
+            });
+        });
+
+    </script>
+}
+

@@ -1,0 +1,111 @@
+﻿@using WebTools.Models.ViewModel
+@model VanBanChiTietVM
+<!-- Small modal -->
+<div class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" id="modalTrangThaiPhienBan">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <form id="frmTrangThaiPhienBan">
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Trạng thái:</label>
+                        <select class="form-control" id="trangthai" name="trangthai" select2="trangthaivb"></select>
+                        <input type="hidden" id="trangthaiIDx" name="trangthaiIDx" value="@Model.trangthai" />
+                    </div>
+                    <input type="hidden" id="idvb" name="idvb" value="@Model.idvb" />
+                    <input type="hidden" id="idphienban" name="idphienban" value="@Model.idphienban" />
+                </form>
+                <div class="row d-flex justify-content-center">
+                    <button type="button" class="btn btn-primary mr-3" id="btnVersionChange"><i class="fas fa-save"></i> Lưu</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('select[select2="trangthaivb"]').select2({
+            dropdownParent: $('#modalTrangThaiPhienBan'),
+            ajax: {
+                url: '/DanhMuc/Get_Select_TrangThaiVanBan',
+                dataType: 'json',
+                data: function (params) {
+                    return {
+                        term: params.term,
+                        page: params.page || 1
+                    };
+                },
+                processResults: function (data, params) {
+                    params.page = params.page || 1;
+                    return {
+                        results: data.data,
+                        pagination: {
+                            more: params.page < data.data.length
+                        }
+                    };
+                },
+                cache: true
+            },
+            minimumResultsForSearch: Infinity,
+            placeholder: 'Chọn',
+            allowClear: true,
+            width: "100%",
+            language: "vi",
+        });
+
+        function SetDefaultSelect(idSelect, idValue) {
+            var selectTTVB = $(idSelect);
+            var key = ((document.getElementById(idValue) || {}).value)
+            console.log(key);
+            $.ajax({
+                type: 'GET',
+                url: '/DanhMuc/Get_Select_TrangThaiVanBan?key=' + key
+            }).then(function (data) {
+                console.log(data);
+                if (data.data.text == null) { var option = new Option(null, null, true, true); }
+                else {
+                    var option = new Option(data.data.text, data.data.id, true, true);
+                }
+                selectTTVB.append(option).trigger('change');
+                selectTTVB.trigger({
+                    type: 'select2:select',
+                    params: {
+                        data: data
+                    }
+                });
+            });
+        }
+        SetDefaultSelect('select[select2="trangthaivb"]',"trangthaiIDx")
+
+        $('body #modalTrangThaiPhienBan').on('click', '#btnVersionChange', function () {
+            var form = $("#frmTrangThaiPhienBan")
+            console.log(form);
+            if (form[0].checkValidity() === true) {
+                var data = form.serialize();
+                $.ajax({
+                    type: 'POST',
+                    url: '/VanBan/PhienBan_Delete',
+                    contentType: 'application/x-www-form-urlencoded; charset=UTF-8', // when we use .serialize() this generates the data in query string format. this needs the default contentType (default content type is: contentType: 'application/x-www-form-urlencoded; charset=UTF-8') so it is optional, you can remove it
+                    data: data,
+                    beforeSend: function () {
+                        $('button[data-save="dichvu"]').attr("disabled", true);
+                    },
+                    success: function (data) {
+                        $(this).callToast(data.result, data.title, data.message);
+                    },
+                    error: function (data) {
+                        $(this).callToast(data.result, data.title, data.message);
+                    },
+                    complete: function () {
+                        $('button[data-save="dichvu"]').attr("disabled", false);
+                    },
+                });
+            }
+            else {
+                event.preventDefault()
+                event.stopPropagation()
+                form.addClass('was-validated');
+            }
+        });
+    });
+</script>

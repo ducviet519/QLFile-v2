@@ -1,0 +1,34 @@
+﻿<!-- Modal -->
+<div class="modal fade bd-example-modal-lg" id="modalChiTietThuMuc" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"><i class="fas fa-layer-group"></i> Chi tiết Thư mục</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-striped table-bordered table-hover" id="tbChiTietThuMuc">
+                    <thead class="thead">
+                        <tr>
+                            <th>STT</th>
+                            <th>Tên chi tiết</th>
+                            <th>Mã thư mục cha</th>
+                            <th>Mã thư mục con</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary"><i class="fas fa-save"></i> Lưu</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('#tbChiTietThuMuc').DataTable({});
+    });
+</script>

@@ -1,0 +1,283 @@
+﻿@using WebTools.Models.ViewModel
+@model PhanQuyenVM
+<style>
+    .tab-custom-content {
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .col-65 {
+        width: 80px;
+        padding-left: 7.5px;
+        padding-right: 7.5px;
+    }
+
+    td .form-check {
+        display: flex;
+        justify-content: center;
+    }
+    #tbVaiTroHeThong tbody tr.selected {
+        color: unset !important;
+        background-color: unset !important;
+    }
+    #tbVaiTroHeThong .dataTables_filter, #tbVaiTroHeThong .dataTables_length {
+        display: none;
+    }
+</style>
+<link rel="stylesheet" type="text/css" href="~/css/checkbox.css">
+<!-- Modal -->
+<div class="modal fade bd-example-modal-xl" id="modalVaiTroHeThong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"><i class="fas fa-user"></i> Phân quyền cho Nhân viên: @Model.Users.MaNV | @Model.Users.HoTen</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-8">
+                        <div class="tab-custom-content"><label class="col-form-label col-12 text-center">Danh sách nhóm quyền</label></div>
+                        <form id="frmVaiTroHeThong">
+                            <table class="table table-bordered" id="tbVaiTroHeThong" width="100%">
+                                <thead class="thead">
+                                    <tr>
+                                        <th class="w-auto">STT</th>
+                                        <th class="w-25">Tên nhóm quyền</th>
+                                        <th class="w-50">Mô tả</th>
+                                        <th class="w-auto">Chọn</th>
+                                        <th class="w-auto">Nâng cao</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                            <input type="hidden" id="UserName" name="UserName" value="@Model.Users.UserName" />
+                        </form>
+                        <div class="row d-flex justify-content-center">
+                            <button type="button" class="btn btn-success" id="btnSaveVaiTro"><i class="fas fa-save"></i> Lưu quyền</button>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="tab-custom-content"><label class="col-form-label col-12 text-center">Tạo mới nhóm quyền</label></div>
+                        <form id="frmAddPermission" method="post">
+                            <div class="form-group row">
+                                <label for="txtSearch" class="col-form-label col-65">Tên nhóm:</label>
+                                <div class="col">
+                                    <input type="text" class="form-control" id="RoleName" name="RoleName" required />
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="txtSearch" class="col-form-label col-65">Mô tả:</label>
+                                <div class="col">
+                                    <textarea class="form-control" id="Description" name="Description" rows="3"></textarea>
+                                </div>
+                            </div>
+                            <div class="row d-flex justify-content-center">
+                                <button type="button" class="btn btn-success" id="btnAddRoleUser"><i class="fas fa-plus"></i> Thêm nhóm</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="second-modal"></div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var columnData = [
+            {
+                "data": {},
+                "render": function (data, type, full, meta) {
+                    return parseInt(meta.row) + 1;
+                },
+            },
+            { "data": "roleName" },
+            { "data": "description" },
+            {
+                "data": "roleID"
+            },
+            {
+                "data": { },
+                "render": function (data, type, full, meta) {
+                    return '<button type="button" class="btn btn-outline-info btn-sm" data-toggle="permission" data-tager="permission-' + meta.row + '" data-url="/PhanQuyen/Permission?RoleID=' + data.roleID + '&RoleName=' + data.roleName + '">Module</button>';
+                },
+            },
+        ]
+
+        function tableBangtinVanBan(id, columnData, url) {
+
+            var table = $(id).DataTable();
+            if ($.fn.dataTable.isDataTable(id)) {
+                table.destroy();
+                $(id).find('thead .filters').remove();
+                $(id).find('tbody').empty();
+            }
+            var table = $(id).DataTable({
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "processing": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": true,
+                "responsive": true,
+                "order": [[0, 'asc']],
+                "ajax": {
+                    "url": url,
+                    "type": "GET",
+                    "datatype": "json"
+                },
+                "columns": columnData,
+                "columnDefs": [
+                    { "orderable": false, "targets": 'filters' },
+                    { "className": "text-wrap", "targets": "_all" },
+                    { "defaultContent": '', "targets": "_all" },
+                    {
+                        "targets": 3,
+                        "checkboxes": { "selectRow": true },
+                    }
+                ],
+                "select": {
+                    "style": "multi",
+                    "selector": '.dt-checkboxes'
+                },
+                "language": {
+                    "sProcessing": "Đang tải dữ liệu...",
+                    "sLengthMenu": "Xem _MENU_ mục",
+                    "sZeroRecords": "Không tìm thấy dòng nào phù hợp",
+                    "sInfo": "Đang xem _START_ đến _END_ trong tổng số _TOTAL_ mục",
+                    "sInfoEmpty": "Đang xem 0 đến 0 trong tổng số 0 mục",
+                    "sInfoFiltered": "(được lọc từ _MAX_ mục)",
+                    "sInfoPostFix": "",
+                    "sSearch": "Tìm:",
+                    "sUrl": "",
+                    "oPaginate": {
+                        "sFirst": "Đầu",
+                        "sPrevious": "Trước",
+                        "sNext": "Tiếp",
+                        "sLast": "Cuối"
+                    }
+                },
+                'initComplete': function (settings) {
+                    var api = this.api();
+
+                    api.cells(
+                        api.rows(function (idx, data, node) {
+                            return (data.status === 'true' || data.status === true) ? true : false;
+                        }).indexes(),
+                        3
+                    ).checkboxes.select();
+                },
+
+            });
+            return table;
+        }
+
+        var table = tableBangtinVanBan("#tbVaiTroHeThong", columnData, "/PhanQuyen/GetListRole?username=@Model.Users.UserName")
+
+        $('#modalVaiTroHeThong').on('shown.bs.modal', function (e) {
+            $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();
+        });
+
+        $('body #modalVaiTroHeThong').on('click', '#btnAddRoleUser', function () {
+            var form = $("#frmAddPermission");
+            if (form[0].checkValidity() === true) {
+                var permissionname = document.getElementById('RoleName').value;
+                var exists = !! ~document.getElementById('tbVaiTroHeThong').innerHTML.indexOf(permissionname);
+                if (exists) {
+                    $(this).callToast("info", "Thông báo!", "Nhóm: <b> " + permissionname + " </b>đã tồn tại. Vui lòng sử dụng tên khác");
+                }
+                else {
+                    var data = form.serialize();
+                    $.ajax({
+                        type: 'POST',
+                        url: '/PhanQuyen/AddRole',
+                        contentType: 'application/x-www-form-urlencoded; charset=UTF-8', // when we use .serialize() this generates the data in query string format. this needs the default contentType (default content type is: contentType: 'application/x-www-form-urlencoded; charset=UTF-8') so it is optional, you can remove it
+                        data: data,
+                        beforeSend: function () {
+                            $('#btnAddRoleUser').attr("disabled", true);
+                        },
+                        success: function (data) {
+                            if (data.success === "OK") {
+                                $(this).callToast("success", "Thành công", "Đã thêm nhóm quyền mới");
+                                tableBangtinVanBan("#tbVaiTroHeThong", columnData, "/PhanQuyen/GetListRole?username=@Model.Users.UserName")
+                            }
+                            else {
+                                $(this).callToast("error", "Lỗi!", "Gặp sự cố khi thêm quyền");
+                            }
+
+                        },
+                        error: function (data) {
+                            $(this).callToast("error", "Lỗi!", "Gặp sự cố khi thêm quyền");
+                        },
+                        complete: function () {
+                            $('#btnAddRoleUser').attr("disabled", false);
+                        },
+                    });
+                }
+            }
+            else {
+                event.preventDefault()
+                event.stopPropagation()
+                form.addClass('was-validated');
+            }
+        });
+
+        $('body #modalVaiTroHeThong').on('click', '#btnSaveVaiTro', function () {
+            var username = document.getElementById('UserName').value;
+            var table = $('#tbVaiTroHeThong').DataTable()
+            var rows = table.rows({ selected: true }).data();
+            console.log(rows);
+            var listRoles = new Array();
+            if (rows.length > 0) {
+                $.each(rows, function (index, value) {
+                    var role = {};
+                    role.RoleID = value.roleID;
+                    role.RoleName = value.roleName;
+                    role.UserName = username;
+                    role.Status = "1";
+                    listRoles.push(role);
+                });
+            }
+            else {
+                var role = {};
+                role.UserName = username;
+                listRoles.push(role);
+            }
+            function SendAjax() {
+                $.ajax({
+                    type: 'POST',
+                    url: '/PhanQuyen/Upsert_RolesInUser',
+                    contentType: 'application/json; charset=UTF-8',
+                    dataType: "json",
+                    data: JSON.stringify(listRoles),
+                    beforeSend: function () {
+                        $('#btnSaveVaiTro').attr("disabled", true);
+                    },
+                    success: function (data) {
+                        $(this).callToast(data.result, data.title, data.message);
+                        tableBangtinVanBan("#tbVaiTroHeThong", columnData, "/PhanQuyen/GetListRole?username=@Model.Users.UserName")
+                    },
+                    error: function (data) {
+                        $(this).callToast(data.result, data.title, data.message);
+                    },
+                    complete: function () {
+                        $('#btnSaveVaiTro').attr("disabled", false);
+                    },
+                });
+            }
+            SendAjax()
+        });
+
+        $('body .modal').on('click', 'button[data-toggle="permission"]', function (event) {
+            var url = $(this).data('url');
+            $(this).callMultipleModal(url, ".second-modal");
+        });
+    });
+</script>
+

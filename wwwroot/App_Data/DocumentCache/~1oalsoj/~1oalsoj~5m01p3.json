@@ -1,0 +1,68 @@
+{
+  "CacheSourceKey": "1oalsoj",
+  "CachePdfKey": "1oalsoj/1oalsoj-g2ydih.pdf",
+  "CacheXpzKey": "1oalsoj/1oalsoj-5m01p3.xpz",
+  "CacheInfoKey": "1oalsoj/1oalsoj-5m01p3.json",
+  "CacheCopyKey": null,
+  "Document": "2022.08.08-BBSC-nang-cap-o-cung-RAM-TA-PC-145-P-QLCL.xlsx",
+  "DocumentHandlerType": null,
+  "DocumentHandlerParameters": null,
+  "DocumentLocation": "D:\\",
+  "DocumentFileName": "2022.08.08-BBSC-nang-cap-o-cung-RAM-TA-PC-145-P-QLCL.xlsx",
+  "InputOptions": {
+    "$type": "GleamTech.DocumentUltimate.SpreadsheetInputOptions, GleamTech.DocumentUltimate",
+    "OutputSheetRange": "visible",
+    "RenderColumnsFitToPages": 1,
+    "RenderRowsFitToPages": 0,
+    "RenderHeadings": false,
+    "RenderGridlines": false,
+    "RenderTitleColumns": null,
+    "RenderTitleRows": null,
+    "RenderArea": null,
+    "RenderBlackAndWhite": false,
+    "RenderCenterHorizontally": false,
+    "RenderCenterVertically": false,
+    "RenderLeftHeader": null,
+    "RenderCenterHeader": null,
+    "RenderRightHeader": null,
+    "RenderLeftFooter": null,
+    "RenderCenterFooter": null,
+    "RenderRightFooter": null,
+    "Format": "Xlsx",
+    "Password": null
+  },
+  "PdfOutputOptions": {
+    "Watermarks": [
+      {
+        "$type": "GleamTech.DocumentUltimate.ImageWatermark, GleamTech.DocumentUltimate",
+        "ImageFile": "D:\\Project\\QLFile\\wwwroot\\images\\logo_300x300.png",
+        "Version": ".png63811268391000000015301",
+        "HorizontalAlignment": "Center",
+        "VerticalAlignment": "Center",
+        "HorizontalDistance": 0.0,
+        "VerticalDistance": 0.0,
+        "DistanceIsPercentage": false,
+        "Width": 0.0,
+        "Height": 100.0,
+        "SizeIsPercentage": false,
+        "Rotation": 0.0,
+        "Opacity": 20.0,
+        "InBackground": false,
+        "AnnotationMode": false,
+        "PrintVisible": true,
+        "ScreenVisible": true,
+        "PageRange": "all"
+      }
+    ],
+    "FastWebViewEnabled": false,
+    "Password": null,
+    "Attachments": [],
+    "Format": "Pdf"
+  },
+  "XpzOutputOptions": {
+    "Password": "1oalsoj",
+    "HighQualityEnabled": false,
+    "Format": "Xpz"
+  },
+  "Attachments": []
+}
