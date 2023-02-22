@@ -56,7 +56,7 @@
                             </ul>
                         </li>
                         <li class="nav-item d-none d-sm-inline-block narh-50">
-                            <a class="nav-link narh-50" data-toggle="ajax-modal" data-target="#GopY-0" data-url="GopY/Index">Góp ý</a>
+                            <a class="nav-link narh-50" data-toggle="ajax-modal" data-target="#GopY" data-url="/GopY/Index">Góp ý</a>
                         </li>
                         @if (User.IsInRole("Admin") || User.IsInRole("Document"))
                         {
@@ -111,30 +111,7 @@
         <script type="text/javascript">
             $('body').on('click', 'a[data-toggle="ajax-modal"]', function (event) {
                 var url = $(this).data('url');
-                var ReportPopupElement = $('#GopYPopup');
-                $.ajax({
-                    url: url,
-                    dataType: 'html',
-                    success: function (data) {
-                        $("body").find(".modal-backdrop").remove();
-                        ReportPopupElement.html(data);
-                        ReportPopupElement.find('.modal').modal('show');
-                    }, error: function (xhr, status) {
-                        switch (status) {
-                            case 404:
-                                $(this).callToast("error", 'Lỗi!', 'Đường dẫn không đúng hoặc tính năng không tồn tại!');
-                                break;
-                            case 500:
-                                $(this).callToast("error", 'Lỗi!', 'Không kết nối được tới Server!');
-                                break;
-                            case 0:
-                                $(this).callToast("error", 'Lỗi!', 'Hệ thống không phản hồi!');
-                                break;
-                            default:
-                                $(this).callToast("error", 'Lỗi!', 'Sự cố không xác định! Lỗi: ' + status);
-                        }
-                    }
-                });
+                $(this).callModal(url);
             });
         </script>
         @await RenderSectionAsync("Scripts", required: false)
