@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using WebTools.Models.Entity;
+using WebTools.Models.ViewModel;
 using WebTools.Services.Interface;
 
 namespace WebTools.Controllers
@@ -25,6 +26,14 @@ namespace WebTools.Controllers
                 DisplayName = IDBieuMau ?? "",
             };
             return PartialView("_GopY",model);
+        }
+
+        public async Task<IActionResult> ListGopY(string idvb)
+        {
+            string user = HttpContext.User.Claims.First(c => c.Type == ClaimTypes.GivenName).Value ?? HttpContext.User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
+            GopYVM model = new GopYVM();
+            model.ListGopY = await _gopYServices.GetListGopY(idvb, user);
+            return PartialView("_ListGopY", model);
         }
 
         [HttpPost]

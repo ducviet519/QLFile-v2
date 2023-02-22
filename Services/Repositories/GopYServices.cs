@@ -6,6 +6,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
+using WebTools.Models.Entities;
 using WebTools.Services.Interface;
 
 namespace WebTools.Services
@@ -56,6 +57,32 @@ namespace WebTools.Services
             {
                 result = ex.Message;
                 return result;
+            }
+        }
+        public async Task<List<GopY>> GetListGopY(string idvb, string user)
+        {
+            List<GopY> data = new List<GopY>();
+            try
+            {
+                using (IDbConnection dbConnection = Connection)
+                {
+                    if (dbConnection.State == ConnectionState.Closed)
+                        dbConnection.Open();
+                    data = (await dbConnection.QueryAsync<GopY>("sp_Report_DocComment",
+                    new
+                    {
+                        IDVanBan = idvb,
+                        user = user
+                    },
+                    commandType: CommandType.StoredProcedure)).ToList();
+                    dbConnection.Close();
+                }
+                return data;
+            }
+            catch (Exception ex)
+            {
+                string errorMsg = ex.Message;
+                return data;
             }
         }
     }

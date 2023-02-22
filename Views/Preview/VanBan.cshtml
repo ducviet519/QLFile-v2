@@ -160,6 +160,7 @@
     <div data-options="region:'center',title:'', split: true" style="min-height:fit-content;">
         <div class="row p-0 m-0 d-flex justify-content-between col-50">
             <div class="col-auto" id="btnback"></div>
+            <div><button class="btn btn-info" id="btnGopY"><i class="fas fa-comment-alt"></i> Tổng hợp Góp Ý</button></div>
             <div class="col-auto">
                 <input type="checkbox" id="checkbox" value="@Model.fileInfo.YeuThich" />
                 <label class="mb-0 btn-like" for="checkbox">
@@ -348,6 +349,11 @@
                         (document.getElementById("readchecked") || {}).style.display = "none";
                     }
                 }
+            });
+
+            $('body').on('click', '#btnGopY', function () {
+                var idvb = document.getElementById('idvb').value;
+                $(this).callModal('/GopY/ListGopY?idvb=' + idvb);
             });
         });
 
