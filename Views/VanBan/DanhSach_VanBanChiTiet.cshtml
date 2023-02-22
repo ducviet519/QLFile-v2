@@ -448,8 +448,9 @@
                         else { var soft = ''; }
                         if ('@Model.xoavanban' === 'True') {
                             var del = '<a class="dropdown-item" data-toggle="deletevanban" data-target="#deletevanban-' + meta.row + '" data-url="/VanBan/VanBan_Delete?idvb=' + data.idvb + '&tenVB=' + data.tenVB + '"><i class="fas fa-trash"></i> Xóa văn bản</a>';
-                        } else { var del = '';}
-                        var dropmenu = "<button type='button' class='btn btn-link dropdown-toggle' data-toggle='dropdown'>Chi tiết</button ><div class='dropdown-menu' role='menu'>" + version + " " + edit + " " + detail + " " + soft + " " + del + "  " + auth + "</div>";
+                        } else { var del = ''; }
+                        var gopy = '<a class="dropdown-item" data-toggle="ajax-modal" data-target="#modalGopY-' + meta.row + '" data-url="/GopY/Index?IDBieuMau=' + data.idvb + '"><i class="fas fa-comment-alt-medical"></i> Góp Ý</a>';
+                        var dropmenu = "<button type='button' class='btn btn-link dropdown-toggle' data-toggle='dropdown'>Chi tiết</button ><div class='dropdown-menu' role='menu'>" + version + " " + edit + " " + detail + " " + soft + " " + del + "  " + auth + "  " + gopy + "</div>";
                         var result = "<div class='btn-group'>" + dropmenu + "</div>";
                         return result;
                     },
