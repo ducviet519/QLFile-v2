@@ -677,6 +677,25 @@
             }
             $(this).callToast("success", "Thành công", "Đã xóa");
         });
+
+        function CheckTable(doituongPQ, kpnv, doituongHCNS) {
+            if (doituongHCNS == "") { doituongHCNS = null;}
+            tablecheck = $("#tbListViewRole").DataTable();
+            var rowsData = tablecheck.rows().data();
+            var count = 0;
+            $.each(rowsData, function (index, value) {
+                console.log(value.phanCap + " | " + value.tenKhoaPhongNV + " | " + value.doiTuong)
+                if (value.phanCap === doituongPQ && value.tenKhoaPhongNV === kpnv && value.doiTuong === doituongHCNS) {
+                    count++;
+                }
+            });
+            if (count > 0) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
         var clicks = 0;
         $('#btnThemQuyenVB').on('click', function () {
             $(this).attr("disabled", true);
@@ -695,18 +714,20 @@
             var kpnv = "";
             if (UserType === "Department") { kpnv = $('#donvi0').find('option:selected').text(); }
             if (UserType === "Group") { kpnv = $('#loaivanban0').find('option:selected').text(); }
-            if (UserType === "User") { kpnv = $('#nhanvien0').find('option:selected').text(); }
+            if (UserType === "User") {
+                var nhanvien = $('#nhanvien0').find('option:selected').text().split("|");
+                kpnv = nhanvien[1] + " (" + nhanvien[0] + ")";
+            }
             if (kpnv === "") {
                 $(this).callToast("info", "Thông báo", "Đơn vị/Nhân viên/Nhóm đang trống");
             }
             else {
-                var exists = !! ~document.getElementById('tbListViewRole').innerHTML.indexOf(kpnv);
-                if (exists) {
-                    $(this).callToast("info", "Thông báo!", "Đơn vị/Nhân viên/Nhóm:<b> " + kpnv + "</b> đã tồn tại.");
+                if (CheckTable(LevelType, kpnv, doituongHCNS)) {
+                    $(this).callToast("info", "Thông báo!", "Quyền đã tồn tại.");
                 }
                 else {
                     tableVR.row.add({
-                        "phanCap": doituongPQ,
+                        "phanCap": LevelType,
                         "tenKhoaPhongNV": kpnv,
                         "doiTuong": doituongHCNS,
                         "readR": ReadR,

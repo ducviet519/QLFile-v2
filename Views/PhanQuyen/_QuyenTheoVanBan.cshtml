@@ -381,12 +381,6 @@
                                 var title = $(cell).text();
                                 $(cell).html('<input type="text" class="form-control p-0 m-0" />');
                             }
-                            //else if (colIdx >= 5 && colIdx <= 7) {
-                            //    var cell = $('.filters th').eq(
-                            //        $(api.column(colIdx).header()).index()
-                            //    );
-                            //    $(cell).html('<div class="form-check form-check-inline mr-0"><input class="form-check-input position-static" type="checkbox" value="" id="checkall-' + colIdx + '"></div>');
-                            //}
                             else {
                                 var cell = $('.filters th').eq(
                                     $(api.column(colIdx).header()).index()
@@ -927,18 +921,21 @@
             var kpnv = "";
             if (UserType === "Department") { kpnv = $('#donvi0').find('option:selected').text(); }
             if (UserType === "Group") { kpnv = $('#loaivanban0').find('option:selected').text(); }
-            if (UserType === "User") { kpnv = $('#nhanvien0').find('option:selected').text(); }
+            if (UserType === "User") {
+                var nhanvien = $('#nhanvien0').find('option:selected').text().split("|");
+                kpnv = nhanvien[1] + " (" + nhanvien[0] + ")";
+            }
             if (kpnv === "") {
                 $(this).callToast("info", "Thông báo", "Đơn vị/Nhân viên/Nhóm đang trống");
             }
             else {
-                var exists = !! ~document.getElementById('tbListViewRole').innerHTML.indexOf(kpnv);
-                if (exists) {
-                    $(this).callToast("info", "Thông báo!", "Đơn vị/Nhân viên/Nhóm:<b> " + kpnv + "</b> đã tồn tại.");
+                console.log(CheckTable(LevelType, kpnv, doituongHCNS));
+                if (CheckTable(LevelType, kpnv, doituongHCNS)) {
+                    $(this).callToast("info", "Thông báo!", "Quyền đã tồn tại!");
                 }
                 else {
                     tableVR.row.add({
-                        "phanCap": doituongPQ,
+                        "phanCap": LevelType,
                         "tenKhoaPhongNV": kpnv,
                         "doiTuong": doituongHCNS,
                         "readR": ReadR,
@@ -955,6 +952,25 @@
             }
             $(this).attr("disabled", false);
         });
+
+        function CheckTable(doituongPQ, kpnv, doituongHCNS) {
+            if (doituongHCNS == "") { doituongHCNS = null; }
+            tablecheck = $("#tbListViewRole").DataTable();
+            var rowsData = tablecheck.rows().data();
+            var count = 0;
+            $.each(rowsData, function (index, value) {
+                console.log(value.phanCap + " | " + value.tenKhoaPhongNV + " | " + value.doiTuong)
+                if (value.phanCap === doituongPQ && value.tenKhoaPhongNV === kpnv && value.doiTuong === doituongHCNS) {
+                    count++;
+                }
+            });
+            if (count > 0) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
 
         $('#btnLuuQuyenVB').on('click', function (e) {
             var listRole = new Array()
