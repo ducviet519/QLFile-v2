@@ -959,7 +959,6 @@
             var rowsData = tablecheck.rows().data();
             var count = 0;
             $.each(rowsData, function (index, value) {
-                console.log(value.phanCap + " | " + value.tenKhoaPhongNV + " | " + value.doiTuong)
                 if (value.phanCap === doituongPQ && value.tenKhoaPhongNV === kpnv && value.doiTuong === doituongHCNS) {
                     count++;
                 }

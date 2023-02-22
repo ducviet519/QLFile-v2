@@ -16,4 +16,25 @@ namespace WebTools.Models.Entities
         public string TenBC { get; set; }
         public string LoaiBC { get; set; }
     }
+
+    public class ThongKe_BaoCaoDocHieu
+    {
+        public string TenVanBan { get; set; }
+        public string MaVanBan { get; set; }
+        public string SoLuongDoc { get; set; }
+        public string SoLuongHieu { get; set; }
+    }
+
+    public class SearchThongKe
+    {
+        public string NgayBHBD { get; set; }
+        public string NgayBHKT { get; set; }
+        public string NgayXNBD { get; set; }
+        public string NgayXNKT { get; set; }
+        public string NgayDocBD { get; set; }
+        public string NgayDocKT { get; set; }
+        public string DoiTuong { get; set; }
+        public string DonVi { get; set; }
+        public string LoaiVB { get; set; }
+    }
 }

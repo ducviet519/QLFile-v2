@@ -88,37 +88,35 @@
                     <div class="row">
                         <div class="form-group row col-4">
                             <label class="col-130 col-form-label"> Ngày ban hành: </label>
-                            <input type="text" id="tungay" name="tungay" class="form-control form-control-sm datetimepicker-input col rounded-0" data-toggle="datetimepicker" data-target="#tungay" autocomplete="off" data-timepicker="date">
+                            <input type="text" id="NgayBHBD" name="NgayBHBD" class="form-control form-control-sm datetimepicker-input col rounded-0" data-toggle="datetimepicker" data-target="#tungay" autocomplete="off" data-timepicker="date">
                             <label class="col-auto col-form-label"> - </label>
-                            <input type="text" id="denngay" name="denngay" class="form-control form-control-sm datetimepicker-input col rounded-0" data-toggle="datetimepicker" data-target="#denngay" autocomplete="off" data-timepicker="date">
+                            <input type="text" id="NgayBHKT" name="NgayBHKT" class="form-control form-control-sm datetimepicker-input col rounded-0" data-toggle="datetimepicker" data-target="#denngay" autocomplete="off" data-timepicker="date">
                         </div>
                         <div class="form-group row col-4">
                             <label class="col-130 col-form-label ml-3"> Ngày XN đọc: </label>
-                            <input type="text" id="tungay" name="tungay" class="form-control form-control-sm datetimepicker-input col rounded-0" data-toggle="datetimepicker" data-target="#tungay" autocomplete="off" data-timepicker="date">
+                            <input type="text" id="NgayDocBD" name="NgayDocBD" class="form-control form-control-sm datetimepicker-input col rounded-0" data-toggle="datetimepicker" data-target="#tungay" autocomplete="off" data-timepicker="date">
                             <label class="col-auto col-form-label"> - </label>
-                            <input type="text" id="denngay" name="denngay" class="form-control form-control-sm datetimepicker-input col rounded-0" data-toggle="datetimepicker" data-target="#denngay" autocomplete="off" data-timepicker="date">
+                            <input type="text" id="NgayDocKT" name="NgayDocKT" class="form-control form-control-sm datetimepicker-input col rounded-0" data-toggle="datetimepicker" data-target="#denngay" autocomplete="off" data-timepicker="date">
                         </div>
                         <div class="form-group row col-4">
                             <label class="col-130 col-form-label ml-3"> Ngày XN hiểu: </label>
-                            <input type="text" id="tungay" name="tungay" class="form-control form-control-sm datetimepicker-input col rounded-0" data-toggle="datetimepicker" data-target="#tungay" autocomplete="off" data-timepicker="date">
+                            <input type="text" id="NgayXNBD" name="NgayXNBD" class="form-control form-control-sm datetimepicker-input col rounded-0" data-toggle="datetimepicker" data-target="#tungay" autocomplete="off" data-timepicker="date">
                             <label class="col-auto col-form-label"> - </label>
-                            <input type="text" id="denngay" name="denngay" class="form-control form-control-sm datetimepicker-input col rounded-0" data-toggle="datetimepicker" data-target="#denngay" autocomplete="off" data-timepicker="date">
+                            <input type="text" id="NgayXNKT" name="NgayXNKT" class="form-control form-control-sm datetimepicker-input col rounded-0" data-toggle="datetimepicker" data-target="#denngay" autocomplete="off" data-timepicker="date">
                         </div>
                     </div>
                     <div class="row">
                         <div class="form-group row col-4">
                             <label for="txtSearch" class="col-form-label col-130">Đối tượng áp dụng:</label>
-                            <select class="custom-select custom-select-sm col rounded-0" id="DoiTuongApDung" name="DoiTuongApDung" select2="doituong"></select>
+                            <select class="custom-select custom-select-sm col rounded-0" id="DoiTuong" name="DoiTuong" select2="doituong"></select>
                         </div>
                         <div class="form-group row col-4">
                             <label for="txtSearch" class="col-form-label col-130 ml-3">Loại văn bản:</label>
-                            <div class="col">
-                                <select class="custom-select custom-select-sm col rounded-0" id="LoaiVB" name="LoaiVB" select2="loaivanban"></select>
-                            </div>
+                            <select class="custom-select custom-select-sm col rounded-0" id="LoaiVB" name="LoaiVB" select2="loaivanban"></select>
                         </div>
                         <div class="form-group row col-4">
                             <label for="txtSearch" class="col-form-label col-130 ml-3">Đơn vị áp dụng:</label>
-                            <select class="custom-select custom-select-sm col rounded-0" id="DonViApDung" name="DonViApDung" select2="depts"></select>
+                            <select class="custom-select custom-select-sm col rounded-0" id="DonVi" name="DonVi" select2="depts"></select>
                         </div>
                     </div>
                 </form>
@@ -195,12 +193,7 @@
 
             $('input[data-timepicker="date"]').datetimepicker({ format: 'DD/MM/YYYY', locale: 'vi', });
 
-            function tableThongKeVanBan(id, columnData, url, disableColumn) {
-                var array = [];
-                $.each(disableColumn.split(','), function (idx, val) {
-                    array.push(parseInt(val));
-                });
-                if (disableColumn == '') { disableColumn = 0; }
+            function tableThongKeVanBan(id, columnData, url) {
                 var table = $(id).DataTable();
                 if ($.fn.dataTable.isDataTable(id)) {
                     table.destroy();
@@ -218,7 +211,6 @@
                     "responsive": false,
                     "order": [[0, 'asc']],
                     "columnDefs": [
-                        { orderable: false, targets: array },
                         { orderable: false, targets: 'filters' },
                         { className: "text-wrap", targets: "_all" },
                         { defaultContent: '', targets: "_all" },
@@ -296,29 +288,28 @@
                 { "data": "phienBan1" },
                 { "data": "phanMem1" },
             ]
-
-            tableThongKeVanBan("#tbThongKeXacNhan", columnData, "/ThongKe/GetTable_ThongKeSoLuongXacNhan", "")
+            tableThongKeVanBan("#tbThongKeXacNhan", columnData, "/ThongKe/GetTable_ThongKeSoLuongXacNhan")
 
             $('body').on('click', 'button[data-toggle="search"]', function () {
-                var tungay = ((document.getElementById("tungay") || {}).value) || "";
-                var denngay = ((document.getElementById("denngay") || {}).value) || "";
-                var doituongapdung = $("#doituongapdung").val() || "";
-                var donviapdung = $("#donviapdung").val() || "";
-                var loaivanban = $("#loaivanban").val() || "";
+                //var NgayBHBD = ((document.getElementById("NgayBHBD") || {}).value) || "";
+                //var NgayBHKT = ((document.getElementById("NgayBHKT") || {}).value) || "";
+                //var doituongapdung = $("#doituongapdung").val() || "";
+                //var donviapdung = $("#donviapdung").val() || "";
+                //var loaivanban = $("#loaivanban").val() || "";
 
-                var searchTerm = "loai=1";
-                if (tungay != "")
-                    searchTerm += "&tungay=" + tungay;
-                if (denngay != "")
-                    searchTerm += "&denngay=" + denngay;
-                if (doituongapdung != "")
-                    searchTerm += "&doituongapdung=" + doituongapdung;
-                if (donviapdung != "")
-                    searchTerm += "&donviapdung=" + donviapdung;
-                if (loaivanban != "")
-                    searchTerm += "&loaivanban=" + loaivanban;
-
-                tableThongKeVanBan("#tbThongKeXacNhan", columnData, "/ThongKe/GetTable_ThongKeSoLuongXacNhan?" + searchTerm, "")
+                //var searchTerm = "loai=1";
+                //if (tungay != "")
+                //    searchTerm += "&tungay=" + tungay;
+                //if (denngay != "")
+                //    searchTerm += "&denngay=" + denngay;
+                //if (doituongapdung != "")
+                //    searchTerm += "&doituongapdung=" + doituongapdung;
+                //if (donviapdung != "")
+                //    searchTerm += "&donviapdung=" + donviapdung;
+                //if (loaivanban != "")
+                //    searchTerm += "&loaivanban=" + loaivanban;
+                var data = $('#frmThongKeSoLuongXacNhan').serialize();
+                tableThongKeVanBan("#tbThongKeXacNhan", columnData, "/ThongKe/GetTable_ThongKeSoLuongXacNhan?" + data)
             });
         });
 

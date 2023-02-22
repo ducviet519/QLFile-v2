@@ -45,10 +45,9 @@ namespace WebTools.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> GetTable_ThongKeSoLuongXacNhan(string loai, string tungay = null, string denngay = null, string doituongapdung = null, string donviapdung = null, string loaivanban = null)
+        public async Task<JsonResult> GetTable_ThongKeSoLuongXacNhan(SearchThongKe search)
         {
-            var data = (await _services.Report_List.GetReportListAsync()).Take(10).ToList();
-            return Json(new { data });
+            return Json(new { data = await _services.ThongKe.GetData_BaoCaoDocHieu(search) });
         }
         #endregion
 
