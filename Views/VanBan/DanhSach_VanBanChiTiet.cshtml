@@ -142,6 +142,9 @@
         color: unset !important;
         background-color: unset !important;
     }
+    .bg-warning, .bg-warning > a {
+        color: white !important;
+    }
 </style>
 <link rel="stylesheet" type="text/css" href="~/css/checkbox.css">
 @await Html.PartialAsync("Shared/_StyleUI_ComboBox")
@@ -423,6 +426,9 @@
                         }
                         else if (data.trangThai === "Đã hủy") {
                             return '<span class="badge bg-danger">' + data.trangThai + '</span>';
+                        }
+                        else if (data.trangThai === "Chờ ban hành") {
+                            return '<span class="badge bg-warning text-white">' + data.trangThai + '</span>';
                         }
                         else { return data.trangThai; }
                     },

@@ -84,5 +84,37 @@ namespace WebTools.Services.Repositories
                 return data;
             }
         }
+
+        public async Task<List<ThongKe_PhamViVB>> GetData_ThongKePhamVi(SearchThongKe search)
+        {
+            List<ThongKe_PhamViVB> data = new List<ThongKe_PhamViVB>();
+
+            try
+            {
+                using (IDbConnection dbConnection = Connection)
+                {
+                    if (dbConnection.State == ConnectionState.Closed)
+                        dbConnection.Open();
+                    data = (await dbConnection.QueryAsync<ThongKe_PhamViVB>("sp_Report_BaoCaoTKTheoPhamVi",
+                    new
+                    {
+                        NgayBHBD = search.NgayBHBD,
+                        NgayBHKT = search.NgayBHKT,
+                        DoiTuong = search.DoiTuong,
+                        DonVi = search.DonVi,
+                        LoaiVB = search.LoaiVB,
+                        PhamVi = search.PhamVi,
+                    },
+                    commandType: CommandType.StoredProcedure)).ToList();
+                    dbConnection.Close();
+                }
+                return data;
+            }
+            catch (Exception ex)
+            {
+                string errorMsg = ex.Message;
+                return data;
+            }
+        }
     }
 }

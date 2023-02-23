@@ -201,7 +201,9 @@
                     $(id).find('tbody').empty();
                 }
                 var table = $(id).DataTable({
-                    "paging": true,
+                    "scrollY": '420px',
+                    "scrollCollapse": true,
+                    "paging": false,
                     "lengthChange": false,
                     "searching": true,
                     "processing": true,

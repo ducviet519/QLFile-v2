@@ -18,6 +18,9 @@
         padding-left: 7.5px;
         padding-right: 7.5px;
     }
+    .bg-warning, .bg-warning > a {
+        color: white !important;
+    }
 </style>
 <!-- Modal -->
 <div class="modal fade bd-example-modal-xl" id="modalPhienBan" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -246,6 +249,9 @@
                     }
                     else if (data.trangThai === "Đã hủy") {
                         return '<span class="badge bg-danger">' + data.trangThai + '</span>';
+                    }
+                    else if (data.trangThai === "Chờ ban hành") {
+                        return '<span class="badge bg-warning text-white">' + data.trangThai + '</span>';
                     }
                     else { return data.trangThai; }
                 },
