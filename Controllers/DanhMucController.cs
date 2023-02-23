@@ -94,7 +94,7 @@ namespace WebTools.Controllers
 
         public async Task<JsonResult> Get_Select_PhamViThongKe(string key = null, string term = null, int page = 1)
         {
-            var data = (await _services.DanhMuc.Get_LoaiVanBanHienThi()).OrderBy(i => i.DES).Select(i => new { key = i.ID, text = i.DES });
+            var data = (await _services.DanhMuc.Get_LoaiVanBanHienThi()).OrderBy(i => i.DES).Select(i => new { id = i.ID, text = i.DES });
             if (!String.IsNullOrEmpty(term))
             {
                 data = data.Where(i => StaticHelper.convertToUnSign(i.text.ToLower()).Contains(StaticHelper.convertToUnSign(term.ToLower()))).ToList();

@@ -108,7 +108,7 @@
                         <div class="form-group row col">
                             <label for="LoaiVB" class="col-form-label col-95 ml-3">Loại văn bản:</label>
                             <div class="col">
-                                <select class="custom-select custom-select-sm col rounded-0" id="LoaiVB" name="LoaiVB" select2="loaivanban"></select>
+                                <select class="custom-select custom-select-sm col rounded-0" id="LoaiVB" name="LoaiVB" select2="loaivb"></select>
                             </div>
                         </div>
                     </div>
@@ -128,7 +128,7 @@
                         <div class="form-group row col">
                             <label for="PhamVi" class="col-form-label col-95 ml-3">Phạm vi:</label>
                             <div class="col">
-                                <select class="custom-select custom-select-sm rounded-0" id="PhamVi" name="PhamVi" select2="phamvi"></select>
+                                <select class="custom-select custom-select-sm col rounded-0" id="PhamVi" name="PhamVi" select2="phamvi9"></select>
                             </div>
                         </div>
                     </div>
@@ -198,11 +198,14 @@
                     placeholder: placeholder,
                     allowClear: true,
                     language: "vi",
+                    escapeMarkup: function (markup) {
+                        return markup;
+                    },
                 });
             }
-            selectList("phamvi", "/DanhMuc/Get_Select_PhamViThongKe", "--Chọn--")
+            selectList("phamvi9", "/DanhMuc/Get_Select_PhamViThongKe", "--Chọn--")
             selectList("depts", "/DanhMuc/Get_Select_Depts", "--Chọn--")
-            selectList("loaivanban", "/DanhMuc/Get_Select_LoaiVanBan", "--Chọn--")
+            selectList("loaivb", "/DanhMuc/Get_Select_LoaiVanBan", "--Chọn--")
             selectList("doituong", "/DanhMuc/Get_Select_DoiTuongApDung", "--Chọn--")
 
             $('input[data-timepicker="date"]').datetimepicker({ format: 'DD/MM/YYYY', locale: 'vi', });
