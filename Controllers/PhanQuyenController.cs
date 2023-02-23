@@ -97,16 +97,24 @@ namespace WebTools.Controllers
 
         public async Task<JsonResult> Get_ListPhanQuyenVanBan(int doctype, string docid = null, string leveltype = null)
         {
-            var data = (await _services.PhanQuyen.Get_ViewRoleList(docid, leveltype)).ToList();
-            if(doctype == 2)
+            if(doctype == 999)
             {
+                var data = (await _services.PhanQuyen.Get_ViewRoleList(docid, leveltype)).ToList();
+                return Json(new { data });
+            }
+            if (doctype == 2)
+            {
+                var data = (await _services.PhanQuyen.Get_ViewRoleList(docid, leveltype)).ToList();
                 data = data.Where(i => i.DocID != docid).ToList();
+                return Json(new { data });
             }
             if (doctype == 1)
-            {
+            {            
+                var data = (await _services.PhanQuyen.Get_ViewRoleList(docid, leveltype)).Where(i => i.DocID != null).ToList();                
                 data = data.Where(i => i.DocID == docid).ToList();
+                return Json(new { data });
             }
-            return Json( new { data });
+            return Json(new { data = (await _services.PhanQuyen.Get_ViewRoleList(docid, leveltype)).ToList() });
         }
 
         public IActionResult QuyenTheoVanBan(string idvb)

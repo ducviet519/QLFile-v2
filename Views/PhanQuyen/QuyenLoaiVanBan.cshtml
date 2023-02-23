@@ -201,12 +201,6 @@
                                     var title = $(cell).text();
                                     $(cell).html('<input type="text" class="form-control p-0 m-0" />');
                                 }
-                                //else if (colIdx >= 5 && colIdx <= 7) {
-                                //    var cell = $('.filters th').eq(
-                                //        $(api.column(colIdx).header()).index()
-                                //    );
-                                //    $(cell).html('<div class="form-check form-check-inline mr-0"><input class="form-check-input position-static" type="checkbox" value="" id="checkall-' + colIdx + '"></div>');
-                                //}
                                 else {
                                     var cell = $('.filters th').eq(
                                         $(api.column(colIdx).header()).index()
@@ -251,14 +245,14 @@
                 });
                 return table;
             }
-            var table = tableBangtinVanBan("#tbQuyenLoaiVanBan", columnData, "/PhanQuyen/Get_ListPhanQuyenVanBan");
+            var table = tableBangtinVanBan("#tbQuyenLoaiVanBan", columnData, "/PhanQuyen/Get_ListPhanQuyenVanBan?doctype=999");
 
             $('body').on('click', 'button[data-toggle="ajax-modal"]', function (e) {
                 var url = $(this).data('url');
                 $(this).callModal(url);
             });
             $(document).on('hidden.bs.modal', '#modelPhanQuyenLoaiVB', function (e) {
-                tableBangtinVanBan("#tbQuyenLoaiVanBan", columnData, "/PhanQuyen/Get_ListPhanQuyenVanBan");
+                tableBangtinVanBan("#tbQuyenLoaiVanBan", columnData, "/PhanQuyen/Get_ListPhanQuyenVanBan?doctype=999");
             });
         });
     </script>

@@ -131,15 +131,15 @@
     <table class="table table-bordered table-striped" width="100%" id="tbThongKeXacNhan">
         <thead class="thead">
             <tr>
-                <th>STT</th>
-                <th>Tên văn bản</th>
-                <th>Mã văn bản</th>
-                <th>Số lượng đọc</th>
-                <th>Số lượng hiểu</th>
+                <th class="w-auto">STT</th>
+                <th class="w-50">Tên văn bản</th>
+                <th class="w-25">Mã văn bản</th>
+                <th class="w-auto">Số lượng đọc</th>
+                <th class="w-auto">Số lượng hiểu</th>
             </tr>
         </thead>
         <tfoot>
-            <tr class="tfoot">
+            <tr class="tfoot thead font-weight-bold">
                 <td colspan="3"></td>
                 <td></td>
                 <td></td>
@@ -211,7 +211,7 @@
                     "responsive": false,
                     "order": [[0, 'asc']],
                     "columnDefs": [
-                        { orderable: false, targets: 'filters' },
+                        { orderable: false, targets: 'no-order' },
                         { className: "text-wrap", targets: "_all" },
                         { defaultContent: '', targets: "_all" },
                     ],
@@ -271,8 +271,8 @@
                             }, 0);
                         // Update footer
                         $(api.column(1).footer()).html('Tổng số văn bản: ' + data.length);
-                        $(api.column(3).footer()).html('Tổng số user đã đọc: ' + totaldoc);
-                        $(api.column(4).footer()).html('Tổng số user đã hiểu: ' + totalhieu);
+                        $(api.column(3).footer()).html('Tổng số: ' + totaldoc);
+                        $(api.column(4).footer()).html('Tổng số: ' + totalhieu);
                     },
                     "initComplete": function (settings, json) {
                         table.buttons().container().appendTo('#btn-export');
@@ -282,32 +282,25 @@
             }
 
             var columnData = [
-                { "data": "stt" },
-                { "data": "tenBM" },
-                { "data": "maBM" },
-                { "data": "phienBan1" },
-                { "data": "phanMem1" },
+                {
+                    "data": {},
+                    "render": function (data, type, full, meta) {
+                        var stt = meta.row;
+                        return stt;
+                    },
+                },
+                { "data": "tenVanBan" },
+                { "data": "maVanBan" },
+                {
+                    "data": "soLuongDoc",
+                },
+                {
+                    "data": "soLuongHieu",
+                },
             ]
             tableThongKeVanBan("#tbThongKeXacNhan", columnData, "/ThongKe/GetTable_ThongKeSoLuongXacNhan")
 
             $('body').on('click', 'button[data-toggle="search"]', function () {
-                //var NgayBHBD = ((document.getElementById("NgayBHBD") || {}).value) || "";
-                //var NgayBHKT = ((document.getElementById("NgayBHKT") || {}).value) || "";
-                //var doituongapdung = $("#doituongapdung").val() || "";
-                //var donviapdung = $("#donviapdung").val() || "";
-                //var loaivanban = $("#loaivanban").val() || "";
-
-                //var searchTerm = "loai=1";
-                //if (tungay != "")
-                //    searchTerm += "&tungay=" + tungay;
-                //if (denngay != "")
-                //    searchTerm += "&denngay=" + denngay;
-                //if (doituongapdung != "")
-                //    searchTerm += "&doituongapdung=" + doituongapdung;
-                //if (donviapdung != "")
-                //    searchTerm += "&donviapdung=" + donviapdung;
-                //if (loaivanban != "")
-                //    searchTerm += "&loaivanban=" + loaivanban;
                 var data = $('#frmThongKeSoLuongXacNhan').serialize();
                 tableThongKeVanBan("#tbThongKeXacNhan", columnData, "/ThongKe/GetTable_ThongKeSoLuongXacNhan?" + data)
             });

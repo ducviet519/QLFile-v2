@@ -254,7 +254,7 @@
                         <div class="" id="btn-export"></div>
                         @if ((AuthorizationService.AuthorizeAsync(User, "Permission.DoiNhom")).Result.Succeeded)
                         {
-                        <button type="button" class="btn btn-success btn-flat ml-3" data-toggle="modal" data-target="#modalDoiNhomVB"><i class="fas fa-random"></i> Chức năng đổi nhóm</button>
+                            <button type="button" class="btn btn-success btn-flat ml-3" data-toggle="modal" data-target="#modalDoiNhomVB"><i class="fas fa-random"></i> Chức năng đổi nhóm</button>
                         }
                     </div>
                 </div>
@@ -450,7 +450,8 @@
                             var del = '<a class="dropdown-item" data-toggle="deletevanban" data-target="#deletevanban-' + meta.row + '" data-url="/VanBan/VanBan_Delete?idvb=' + data.idvb + '&tenVB=' + data.tenVB + '"><i class="fas fa-trash"></i> Xóa văn bản</a>';
                         } else { var del = ''; }
                         var gopy = '<a class="dropdown-item" data-toggle="ajax-modal" data-target="#modalGopY-' + meta.row + '" data-url="/GopY/Index?IDBieuMau=' + data.idvb + '"><i class="fas fa-comment-alt"></i> Góp Ý</a>';
-                        var dropmenu = "<button type='button' class='btn btn-link dropdown-toggle' data-toggle='dropdown'>Chi tiết</button ><div class='dropdown-menu' role='menu'>" + version + " " + edit + " " + detail + " " + soft + " " + del + "  " + auth + "  " + gopy + "</div>";
+                        var share = '<a class="dropdown-item" data-toggle="tooltip" title="Đã copy file link" data-target="#sharefile-' + meta.row + '" data-idvb="' + data.idvb + '"><i class="fas fa-share-square"></i> Lấy link</a>';
+                        var dropmenu = "<button type='button' class='btn btn-link dropdown-toggle' data-toggle='dropdown'>Chi tiết</button ><div class='dropdown-menu' role='menu'>" + version + " " + edit + " " + detail + " " + soft + " " + del + "  " + auth + "  " + gopy + "  " + share + "</div>";
                         var result = "<div class='btn-group'>" + dropmenu + "</div>";
                         return result;
                     },
@@ -945,6 +946,21 @@
                 e.preventDefault();
             });
 
+            $('body').on('click', 'a[data-toggle="tooltip"]', function (e) {
+                var Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+                var idvb = $(this).data('idvb');
+                navigator.clipboard.writeText("https://vb.bvta.vn/Preview/VanBan?file=" + idvb);
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Đã lấy link file.'
+                })
+            })
+
             function addHidden(key, value) {
                 var input = document.createElement('input');
                 input.type = 'hidden';
@@ -954,9 +970,11 @@
             }
 
             $(document).on('show.bs.modal', '#modalDoiNhomVB', function (e) {
-                var loaivb = document.getElementById('LoaiVB').value;
+                var table = $('#tbVanBanChiTiet').DataTable()
+                var rows = table.rows({ selected: true }).data();
+                var loaivb = rows[0].viTriCabinet;
                 $('input[combotree]').combotree({
-                    url: '/VanBan/Get_ThuMucCha?parentid=' + parseInt(loaivb),
+                    url: '/VanBan/Get_ThuMucCha?type=2&parentid=' + parseInt(loaivb),
                     method: 'get',
                     editable: true,
                     loadFilter: function (data) {

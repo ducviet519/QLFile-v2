@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -58,37 +60,38 @@ namespace WebTools.Services
                         }
                         if (File.Exists(filePath))
                         {
-                            List<DataExcel> dataExcels = new List<DataExcel>();
                             XLWorkbook workbook = XLWorkbook.OpenFromTemplate(filePath);
                             var sheets = workbook.Worksheets.First();
                             
                             //var sheets = workbook.Worksheet(1).RangeUsed().RowsUsed().Skip(1);
                             var rows = sheets.RangeUsed().RowsUsed().Skip(1).ToList();
-                            int stt = 0;
+                            DataTable table = new DataTable();
+                            for(int i = 1; i <= 50; i++)
+                            {
+                                table.Columns.Add(new DataColumn($"Col{i}", typeof(string)));
+                            }                                                      
                             foreach (var row in rows)
                             {
-                                DataExcel item = new DataExcel()
-                                {
-                                    stt = (stt + 1).ToString(),
-                                    tenvanban = row.Cell(1).Value.ToString(),
-                                    mavanban = row.Cell(2).Value.ToString(),
-                                    phienban = row.Cell(3).Value.ToString(),
-                                    ngayphathanh = row.Cell(4).Value.ToString(),
-                                    ngayhieuluc = row.Cell(5).Value.ToString(),
-                                    ngayupload = row.Cell(6).Value.ToString() ?? DateTime.Now.ToString("dd/MM/yyyy"),
-                                    khoaphongsoanthao = row.Cell(7).Value.ToString(),
-                                    nguoisoanthao = row.Cell(8).Value.ToString(),
-                                    doituongapdung = row.Cell(9).Value.ToString(),
-                                    donviapdung = row.Cell(10).Value.ToString(),
-                                    loaivanban = row.Cell(11).Value.ToString(),
-                                    tenthumuc = row.Cell(12).Value.ToString(),
-                                    mathumuc = row.Cell(13).Value.ToString(),
-                                };
-                                dataExcels.Add(item);
+                                DataRow newRow = table.NewRow();
+                                    for(int i = 1; i <= 50; i++)
+                                    {
+                                        newRow[$"Col{i}"] = row.Cell(i).Value.ToString();
+                                    }
+                                table.Rows.Add(newRow);
                             }
+
                             data.status = "OK";
                             data.filepath = filePath;
-                            data.dataExcels = dataExcels;
+                            data.dataExcels = table;
+                            foreach (DataRow row in table.Rows)
+                            {
+                                var expando = new ExpandoObject() as IDictionary<string, Object>;
+                                foreach (DataColumn col in table.Columns)
+                                {
+                                    expando.Add(col.ColumnName, row[col.ColumnName]);
+                                }
+                            }
+                            DataRow test = table.Rows[0];
                             File.Delete(filePath);
                         }
                     }

@@ -235,10 +235,13 @@ namespace WebTools.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> Get_ThuMucCha(int? parentid)
+        public async Task<JsonResult> Get_ThuMucCha(int? parentid, string type = null)
         {
-            var data = (await _services.ThuMuc.GetList_ThuMuc(parentid, "1")).ToList();
-            return Json(new { rows = data });
+            if(!String.IsNullOrEmpty(type) && type == "2")
+            {
+                return Json(new { rows = (await _services.ThuMuc.GetList_ThuMuc(parentid, type)).ToList() });
+            }
+            return Json(new { rows = (await _services.ThuMuc.GetList_ThuMuc(parentid, "1")).ToList() });
         }
 
         [HttpPost]
@@ -380,6 +383,7 @@ namespace WebTools.Controllers
             string title = String.Empty;
             string result = String.Empty;
             FileImport data = new FileImport();
+            string user = HttpContext.User.Claims.First(c => c.Type == ClaimTypes.GivenName).Value ?? HttpContext.User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
             try
             {
                 if (fileUpload != null)
@@ -387,8 +391,8 @@ namespace WebTools.Controllers
                     data = await _services.UploadFile.ReadExcelFile(fileUpload);
                     if (data.status == "OK")
                     {
-
-                        message = $"Lấy thành công {data.dataExcels.Count} văn bản";
+                        string check = await _services.VanBan.FileImport("1", data.dataExcels, user);
+                        message = $"Lấy thành công {data.dataExcels.Rows.Count} văn bản";
                         title = "Thành công!";
                         result = "success";
                     }
@@ -406,7 +410,7 @@ namespace WebTools.Controllers
                 title = "Lỗi!";
                 result = "error";
             }
-            return Json(new { Result = result, Title = title, Message = message, data = data.dataExcels });
+            return Json(new { Result = result, Title = title, Message = message });
         }
 
 

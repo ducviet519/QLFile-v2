@@ -434,7 +434,6 @@ namespace WebTools.Services.Repositories
                 return result;
             }
         }
-
         public async Task<string> Delete_VanBan(string idvb)
         {
             string result = String.Empty;
@@ -449,6 +448,35 @@ namespace WebTools.Services.Repositories
                             IDBieuMau = idvb
                         },
                         commandType: CommandType.StoredProcedure);
+                    if (data.ToString() == "0")
+                    {
+                        result = "OK";
+                    }
+                    else { result = data.ToString(); }
+                    dbConnection.Close();
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                result = ex.Message;
+                return result;
+            }
+        }
+
+        public async Task<string> FileImport(string loaiFile, DataTable table, string user)
+        {
+            string result = String.Empty;
+            var parameter = new DynamicParameters();
+            parameter.Add("LoaiFile", loaiFile);
+            parameter.Add("UserAcc", user);
+            parameter.Add("FileTable", value: table, dbType: DbType.Object);
+            try
+            {
+                using (IDbConnection dbConnection = Connection)
+                {
+                    dbConnection.Open();
+                    var data = await dbConnection.ExecuteScalarAsync("sp_FileImport", parameter, commandType: CommandType.StoredProcedure);
                     if (data.ToString() == "0")
                     {
                         result = "OK";

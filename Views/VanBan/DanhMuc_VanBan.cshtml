@@ -145,7 +145,7 @@
 </style>
 <div class="container-fluid">
     <div class="row d-flex justify-content-between p-0 m-0">
-        <div class="card col-3" minwidth="350px">
+        <div class="card col-lg-3 col-sm-12 col-xl-3" minwidth="350px">
             <div class="card-body pl-0 pr-0">
                 <!-- Sidebar -->
                 <div class="sidebar sidebar-no-expand">
@@ -187,12 +187,12 @@
                 </div>
             </div>
         </div>
-        <div class="card col-9">
+        <div class="card col-lg-9 col-sm-12 col-xl-9">
             <div class="card-body">
-                <div class="row justify-content-between">
+                <div class="row d-flex justify-content-between">
                     @foreach (var item in Model.LoaiCabinet)
                     {
-                        <div class="col-lg-3 col-6">
+                        <div class="col-xl-3 col-lg-4 col-sm-12 col-md-6 d-flex justify-content-center">
                             <!-- small card -->
                             <div class="small-box bg-itemvb">
                                 <a href="/VanBan/DanhSach_VanBanChiTiet?loaivb=@item.ID" class="itemvb"><i class="fas fa-folder pr-1" style="font-size:30px;"></i>@item.DES</a>
@@ -234,8 +234,8 @@
                     <h1>Chức năng tìm kiếm</h1>
                     <form id="searchVanBan" asp-action="DanhSach_VanBanChiTiet" asp-controller="VanBan" method="post">
                         <div class="row d-flex justify-content-center">
-                            <div class="form-group row col-6">
-                                <label for="TenVB" class="col-form-label col-auto">Tên / Mã văn bản/ Nội dung văn bản:</label>
+                            <div class="form-group row col-lg-6 col-sm-12 col-md-12">
+                                <label for="TenVB" class="col-form-label col-lg-auto col-sm-12 col-md-12">Tên / Mã văn bản/ Nội dung văn bản:</label>
                                 <input type="text" id="TenVB" name="TenVB" class="form-control col" />
                                 <input type="hidden" id="loaitimkiem" name="loaitimkiem" class="form-control col" value="9" />
                             </div>
