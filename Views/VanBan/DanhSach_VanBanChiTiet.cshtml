@@ -115,6 +115,16 @@
     .search-panel {
         cursor: pointer;
     }
+    .search-panel:hover{
+        background-color: cornflowerblue;
+        border-radius: 5px;
+        color:white;
+        padding: 2px;
+    }
+
+    .search-advance{
+        display: none;
+    }
 
     #mainpanel {
         height: auto;
@@ -161,7 +171,7 @@
     <input type="hidden" id="suser" name="suser" value="@Model.SearchList.user" />
     <input type="hidden" id="sloaitimkiem" name="sloaitimkiem" value="@Model.SearchList.loaitimkiem" />
 </div>
-<div class="row mb-2 ml-2">
+@*<div class="row mb-2 ml-2">
     @if ((AuthorizationService.AuthorizeAsync(User, "Permission.ThemThuMuc")).Result.Succeeded)
     {
     <button class="btn btn-secondary btn-flat ml-2" data-toggle="ajax-modal" data-target="#modalTaoMuc" data-url="@Url.Action("ThuMuc_ThemMoi", "VanBan")">Tạo Nhóm</button>
@@ -170,7 +180,7 @@
     {
     <button class="btn btn-secondary btn-flat ml-2" data-toggle="ajax-modal" data-target="#modalChuyenNhom" data-url="@Url.Action("ThuMuc_ChuyenNhom", "VanBan")">Chuyển Nhóm</button>
     }
-</div>
+</div>*@
 <div class="easyui-layout panel-vanban" id="cc" data-options="fit:true">
     <div id="leftpanel" data-options="region:'west',split:true" title="Danh mục" style="width:200px">
         <ul id="tree" class="easyui-tree" tree></ul>
@@ -198,7 +208,7 @@
     </div>
     <div id="mainpanel" data-options="region:'center'" title="Danh sách văn bản chi tiết">
         <div class="fieldset ml-1 mr-1 mt-3">
-            <h1 class="search-panel">Chức năng tìm kiếm</h1>
+            <h1 class="search-panel">Bấm để Tìm kiếm nâng cao</h1>
             <div class="search-advance">
                 <div class="row">
                     <div class="form-group row col-7">
