@@ -77,6 +77,13 @@
     .dataTables_filter {
         display: none;
     }
+    pre {
+        margin: 0 !important;
+        padding: 0 !important;
+        font-family: unset !important;
+        font-size: unset !important;
+        overflow: hidden;
+    }
 </style>
 <div class="invoice p-3 mb-3">
     <h2 class="text-center">Báo cáo thống kê tổng hợp</h2>
@@ -92,7 +99,7 @@
                             <div class="col-sm">
                                 <div class="form-group row mb-0">
                                     <label class="col-75 col-form-label"> Từ ngày: </label>
-                                    <input type="text" id="tungay" name="tungay" class="form-control form-control-sm datetimepicker-input col-120 rounded-0" data-toggle="datetimepicker" data-target="#tungay" autocomplete="off" data-timepicker="date">
+                                    <input type="text" id="NgayBHBD" name="NgayBHBD" class="form-control form-control-sm datetimepicker-input col-120 rounded-0" data-toggle="datetimepicker" data-target="#tungay" autocomplete="off" data-timepicker="date">
                                 </div>
                             </div>
                         </div>
@@ -100,17 +107,17 @@
                             <div class="col-sm">
                                 <div class="form-group row mb-0">
                                     <label class="col-75 col-form-label"> Đến ngày:</label>
-                                    <input type="text" id="denngay" name="denngay" class="form-control form-control-sm datetimepicker-input col-120 rounded-0" data-toggle="datetimepicker" data-target="#denngay" autocomplete="off" data-timepicker="date">
+                                    <input type="text" id="NgayBHKT" name="NgayBHKT" class="form-control form-control-sm datetimepicker-input col-120 rounded-0" data-toggle="datetimepicker" data-target="#denngay" autocomplete="off" data-timepicker="date">
                                 </div>
                             </div>
                         </div>
                         <div class="form-group row col">
                             <label for="txtSearch" class="col-form-label col-130 ml-3">Đối tượng áp dụng:</label>
-                            <select class="custom-select custom-select-sm col rounded-0" id="DoiTuongApDung" name="DoiTuongApDung" select2="doituong"></select>
+                            <select class="custom-select custom-select-sm col rounded-0" id="DoiTuong" name="DoiTuong" select2="doituong"></select>
                         </div>
                         <div class="form-group row col">
                             <label for="txtSearch" class="col-form-label col-130 ml-3">Đơn vị áp dụng:</label>
-                            <select class="custom-select custom-select-sm col rounded-0" id="DonViApDung" name="DonViApDung" select2="depts"></select>
+                            <select class="custom-select custom-select-sm col rounded-0" id="DonVi" name="DonVi" select2="depts"></select>
                         </div>
                     </div>                    
                 </form>
@@ -152,6 +159,11 @@
 @section Scripts{
     <script type="text/javascript">
         $(document).ready(function () {
+            $(document).on({
+                ajaxStart: function () { $(document.body).addClass("loading"); },
+                ajaxStop: function () { $(document.body).removeClass("loading"); }
+            });
+
             $('.search-panel').click(function (e) {
                 $('.search-advance').toggle(500);
             });
@@ -206,7 +218,9 @@
                     $(id).find('tbody').empty();
                 }
                 var table = $(id).DataTable({
-                    "paging": true,
+                    "scrollY": '420px',
+                    "scrollCollapse": true,
+                    "paging": false,
                     "lengthChange": false,
                     "searching": true,
                     "processing": true,
@@ -283,37 +297,33 @@
             }
 
             var columnData = [
-                { "data": "stt" },
-                { "data": "tenBM" },
-                { "data": "phienBan1" },
-                { "data": "phienBan1" },
-                { "data": "phanMem1" },
-                { "data": "phanMem1" },
-                { "data": "phanMem1" },
-                { "data": "phanMem1" },
+                {
+                    "data": {},
+                    "render": function (data, type, full, meta) {
+                        var stt = meta.row + 1;
+                        return stt;
+                    },
+                },
+                {
+                    "data": { noiDung: "noiDung"},
+                    "render": function (data, type, full, meta) {
+                        return '<pre>' + data.noiDung + '</pre>';
+                    },
+                },
+                { "data": "tong" },
+                { "data": "daDcKiemSoat" },
+                { "data": "denHanKiemSoat" },
+                { "data": "phatHanhMoi" },
+                { "data": "capNhatPB" },
+                { "data": "ngungSD" },
             ]
 
             var table = tableThongKeVanBan("#tbThongKeTongHop", columnData, "/ThongKe/GetTable_ThongKeTongHop", "")
-
             
-
             $('body').on('click', 'button[data-toggle="search"]', function () {
-                var tungay = ((document.getElementById("tungay") || {}).value) || "";
-                var denngay = ((document.getElementById("denngay") || {}).value) || "";
-                var doituongapdung = $("#doituongapdung").val() || "";
-                var donviapdung = $("#donviapdung").val() || "";
 
-                var searchTerm = "loai=1";
-                if (tungay != "")
-                    searchTerm += "&tungay=" + tungay;
-                if (denngay != "")
-                    searchTerm += "&denngay=" + denngay;
-                if (doituongapdung != "")
-                    searchTerm += "&doituongapdung=" + doituongapdung;
-                if (donviapdung != "")
-                    searchTerm += "&donviapdung=" + donviapdung;
-
-                tableThongKeVanBan("#tbThongKeXacNhan", columnData, "/ThongKe/GetTable_ThongKeTongHop?" + searchTerm, "")
+                var form = $("#frmThongKeTongHop");
+                tableThongKeVanBan("#tbThongKeTongHop", columnData, "/ThongKe/GetTable_ThongKeTongHop?" + form.serialize(), "")
             });
         });
 

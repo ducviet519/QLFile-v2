@@ -10,6 +10,11 @@
     .text-content {
         font-weight: bold !important;
         color: dodgerblue;
+        white-space: pre-line;
+    }
+    pre{
+        font-family: unset !important;
+        font-size: unset !important;
     }
 </style>
 <!-- Modal -->
@@ -45,7 +50,7 @@
                 </div>
                 <div class="form-group row">
                     <label class="col-form-label col-120">Ghi chú:</label>
-                    <label class="col-form-label col-auto text-content">@Model.VanBanInfo.ThongTinCNTT</label>
+                    <pre class="col-form-label col-auto text-content">@Model.VanBanInfo.ThongTinCNTT</pre>
                 </div>
                 <div class="mt-5">
                     <table class="table table-bordered table-striped" width="100%" id="tbChiTiet">

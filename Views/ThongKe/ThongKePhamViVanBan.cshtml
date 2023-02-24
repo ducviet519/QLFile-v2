@@ -329,8 +329,7 @@
             tableThongKeVanBan("#tbThongKePhamVi", columnData, "/ThongKe/GetTable_ThongKeTheoPhamVi", "")
 
             $('body').on('click', 'button[data-toggle="search"]', function () {
-                var form = $("#frmThongKePhamVi")
-
+                var form = $("#frmThongKePhamVi");
                 var table = tableThongKeVanBan("#tbThongKePhamVi", columnData, "/ThongKe/GetTable_ThongKeTheoPhamVi?" + form.serialize(), "")
 
             });

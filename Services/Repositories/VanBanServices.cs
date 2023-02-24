@@ -463,7 +463,6 @@ namespace WebTools.Services.Repositories
                 return result;
             }
         }
-
         public async Task<string> FileImport(string loaiFile, DataTable table, string user)
         {
             string result = String.Empty;
@@ -478,6 +477,36 @@ namespace WebTools.Services.Repositories
                     dbConnection.Open();
                     var data = await dbConnection.ExecuteScalarAsync("sp_FileImport", parameter, commandType: CommandType.StoredProcedure);
                     if (data.ToString() == "0")
+                    {
+                        result = "OK";
+                    }
+                    else { result = data.ToString(); }
+                    dbConnection.Close();
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                result = ex.Message;
+                return result;
+            }
+        }
+        public async Task<string> UpdateFileLink(string IDFileLink, string FileLink)
+        {
+            string result = String.Empty;
+            string query = "UPDATE [Tools].[dbo].[Report_File] SET FileLink = @FileLink WHERE ID = @IDFileLink";
+            try
+            {
+                using (IDbConnection dbConnection = Connection)
+                {
+                    dbConnection.Open();
+                    var data = await dbConnection.ExecuteAsync(query,
+                        new
+                        {
+                            FileLink = FileLink,
+                            IDFileLink = IDFileLink
+                        });
+                    if (data > 0)
                     {
                         result = "OK";
                     }

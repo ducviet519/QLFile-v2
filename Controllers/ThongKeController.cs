@@ -57,10 +57,9 @@ namespace WebTools.Controllers
             return View();
         }
 
-        public async Task<JsonResult> GetTable_ThongKeTongHop(string loai, string tungay = null, string denngay = null, string doituongapdung = null, string donviapdung = null)
+        public async Task<JsonResult> GetTable_ThongKeTongHop(SearchThongKe search)
         {
-            var data = (await _services.Report_List.GetReportListAsync()).Take(10).ToList();
-            return Json(new { data });
+            return Json(new { data = await _services.ThongKe.GetData_ThongKeTongHop(search) });
         }
         #endregion
 

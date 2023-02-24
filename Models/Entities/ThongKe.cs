@@ -52,4 +52,15 @@ namespace WebTools.Models.Entities
         public string TrangThai { get; set; }
         public string GhiChu { get; set; }
     }
+
+    public class ThongKe_TongHop
+    {
+        public string NoiDung { get; set; }
+        public string Tong { get; set; }
+        public string DaDcKiemSoat { get; set; }
+        public string DenHanKiemSoat { get; set; }
+        public string PhatHanhMoi { get; set; }
+        public string CapNhatPB { get; set; }
+        public string NgungSD { get; set; }
+    }
 }

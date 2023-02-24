@@ -483,7 +483,51 @@ namespace WebTools.Controllers
             var data = await _services.VanBan.Get_DanhSachPhienBan(idvb);
             model.VanBanInfo = data.FirstOrDefault();
             ViewBag.PhienBan = Convert.ToInt32(data.FirstOrDefault().PhienBan.Substring(data.FirstOrDefault().PhienBan.IndexOf("V") + 1)) + 1;
+            ViewBag.IDFileLink = data.FirstOrDefault().IDFileLink;
             return PartialView("_VanBan_PhienBan", model);
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> UpdateFile_PhienBan(VanBan_PhienBan vanBan_PhienBan)
+        {
+            string message = "";
+            string title = "";
+            string result = "";
+            string user = HttpContext.User.Claims.First(c => c.Type == ClaimTypes.GivenName).Value ?? HttpContext.User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
+            try
+            {
+                vanBan_PhienBan.FileLink = await _services.UploadFile.UploadFileAsync(vanBan_PhienBan.fileUpload);
+                if (vanBan_PhienBan.fileUpload != null && String.IsNullOrEmpty(vanBan_PhienBan.FileLink))
+                {
+                    message = $"File <b>{vanBan_PhienBan.fileUpload.FileName}</b> tải lên không thành công. Vui lòng kiểm tra lại file.";
+                    title = "Lỗi!";
+                    result = "error";
+                    return Json(new { Result = result, Title = title, Message = message });
+                }
+                else
+                {
+                    result = await _services.VanBan.UpdateFileLink(vanBan_PhienBan.IDFileLink, vanBan_PhienBan.FileLink);
+                    if (result == "OK")
+                    {
+                        message = $"Đã thay thế file</b>";
+                        title = "Thành công!";
+                        result = "success";
+                    }
+                    else
+                    {
+                        message = $"Lỗi! {result}";
+                        title = "Lỗi!";
+                        result = "error";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                message = ex.Message;
+                title = "Lỗi!";
+                result = "error";
+            }
+            return Json(new { Result = result, Title = title, Message = message });
         }
 
         [HttpGet]
@@ -589,11 +633,16 @@ namespace WebTools.Controllers
         {
             VanBanChiTietVM model = new VanBanChiTietVM();
             var data = await _services.VanBan.Get_DanhSachPhienBan(idvb);
-            model.ListPhienBan = data;
-            model.VanBanInfo = data.FirstOrDefault();
+            if(data.Count > 0)
+            {
+                model.ListPhienBan = data;
+                var info = data.FirstOrDefault();
+                info.ThongTinCNTT = info.ThongTinCNTT.Replace("\\n", "\n");
+                model.VanBanInfo = info;
+            }           
             return PartialView("_VanBan_ChiTiet", model);
         }
-
+        
         [HttpGet]
         public IActionResult VanBan_PhienBan_Delete(string idvb, string idphienban, string trangthai)
         {

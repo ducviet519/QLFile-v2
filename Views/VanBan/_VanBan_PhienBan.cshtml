@@ -71,6 +71,7 @@
                             <label class="col-form-label col-115">Phiên bản:</label>
                             <div class="col-110">
                                 <input type="text" class="form-control text-center" id="PhienBan" name="PhienBan" value="@ViewBag.PhienBan" required />
+                                <input type="hidden" id="IDFileLink" name="IDFileLink" value="@ViewBag.IDFileLink" />
                             </div>
                         </div>
                     </div>
@@ -114,6 +115,7 @@
                     </div>
             </div>
             <div class="modal-footer">
+                <button type="button" class="btn btn-info position-absolute ml-3" style="left: 0;" data-upload="newfile"><i class="fas fa-file-import"></i> Đổi File</button>
                 <button type="button" class="btn btn-primary mr-3" data-save="phienban"><i class="fas fa-save"></i> Lưu</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Đóng</button>
             </div>
@@ -363,6 +365,33 @@
         $('#modalPhienBan').on('shown.bs.modal', function (e) {
             $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();
         });
-        
+
+        $('body .modal').on('click', 'button[data-upload="newfile"]', function (event) {
+            var formData = new FormData(document.getElementById("frmAddPhienBan"));
+            $.ajax({
+                type: 'POST',
+                url: '/VanBan/UpdateFile_PhienBan',
+                data: formData,
+                processData: false,
+                contentType: false,
+                beforeSend: function () {
+                    $('button[data-upload="newfile"]').attr("disabled", true);
+                },
+                success: function (data) {
+                    $(this).callToast(data.result, data.title, data.message);
+                },
+                error: function (data) {
+                    $(this).callToast(data.result, data.title, data.message);
+                },
+                complete: function () {
+                    $('button[data-upload="newfile"]').attr("disabled", false);
+
+                },
+            });
+        });
+
+        $('#modalPhienBan').on('shown.bs.modal', function (e) {
+            $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();
+        });
     });
 </script>

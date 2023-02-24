@@ -116,5 +116,35 @@ namespace WebTools.Services.Repositories
                 return data;
             }
         }
+
+        public async Task<List<ThongKe_TongHop>> GetData_ThongKeTongHop(SearchThongKe search)
+        {
+            List<ThongKe_TongHop> data = new List<ThongKe_TongHop>();
+
+            try
+            {
+                using (IDbConnection dbConnection = Connection)
+                {
+                    if (dbConnection.State == ConnectionState.Closed)
+                        dbConnection.Open();
+                    data = (await dbConnection.QueryAsync<ThongKe_TongHop>("sp_Report_BaoCaoTKTH",
+                    new
+                    {
+                        NgayBD = search.NgayBHBD,
+                        NgayKT = search.NgayBHKT,
+                        DoiTuong = search.DoiTuong,
+                        DonVi = search.DonVi,
+                    },
+                    commandType: CommandType.StoredProcedure)).ToList();
+                    dbConnection.Close();
+                }
+                return data;
+            }
+            catch (Exception ex)
+            {
+                string errorMsg = ex.Message;
+                return data;
+            }
+        }
     }
 }
