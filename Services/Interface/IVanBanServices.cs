@@ -12,6 +12,7 @@ namespace WebTools.Services.Interface
         public Task<List<BangTinVanBan>> Get_BangTinVanBan(string user, string loaivb = null);
         public Task<List<PreviewVanBan>> Preview_VanBan(string user, string idvanban = null);
         public Task<List<VanBanChiTiet>> Table_VanBanChiTiet(Search_VanBanChiTiet search = null);
+        public Task<List<VanBanChiTiet>> Table_VanBanChiTiet_Google(Search_VanBanChiTiet search = null, List<GoogleDriveFile> table = null);
         public Task<string> ViewLog(string idvb, string user);
         public Task<string> SendLike(string idvb, string user);
         public Task<List<VanBan_PhienBan>> Get_DanhSachPhienBan(string idvb);

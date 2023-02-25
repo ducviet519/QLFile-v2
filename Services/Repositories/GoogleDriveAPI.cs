@@ -186,13 +186,13 @@ namespace WebTools.Services
                 {
                     GoogleDriveFile File = new GoogleDriveFile
                     {
-                        Id = file.Id,
-                        Name = file.Name,
-                        Size = file.Size,
-                        Version = file.Version,
-                        CreatedTime = file.CreatedTime,
-                        Parents = file.Parents,
-                        MimeType = file.MimeType,
+                        //Id = file.Id,
+                        //Name = file.Name,
+                        //Size = file.Size,
+                        //Version = file.Version,
+                        //CreatedTime = file.CreatedTime,
+                        //Parents = file.Parents,
+                        //MimeType = file.MimeType,
                         FileName = file.Name
                     };
                     FileList.Add(File);
@@ -209,8 +209,9 @@ namespace WebTools.Services
             // Define parameters of request.
             FilesResource.ListRequest FileListRequest = service.Files.List();
 
-            //FileListRequest.Q = $"(fullText contains '{searchString}') or (mimeType = 'application/vnd.google-apps.document')";
-            FileListRequest.Q = $"(fullText contains '{searchString}')";
+            //Search query terms
+            //and (mimeType = 'application/vnd.google-apps.folder')
+            FileListRequest.Q = $"(fullText contains '{searchString}') and ('1-CNimSyGJXejSbpU9OcWaGAyuXVmy5J1' in parents)";
             // List files.
             var files2 = await FileListRequest.ExecuteAsync();
             IList<Google.Apis.Drive.v3.Data.File> files = (await FileListRequest.ExecuteAsync()).Files;
@@ -222,13 +223,13 @@ namespace WebTools.Services
                 {
                     GoogleDriveFile File = new GoogleDriveFile
                     {
-                        Id = file.Id,
-                        Name = file.Name,
-                        Size = file.Size,
-                        Version = file.Version,
-                        CreatedTime = file.CreatedTime,
-                        Parents = file.Parents,
-                        MimeType = file.MimeType,
+                        //Id = file.Id,
+                        //Name = file.Name,
+                        //Size = file.Size,
+                        //Version = file.Version,
+                        //CreatedTime = file.CreatedTime,
+                        //Parents = file.Parents,
+                        //MimeType = file.MimeType,
                         FileName = file.Name
                     };
                     FileList.Add(File);

@@ -152,6 +152,9 @@
                 <th>Ngày xem lại kế tiếp</th>
                 <th>Trạng thái</th>
                 <th>Ghi chú</th>
+                <th>Đối tượng áp dụng</th>
+                <th>Đơn vị áp dụng</th>
+                <th>Ghi chú</th>
             </tr>
         </thead>
         <tfoot>
@@ -203,7 +206,7 @@
                     },
                 });
             }
-            selectList("phamvi9", "/DanhMuc/Get_Select_PhamViThongKe", "--Chọn--")
+            selectList("phamvi9", "/DanhMuc/Get_Select_PhamViThongKeChiTiet", "--Chọn--")
             selectList("depts", "/DanhMuc/Get_Select_Depts", "--Chọn--")
             selectList("loaivb", "/DanhMuc/Get_Select_LoaiVanBan", "--Chọn--")
             selectList("doituong", "/DanhMuc/Get_Select_DoiTuongApDung", "--Chọn--")
@@ -270,8 +273,8 @@
                         "className": "btn btn-success btn-flat ml-3",
                         "title": "Báo cáo thông kê chi tiết theo phạm vi văn bản",
                         "sheetName": "Thống kê",
-                        "footer": true
-                        //"exportOptions": { columns: array },
+                        "footer": true,
+                        "exportOptions": { columns: [0,1,2,3,9,10,4,5,6,7,11] },
 
                     }],
                     "footerCallback": function (row, data, start, end, display) {
@@ -323,6 +326,18 @@
                         }
                         else { return ''; }                        
                     },
+                },
+                {
+                    "data": "doiTuongApDung",
+                    "visible": false
+                },
+                {
+                    "data": "donViApDung",
+                    "visible": false
+                },
+                {
+                    "data": "ghiChuFull",
+                    "visible": false
                 },
             ]
 

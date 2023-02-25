@@ -51,6 +51,9 @@ namespace WebTools.Models.Entities
         public string NgayXLKT { get; set; }
         public string TrangThai { get; set; }
         public string GhiChu { get; set; }
+        public string DoiTuongApDung { get; set; }
+        public string DonViApDung { get; set; }
+        public string GhiChuFull { get; set; }
     }
 
     public class ThongKe_TongHop

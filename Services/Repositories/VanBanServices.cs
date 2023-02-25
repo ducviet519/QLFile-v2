@@ -143,6 +143,42 @@ namespace WebTools.Services.Repositories
                 return data;
             }
         }
+        public async Task<List<VanBanChiTiet>> Table_VanBanChiTiet_Google(Search_VanBanChiTiet search = null, List<GoogleDriveFile> table = null)
+        {
+            List<VanBanChiTiet> data = new List<VanBanChiTiet>();
+
+            try
+            {
+                using (IDbConnection dbConnection = Connection)
+                {
+                    if (dbConnection.State == ConnectionState.Closed)
+                        dbConnection.Open();
+                    data = (await dbConnection.QueryAsync<VanBanChiTiet>("sp_Report_Detail_List",
+                    new
+                    {
+                        TenVB = search.TenVB,
+                        LoaiVB = search.LoaiVB,
+                        NgayBHBD = search.NgayBHBD,
+                        NgayBHKT = search.NgayBHKT,
+                        NgayHLBD = search.NgayHLBD,
+                        NgayHLKT = search.NgayHLKT,
+                        BPSoanThao = search.BPSoanThao,
+                        DonViApDung = search.DonViApDung,
+                        DoiTuongApDung = search.DoiTuongApDung,
+                        user = search.user,
+                        FileName = table.AsTableValuedParameter("dbo.ReportFileName", new[] { "FileName" }),
+                    },
+                    commandType: CommandType.StoredProcedure)).ToList();
+                    dbConnection.Close();
+                }
+                return data;
+            }
+            catch (Exception ex)
+            {
+                string errorMsg = ex.Message;
+                return data;
+            }
+        }
         public async Task<string> ViewLog(string idvb, string user)
         {
             string result = String.Empty;

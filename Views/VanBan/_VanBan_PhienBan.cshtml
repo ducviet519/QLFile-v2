@@ -1,4 +1,6 @@
 ﻿@using WebTools.Models.ViewModel
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
 @model VanBanChiTietVM
 <style>
     .col-115 {
@@ -18,6 +20,7 @@
         padding-left: 7.5px;
         padding-right: 7.5px;
     }
+
     .bg-warning, .bg-warning > a {
         color: white !important;
     }
@@ -94,28 +97,31 @@
                         </div>
                     </div>
                 </form>
-                    <div class="row justify-content-between"></div>
-                    <div class="mt-5">
-                        <h3 class="text-center">Danh sách phiên bản</h3>
-                        <table class="table table-bordered table-striped" width="100%" id="tbPhienBan">
-                            <thead class="thead">
-                                <tr>
-                                    <th>STT</th>
-                                    <th>Phiên bản</th>
-                                    <th>Ngày phát hành</th>
-                                    <th>Ngày hiệu lực</th>
-                                    <th>Ngày upload</th>
-                                    <th>Ngày kiểm soát lại</th>
-                                    <th>Trạng thái</th>
-                                    <th>Ghi chú</th>
-                                    <th>Tiện ích</th>
-                                </tr>
-                            </thead>
-                        </table>
-                    </div>
+                <div class="row justify-content-between"></div>
+                <div class="mt-5">
+                    <h3 class="text-center">Danh sách phiên bản</h3>
+                    <table class="table table-bordered table-striped" width="100%" id="tbPhienBan">
+                        <thead class="thead">
+                            <tr>
+                                <th>STT</th>
+                                <th>Phiên bản</th>
+                                <th>Ngày phát hành</th>
+                                <th>Ngày hiệu lực</th>
+                                <th>Ngày upload</th>
+                                <th>Ngày kiểm soát lại</th>
+                                <th>Trạng thái</th>
+                                <th>Ghi chú</th>
+                                <th>Tiện ích</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-info position-absolute ml-3" style="left: 0;" data-upload="newfile"><i class="fas fa-file-import"></i> Đổi File</button>
+                @if ((AuthorizationService.AuthorizeAsync(User, "Permission.DoiFilePhienBan")).Result.Succeeded)
+                {
+                    <button type="button" class="btn btn-info position-absolute ml-3" style="left: 0;" data-upload="newfile"><i class="fas fa-file-import"></i> Đổi File</button>
+                }
                 <button type="button" class="btn btn-primary mr-3" data-save="phienban"><i class="fas fa-save"></i> Lưu</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Đóng</button>
             </div>
@@ -128,27 +134,27 @@
     $(document).ready(function () {
         $('#PhienBan').inputmask({ alias: 'numeric' });
 
-        bsCustomFileInput.init()
+                            bsCustomFileInput.init()
         function selectList(selectName, url, placeholder) {
             $('#modalPhienBan select[select2="' + selectName + '"]').select2({
-                ajax: {
-                    url: url,
+                                    ajax: {
+                                        url: url,
                     dataType: 'json',
                     data: function (params) {
-                        return {
-                            term: params.term,
+                                            return {
+                                                term: params.term,
                             page: params.page || 1,
                         }
-                    },
+                                        },
                     processResults: function (data, params) {
                         params.page = params.page || 1;
-                        return {
-                            results: $.map(data.data, function (item) {
-                                return {
-                                    id: item.id,
+                                            return {
+                                                results: $.map(data.data, function (item) {
+                                                    return {
+                                                        id: item.id,
                                     text: item.text,
                                 }
-                            }),
+                                                }),
                             pagination: {
                                 more: params.page < data.data.length
                             }
@@ -164,121 +170,121 @@
         }
         selectList("depts2", "/DanhMuc/Get_Select_Depts", "Chọn bộ phận soạn thảo")
         $('select[select2="nguoisoanthao2"]').select2({
-            placeholder: "Chọn người soạn thảo",
+                    placeholder: "Chọn người soạn thảo",
             ajax: {
-                url: '/DanhMuc/Get_Select_NguoiSoanThao',
+                        url: '/DanhMuc/Get_Select_NguoiSoanThao',
                 dataType: 'json',
                 data: function (params) {
-                    return {
-                        term: params.term,
+                            return {
+                                term: params.term,
                         page: params.page || 1,
                     }
-                },
+                        },
                 processResults: function (data, params) {
                     params.page = params.page || 1;
-                    return {
-                        results: $.map(data.data, function (item) {
                             return {
-                                id: item.id,
+                                results: $.map(data.data, function (item) {
+                                    return {
+                                        id: item.id,
                                 text: item.text,
                             }
-                        }),
+                                }),
                         pagination: {
-                            more: params.page < data.data.length
+                                    more: params.page < data.data.length
                         }
-                    };
-                },
+                            };
+                        },
                 cache: true
             },
             allowClear: true,
             language: "vi",
             dropdownParent: $('#modalPhienBan'),
             templateResult: function (option) {
-                if (option.loading) {
-                    return option.text;
-                }
-                var item = option.text.split('|');
-                var ob = jQuery(
-                    '<div class="row justify-content-between">' +
-                    '<div class="col-3">' + item[0] + '</div>' +
-                    '<div class="col-9 text-wrap">' + item[1] + '</div>' +
-                    '</div>');
-                return ob;
-            },
+                        if (option.loading) {
+                            return option.text;
+                        }
+                        var item = option.text.split('|');
+                        var ob = jQuery(
+                            '<div class="row justify-content-between">' +
+                            '<div class="col-3">' + item[0] + '</div>' +
+                            '<div class="col-9 text-wrap">' + item[1] + '</div>' +
+                            '</div>');
+                        return ob;
+                    },
             templateSelection: function (option) {
-                var item = option.text.split('|');
-                return item[1];
-            },
+                        var item = option.text.split('|');
+                        return item[1];
+                    },
         });
 
-        var columnData = [
+                var columnData = [
             {
                 "data": "stt"
             },
             {
-                "data": { phienBan: "phienBan", fileLink: "fileLink", tenVanBan: "tenVanBan" },
+                    "data": { phienBan: "phienBan", fileLink: "fileLink", tenVanBan: "tenVanBan" },
                 "render": function (data, type, full, meta) {
-                    if (data.fileLink === null || data.fileLink === "null") {
-                        return '<button class="btn btn-link p-0 text-left text-danger" data-toggle="preview-modal" data-target="#modalctvbpreview-' + meta.row + '" data-url="/Preview/Preview?readed=1&filePath=' + data.fileLink + '&filename=' + data.tenVanBan + '">' + data.phienBan + '</button>';
-                    }
-                    else {
-                        return '<button class="btn btn-link p-0 text-left text-primary" data-toggle="preview-modal" data-target="#modalctvbpreview-' + meta.row + '" data-url="/Preview/Preview?readed=1&filePath=' + data.fileLink + '&filename=' + data.tenVanBan + '">' + data.phienBan + '</button>';
-                    }
-                },
+                        if (data.fileLink === null || data.fileLink === "null") {
+                            return '<button class="btn btn-link p-0 text-left text-danger" data-toggle="preview-modal" data-target="#modalctvbpreview-' + meta.row + '" data-url="/Preview/Preview?readed=1&filePath=' + data.fileLink + '&filename=' + data.tenVanBan + '">' + data.phienBan + '</button>';
+                        }
+                        else {
+                            return '<button class="btn btn-link p-0 text-left text-primary" data-toggle="preview-modal" data-target="#modalctvbpreview-' + meta.row + '" data-url="/Preview/Preview?readed=1&filePath=' + data.fileLink + '&filename=' + data.tenVanBan + '">' + data.phienBan + '</button>';
+                        }
+                    },
                 "className": "text-center"
             },
             {
-                "data": "ngayBanHanh",
+                    "data": "ngayBanHanh",
                 "className": "text-center"
             },
             {
-                "data": "ngayApDung",
+                    "data": "ngayApDung",
                 "className": "text-center"
             },
             {
-                "data": "ngayUpload",
+                    "data": "ngayUpload",
                 "className": "text-center"
             },
             {
-                "data": "ngayXL",
+                    "data": "ngayXL",
                 "className": "text-center"
             },
             {
-                "data": { trangThai: "trangThai"},
+                    "data": { trangThai: "trangThai"},
                 "render": function (data, type, full, meta) {
-                    if (data.trangThai === "Đang sử dụng") {
-                        return '<span class="badge bg-success">' + data.trangThai + '</span>';
-                    }
-                    else if (data.trangThai === "Đã hủy") {
-                        return '<span class="badge bg-danger">' + data.trangThai + '</span>';
-                    }
-                    else if (data.trangThai === "Chờ ban hành") {
-                        return '<span class="badge bg-warning text-white">' + data.trangThai + '</span>';
-                    }
-                    else { return data.trangThai; }
-                },
+                        if (data.trangThai === "Đang sử dụng") {
+                            return '<span class="badge bg-success">' + data.trangThai + '</span>';
+                        }
+                        else if (data.trangThai === "Đã hủy") {
+                            return '<span class="badge bg-danger">' + data.trangThai + '</span>';
+                        }
+                        else if (data.trangThai === "Chờ ban hành") {
+                            return '<span class="badge bg-warning text-white">' + data.trangThai + '</span>';
+                        }
+                        else { return data.trangThai; }
+                    },
                 "className": "text-center"
             },
             {
-                "data": "ghiChu"
+                    "data": "ghiChu"
             },
             {
-                "data": { id: "id", phienBan: "phienBan", idPhienBan: "idPhienBan"},
+                    "data": { id: "id", phienBan: "phienBan", idPhienBan: "idPhienBan"},
                 "render": function (data, type, full, meta) {
-                    return '<button class="btn btn-outline-info btn-sm" data-toggle="preview-modal" data-target="#modaldoitrangthai-' + meta.row + '" data-url="/VanBan/VanBan_PhienBan_Delete?idvb=' + data.id + '&idphienban=' + data.idPhienBan + '&trangthai=' + data.trangThai + '">Cập nhật</button>';
-                },
+                        return '<button class="btn btn-outline-info btn-sm" data-toggle="preview-modal" data-target="#modaldoitrangthai-' + meta.row + '" data-url="/VanBan/VanBan_PhienBan_Delete?idvb=' + data.id + '&idphienban=' + data.idPhienBan + '&trangthai=' + data.trangThai + '">Cập nhật</button>';
+                    },
             },
         ]
 
         function tablePhienBan(id, columnData, url) {
-            var table = $(id).DataTable();
-            if ($.fn.dataTable.isDataTable(id)) {
-                table.destroy();
+                    var table = $(id).DataTable();
+                    if ($.fn.dataTable.isDataTable(id)) {
+                    table.destroy();
                 $(id).find('thead .filters').remove();
                 $(id).find('tbody').empty();
-            }
-            var table = $(id).DataTable({
-                "scrollY": '370px',
+                }
+                var table = $(id).DataTable({
+                    "scrollY": '370px',
                 "scrollCollapse": true,
                 "paging": false,
                 "lengthChange": false,
@@ -295,13 +301,13 @@
                     { "defaultContent": '', "targets": "_all" },
                 ],
                 "ajax": {
-                    "url": url,
+                        "url": url,
                     "type": "GET",
                     "datatype": "json"
                 },
                 "columns": columnData,
                 "language": {
-                    "sProcessing": "Đang tải dữ liệu...",
+                        "sProcessing": "Đang tải dữ liệu...",
                     "sLengthMenu": "Xem _MENU_ mục",
                     "sZeroRecords": "Không tìm thấy dòng nào phù hợp",
                     "sInfo": "Đang xem _START_ đến _END_ trong tổng số _TOTAL_ mục",
@@ -311,87 +317,87 @@
                     "sSearch": "Tìm:",
                     "sUrl": "",
                     "oPaginate": {
-                        "sFirst": "Đầu",
+                            "sFirst": "Đầu",
                         "sPrevious": "Trước",
                         "sNext": "Tiếp",
                         "sLast": "Cuối"
                     }
-                },
+                    },
 
             });
-            return table;
+                return table;
         }
         tablePhienBan("#tbPhienBan", columnData, "/VanBan/Get_DataPhienBan?idvb=@Model.VanBanInfo.ID")
 
         $('body .modal').on('click', 'button[data-toggle="preview-modal"]', function (event) {
-            var url = $(this).data('url');
+                    var url = $(this).data('url');
             $(this).callMultipleModal(url, ".second-preview-modal");
-        });
+                });
 
         $('input[datetimepicker]').datetimepicker({ format: 'DD/MM/YYYY', locale: 'vi', defaultDate: moment() });
 
         $('body .modal').on('click', 'button[data-save="phienban"]', function (event) {
-            var form = $("#frmAddPhienBan");
-            if (form[0].checkValidity() === true) {
-                var formData = new FormData(document.getElementById("frmAddPhienBan"));
+                    var form = $("#frmAddPhienBan");
+                    if (form[0].checkValidity() === true) {
+                        var formData = new FormData(document.getElementById("frmAddPhienBan"));
                 $.ajax({
-                    type: 'POST',
+                            type: 'POST',
                     url: '/VanBan/Add_PhienBanVB',
                     data: formData,
                     processData: false,
                     contentType: false,
                     beforeSend: function () {
                         $('button[data-save="phienban"]').attr("disabled", true);
-                    },
+                            },
                     success: function (data) {
                         $(this).callToast(data.result, data.title, data.message);
-                    },
+                            },
                     error: function (data) {
                         $(this).callToast(data.result, data.title, data.message);
-                    },
+                            },
                     complete: function () {
                         $('button[data-save="phienban"]').attr("disabled", false);
 
-                    },
+                            },
                 })
             }
-            else {
+                    else {
                 event.preventDefault()
-                event.stopPropagation()
-                form.addClass('was-validated');
-            }
-        });
+                        event.stopPropagation()
+                        form.addClass('was-validated');
+                    }
+                });
 
         $('#modalPhienBan').on('shown.bs.modal', function (e) {
             $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();
-        });
+                });
 
         $('body .modal').on('click', 'button[data-upload="newfile"]', function (event) {
-            var formData = new FormData(document.getElementById("frmAddPhienBan"));
+                    var formData = new FormData(document.getElementById("frmAddPhienBan"));
             $.ajax({
-                type: 'POST',
+                        type: 'POST',
                 url: '/VanBan/UpdateFile_PhienBan',
                 data: formData,
                 processData: false,
                 contentType: false,
                 beforeSend: function () {
                     $('button[data-upload="newfile"]').attr("disabled", true);
-                },
+                        },
                 success: function (data) {
                     $(this).callToast(data.result, data.title, data.message);
-                },
+                        },
                 error: function (data) {
                     $(this).callToast(data.result, data.title, data.message);
-                },
+                        },
                 complete: function () {
                     $('button[data-upload="newfile"]').attr("disabled", false);
 
-                },
+                        },
             });
-        });
+                });
 
         $('#modalPhienBan').on('shown.bs.modal', function (e) {
             $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();
-        });
+                });
     });
 </script>

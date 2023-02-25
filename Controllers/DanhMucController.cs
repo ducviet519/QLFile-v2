@@ -199,5 +199,29 @@ namespace WebTools.Controllers
             return Json(new { data = list.Skip(10 * (page - 1)).Take(10).Select(i => new { id = i.ID, text = i.MoTa }).ToList() });
         }
 
+        public async Task<JsonResult> Get_Select_PhamViThongKeChiTiet(string key = null, string term = null, int page = 1)
+        {
+            var list = new List<DanhMuc>();
+            list.Add(new DanhMuc() { ID = "1", DES = "Đã được kiểm soát" });
+            list.Add(new DanhMuc() { ID = "2", DES = "Đến hạn kiểm soát" });
+            list.Add(new DanhMuc() { ID = "3", DES = "Phát hành mới" });
+            list.Add(new DanhMuc() { ID = "4", DES = "Cập nhật phiên bản" });
+            list.Add(new DanhMuc() { ID = "5", DES = "Ngưng sử dụng" });
+
+            if (!String.IsNullOrEmpty(term))
+            {
+                var data = list.Where(i => StaticHelper.convertToUnSign(i.DES.ToLower()).Contains(StaticHelper.convertToUnSign(term.ToLower())))
+                    .Select(i => new { id = i.ID, text = i.DES })
+                    .ToList();
+                return Json(new { data });
+            }
+            if (!String.IsNullOrEmpty(key) && String.IsNullOrEmpty(term))
+            {
+                var item = list.Select(i => new { id = i.ID, text = i.DES })
+                    .FirstOrDefault(i => i.id != null && i.id == key);
+                return Json(new { data = item });
+            }
+            return Json(new { data = list.Skip(10 * (page - 1)).Take(10).Select(i => new { id = i.ID, text = i.DES }).ToList() });
+        }
     }
 }

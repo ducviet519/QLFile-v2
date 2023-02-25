@@ -171,16 +171,6 @@
     <input type="hidden" id="suser" name="suser" value="@Model.SearchList.user" />
     <input type="hidden" id="sloaitimkiem" name="sloaitimkiem" value="@Model.SearchList.loaitimkiem" />
 </div>
-@*<div class="row mb-2 ml-2">
-    @if ((AuthorizationService.AuthorizeAsync(User, "Permission.ThemThuMuc")).Result.Succeeded)
-    {
-    <button class="btn btn-secondary btn-flat ml-2" data-toggle="ajax-modal" data-target="#modalTaoMuc" data-url="@Url.Action("ThuMuc_ThemMoi", "VanBan")">Tạo Nhóm</button>
-    }
-    @if ((AuthorizationService.AuthorizeAsync(User, "Permission.ChuyenViTri")).Result.Succeeded)
-    {
-    <button class="btn btn-secondary btn-flat ml-2" data-toggle="ajax-modal" data-target="#modalChuyenNhom" data-url="@Url.Action("ThuMuc_ChuyenNhom", "VanBan")">Chuyển Nhóm</button>
-    }
-</div>*@
 <div class="easyui-layout panel-vanban" id="cc" data-options="fit:true">
     <div id="leftpanel" data-options="region:'west',split:true" title="Danh mục" style="width:200px">
         <ul id="tree" class="easyui-tree" tree></ul>
@@ -214,10 +204,7 @@
                     <div class="form-group row col-7">
                         <label for="txtSearch" class="col-form-label col-130">Tên / Mã văn bản:</label>
                         <input type="text" id="TenVB" name="TenVB" class="form-control form-control-sm col-300 rounded-0">
-                        <select class="custom-select custom-select-sm col-120 ml-1 rounded-0" id="loaitimkiem">
-                            <option value="1">Theo tên</option>
-                            <option value="2">Theo nội dung</option>
-                        </select>
+                        <input type="hidden" id="loaitimkiem" name="loaitimkiem" value="2" />
                     </div>
                     <div class="form-group row col-5">
                         <label class="col-130 col-form-label ml-3">Ngày ban hành:</label>

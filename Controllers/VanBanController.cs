@@ -31,7 +31,6 @@ namespace WebTools.Controllers
         #endregion
 
         #region Bảng tin Văn bản - Trang chính
-
         public async Task<IActionResult> DanhMuc_VanBan()
         {
             BangTinVanBanVM model = new BangTinVanBanVM();
@@ -187,6 +186,12 @@ namespace WebTools.Controllers
         public async Task<JsonResult> GetData_VanBanChiTiet(Search_VanBanChiTiet search = null)
         {
             search.user = HttpContext.User.Claims.First(c => c.Type == ClaimTypes.GivenName).Value ?? HttpContext.User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
+            if(search.loaitimkiem == "2" && !String.IsNullOrEmpty(search.TenVB)) 
+            {
+                List<GoogleDriveFile> table = await _services.GoogleDriveAPI.SearchDriveFiles(search.TenVB);
+                var dataTable = await _services.VanBan.Table_VanBanChiTiet_Google(search, table);
+                return Json(new { data = dataTable });
+            }
             var data = (await _services.VanBan.Table_VanBanChiTiet(search)).ToList();
             return Json(new { data });
         }
