@@ -195,8 +195,6 @@
                     $('button[uploadExcel]').attr("disabled", true);
                 },
                 success: function (data) {
-                    console.log(data.data);
-                    callDataTableScroll_Json("#tbImportExcel", data.data);
                     $(this).callToast(data.result, data.title, data.message);
                 },
                 error: function (data) {
