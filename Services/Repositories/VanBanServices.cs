@@ -153,7 +153,7 @@ namespace WebTools.Services.Repositories
                 {
                     if (dbConnection.State == ConnectionState.Closed)
                         dbConnection.Open();
-                    data = (await dbConnection.QueryAsync<VanBanChiTiet>("sp_Report_Detail_List",
+                    data = (await dbConnection.QueryAsync<VanBanChiTiet>("sp_Report_Detail_List_Content",
                     new
                     {
                         TenVB = search.TenVB,
