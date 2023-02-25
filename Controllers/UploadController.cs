@@ -5,11 +5,17 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using WebTools.Services;
 
 namespace WebTools.Controllers
 {
     public class UploadController : Controller
     {
+        private readonly IUnitOfWork _services;
+        public UploadController(IUnitOfWork services)
+        {
+            _services = services;
+        }
         public IActionResult Index()
         {
             return View();
@@ -31,6 +37,7 @@ namespace WebTools.Controllers
                         string getDateS = DateTime.Now.ToString("ddMMyyyyHHmmss");
                         string uploadsFolder = "D:\\VanBan";
                         if (!Directory.Exists(uploadsFolder)) { Directory.CreateDirectory(uploadsFolder); }
+                        string fileOldName = file.FileName;
                         string fileName = $"{getDateS}_{file.FileName}";
                         string filePath = Path.Combine(uploadsFolder, fileName);
                         using (var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
@@ -40,6 +47,7 @@ namespace WebTools.Controllers
                         if (System.IO.File.Exists(filePath))
                         {
                             msg = "success";
+                            await _services.UploadFile.FileNameCache(fileName, fileOldName);
                         }
                         else
                         {
