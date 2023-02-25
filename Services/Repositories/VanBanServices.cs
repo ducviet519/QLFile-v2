@@ -245,7 +245,7 @@ namespace WebTools.Services.Repositories
                 using (IDbConnection dbConnection = Connection)
                 {
                     dbConnection.Open();
-                    var data = await dbConnection.ExecuteAsync("sp_Report_Version_Add",
+                    var data = await dbConnection.ExecuteScalarAsync("sp_Report_Version_Add",
                         new
                         {
                             IDBieuMau = phienban.ID,
@@ -259,9 +259,13 @@ namespace WebTools.Services.Repositories
                             User = user
                         },
                         commandType: CommandType.StoredProcedure);
-                    if (data > 0)
+                    if (data.ToString() == "0")
                     {
                         result = "OK";
+                    }
+                    else
+                    {
+                        result = data.ToString();
                     }
                     dbConnection.Close();
                 }
