@@ -1,4 +1,12 @@
-﻿<!-- Modal -->
+﻿<style>
+    .table-hide{
+        display:none;
+    }
+    #modalThemExcel .card {
+        box-shadow: unset;
+    }
+</style>
+<!-- Modal -->
 <div class="modal fade bd-example-modal-xl" id="modalThemExcel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
@@ -9,23 +17,45 @@
                 </button>
             </div>
             <div class="modal-body">
-                <div class="form-group row">
-                    <label class="col-form-label col-auto">Tệp tin Excel:</label>
-                    <div class="col-5 mr-3">
-                        <form id="frmFileUpload">
-                            <div class="custom-file">
-                                <input type="file" class="custom-file-input" id="fileUpload" name="fileUpload">
-                                <label class="custom-file-label" for="fileUpload">Chọn file</label>
+                <div class="">
+                    <div class="card card-default">
+                        <div class="card-header">
+                            <h3 class="card-title">Thêm nhiều văn bản</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group row">
+                                <label class="col-form-label col-auto">Tệp tin Excel:</label>
+                                <div class="col-5 mr-3">
+                                    <form id="frmFileUpload">
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input" id="fileUpload" name="fileUpload">
+                                            <label class="custom-file-label" for="fileUpload">Chọn file</label>
+                                        </div>
+                                    </form>
+                                </div>
+                                <button type="button" class="btn btn-success mr-3" data-toggle="upload" uploadExcel><i class="fas fa-upload mr-1"></i>Tải lên</button>
+                                <a class="btn btn-success mr-3" href="/files/File Mau.xlsx" download><i class="fas fa-file-download mr-1"></i>Tải file mẫu</a>
                             </div>
-                        </form>
+                        </div>
+                        <div class="table-hide" id="table-hide">
+                            <table id="example" class="table table-bordered table-striped" width="100%">
+                                <thead class="thead">
+                                    <tr>
+                                        @for (int i = 1; i <= 50; i++)
+                                        {
+                                            <th>Col @i</th>
+                                        }
+                                    </tr>
+                                </thead>
+                            </table>
+                            <div class="row d-flex justify-content-center mt-3"><button id="AddDataExcel" class="btn btn-success">Lưu Dữ liệu Excel</button></div>
+                        </div>
                     </div>
-                    <button type="button" class="btn btn-success mr-3" data-toggle="upload" uploadExcel><i class="fas fa-upload mr-1"></i>Tải lên</button>
-                    <a class="btn btn-success mr-3" href="/files/File Mau.xlsx" download><i class="fas fa-file-download mr-1"></i>Tải file mẫu</a>
-                </div>
+                </div>                
                 <div class="mt-5">
                     <div class="card card-default">
                         <div class="card-header">
-                            <h3 class="card-title">Tải lên files văn bản đính kèm abc</h3>
+                            <h3 class="card-title">Tải lên files văn bản đính kèm</h3>
                         </div>
                         <div class="card-body">
                             <div id="actions" class="row">
@@ -77,9 +107,9 @@
                                                 <span>Tải lên</span>
                                             </button>
                                             @*<button data-dz-remove class="btn btn-warning cancel">
-                                                <i class="fas fa-times-circle"></i>
-                                                <span>Hủy</span>
-                                            </button>*@
+                                        <i class="fas fa-times-circle"></i>
+                                        <span>Hủy</span>
+                                    </button>*@
                                             <button data-dz-remove class="btn btn-danger delete">
                                                 <i class="fas fa-trash"></i>
                                                 <span>Xóa</span>
@@ -91,7 +121,6 @@
                         </div>
                         <!-- /.card-body -->
                         <div class="card-footer">
-                            
                         </div>
                     </div>
                 </div>
@@ -106,6 +135,7 @@
 <script src="~/lib/dropzone/min/dropzone.min.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
+
         $(document).on({
             ajaxStart: function () { $(document.body).addClass("loading"); },
             ajaxStop: function () { $(document.body).removeClass("loading"); }
@@ -181,10 +211,9 @@
             myDropzone.removeAllFiles(true)
         }
 
-        $('body .modal').on('click', 'button[uploadExcel]', function (event) {
+        $('body #modalThemExcel').on('click', 'button[uploadExcel]', function (event) {
             var formData = new FormData();
             formData.append("fileUpload", $("#fileUpload")[0].files[0]);
-
             $.ajax({
                 type: 'POST',
                 url: '/VanBan/UploadExcelFile',
@@ -196,16 +225,76 @@
                 },
                 success: function (data) {
                     $(this).callToast(data.result, data.title, data.message);
+                    var datadb = $.parseJSON(data.data);
+                    columnNames = Object.keys(datadb[0]);
+                    var columns = [];
+                    for (var i in columnNames) {
+                        columns.push({
+                            data: columnNames[i],
+                        });
+                    }
+                    var table = $('#example').DataTable();
+                    if ($.fn.dataTable.isDataTable('#example')) {
+                        table.destroy();
+                        $('#example').find('tbody').empty();
+                    }
+
+                    $('#example').DataTable({
+                        "scrollY": '370px',
+                        "scrollCollapse": true,
+                        "paging": false,
+                        "lengthChange": false,
+                        "data": datadb,
+                        "columns": columns,
+                        "info": true,
+                        "autoWidth": false,
+                        "responsive": true,
+                        initComplete: function (settings, json) {
+                            const api = this.api();
+                            api.columns().every(function (index) {
+                                const isEmpty = this.data().map(x => ['0', '-', ' ', ''].includes(x) ? "" : x).join('') === '';
+                                if (isEmpty) {
+                                    api.columns(index).visible(false)
+                                }
+                            });
+                        },
+                    });
+                    document.getElementById("table-hide").style.display = "block";
+                    $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();
                 },
                 error: function (data) {
                     $(this).callToast(data.result, data.title, data.message);
                 },
-                complete: function () {
+                complete: function (data) {
                     $('button[uploadExcel]').attr("disabled", false);
+                    
                 },
             })
         });
 
+        $('body #modalThemExcel').on('click', '#AddDataExcel', function (event) {
+            var formData = new FormData();
+            formData.append("fileUpload", $("#fileUpload")[0].files[0]);
+            $.ajax({
+                type: 'POST',
+                url: '/VanBan/DataExcel',
+                data: formData,
+                processData: false,
+                contentType: false,
+                beforeSend: function () {
+                    $('button[uploadExcel]').attr("disabled", true);
+                },
+                success: function (data) {
+                    $(this).callToast(data.result, data.title, data.message);                    
+                },
+                error: function (data) {
+                    $(this).callToast(data.result, data.title, data.message);
+                },
+                complete: function (data) {
+                    $('button[uploadExcel]').attr("disabled", false);
 
+                },
+            })
+        });
     });
 </script>

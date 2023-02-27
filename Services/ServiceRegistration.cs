@@ -27,6 +27,7 @@ namespace WebTools.Services
             services.AddTransient<IThuMucServices, ThuMucServices>();
             services.AddTransient<IPhanQuyenServices, PhanQuyenServices>();
             services.AddTransient<IThongKeServices, ThongKeServices>();
+            services.AddTransient<IMailService, MailService>();
         }
     }
 }

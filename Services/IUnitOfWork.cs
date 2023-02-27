@@ -18,6 +18,7 @@ namespace WebTools.Services
         IGoogleDriveAPI GoogleDriveAPI { get; }
         IGoogleDriverV2 GoogleDriveV2 { get; }
         IUploadFileServices UploadFile { get; }
+        IMailService MailService { get; }
 
         IDanhMucServices DanhMuc { get; }
         IVanBanServices VanBan { get; }
