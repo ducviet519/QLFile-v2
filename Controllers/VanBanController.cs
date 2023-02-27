@@ -31,7 +31,6 @@ namespace WebTools.Controllers
         #endregion
 
         #region Bảng tin Văn bản - Trang chính
-
         public async Task<IActionResult> DanhMuc_VanBan()
         {
             BangTinVanBanVM model = new BangTinVanBanVM();
@@ -187,6 +186,12 @@ namespace WebTools.Controllers
         public async Task<JsonResult> GetData_VanBanChiTiet(Search_VanBanChiTiet search = null)
         {
             search.user = HttpContext.User.Claims.First(c => c.Type == ClaimTypes.GivenName).Value ?? HttpContext.User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
+            if(search.loaitimkiem == "2" && !String.IsNullOrEmpty(search.TenVB)) 
+            {
+                List<GoogleDriveFile> table = await _services.GoogleDriveAPI.SearchDriveFiles(search.TenVB);
+                var dataTable = await _services.VanBan.Table_VanBanChiTiet_Google(search, table);
+                return Json(new { data = dataTable });
+            }
             var data = (await _services.VanBan.Table_VanBanChiTiet(search)).ToList();
             return Json(new { data });
         }
@@ -391,10 +396,10 @@ namespace WebTools.Controllers
                     data = await _services.UploadFile.ReadExcelFile(fileUpload);
                     if (data.status == "OK")
                     {
-                        string check = await _services.VanBan.FileImport("1", data.dataExcels, user);
                         message = $"Lấy thành công {data.dataExcels.Rows.Count} văn bản";
                         title = "Thành công!";
                         result = "success";
+                        
                     }
                     else
                     {
@@ -410,9 +415,47 @@ namespace WebTools.Controllers
                 title = "Lỗi!";
                 result = "error";
             }
-            return Json(new { Result = result, Title = title, Message = message });
+            string json = JsonConvert.SerializeObject(data.dataExcels, Formatting.Indented);
+            return Json(new { Result = result, Title = title, Message = message, data = json });
         }
 
+        [HttpPost]
+        public async Task<JsonResult> DataExcel(IFormFile fileUpload)
+        {
+            string message = String.Empty;
+            string title = String.Empty;
+            string result = String.Empty;
+            FileImport data = new FileImport();
+            string user = HttpContext.User.Claims.First(c => c.Type == ClaimTypes.GivenName).Value ?? HttpContext.User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
+            try
+            {
+                if (fileUpload != null)
+                {
+                    data = await _services.UploadFile.ReadExcelFile(fileUpload);
+                    if (data.status == "OK")
+                    {
+                        string check = await _services.VanBan.FileImport("1", data.dataExcels, user);
+                        message = $"Lưu thành công {data.dataExcels.Rows.Count} văn bản";
+                        title = "Thành công!";
+                        result = "success";
+
+                    }
+                    else
+                    {
+                        message = data.status;
+                        title = "Lỗi!";
+                        result = "error";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                message = ex.Message;
+                title = "Lỗi!";
+                result = "error";
+            }
+            return Json(new { Result = result, Title = title, Message = message});
+        }
 
         [HttpGet]
         [Authorize(Roles = "Admin, Document")]
@@ -483,7 +526,51 @@ namespace WebTools.Controllers
             var data = await _services.VanBan.Get_DanhSachPhienBan(idvb);
             model.VanBanInfo = data.FirstOrDefault();
             ViewBag.PhienBan = Convert.ToInt32(data.FirstOrDefault().PhienBan.Substring(data.FirstOrDefault().PhienBan.IndexOf("V") + 1)) + 1;
+            ViewBag.IDFileLink = data.FirstOrDefault().IDFileLink;
             return PartialView("_VanBan_PhienBan", model);
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> UpdateFile_PhienBan(VanBan_PhienBan vanBan_PhienBan)
+        {
+            string message = "";
+            string title = "";
+            string result = "";
+            string user = HttpContext.User.Claims.First(c => c.Type == ClaimTypes.GivenName).Value ?? HttpContext.User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
+            try
+            {
+                vanBan_PhienBan.FileLink = await _services.UploadFile.UploadFileAsync(vanBan_PhienBan.fileUpload);
+                if (vanBan_PhienBan.fileUpload != null && String.IsNullOrEmpty(vanBan_PhienBan.FileLink))
+                {
+                    message = $"File <b>{vanBan_PhienBan.fileUpload.FileName}</b> tải lên không thành công. Vui lòng kiểm tra lại file.";
+                    title = "Lỗi!";
+                    result = "error";
+                    return Json(new { Result = result, Title = title, Message = message });
+                }
+                else
+                {
+                    result = await _services.VanBan.UpdateFileLink(vanBan_PhienBan.IDFileLink, vanBan_PhienBan.FileLink);
+                    if (result == "OK")
+                    {
+                        message = $"Đã thay thế file</b>";
+                        title = "Thành công!";
+                        result = "success";
+                    }
+                    else
+                    {
+                        message = $"Lỗi! {result}";
+                        title = "Lỗi!";
+                        result = "error";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                message = ex.Message;
+                title = "Lỗi!";
+                result = "error";
+            }
+            return Json(new { Result = result, Title = title, Message = message });
         }
 
         [HttpGet]
@@ -589,11 +676,16 @@ namespace WebTools.Controllers
         {
             VanBanChiTietVM model = new VanBanChiTietVM();
             var data = await _services.VanBan.Get_DanhSachPhienBan(idvb);
-            model.ListPhienBan = data;
-            model.VanBanInfo = data.FirstOrDefault();
+            if(data.Count > 0)
+            {
+                model.ListPhienBan = data;
+                var info = data.FirstOrDefault();
+                info.ThongTinCNTT = info.ThongTinCNTT.Replace("\\n", "\n");
+                model.VanBanInfo = info;
+            }           
             return PartialView("_VanBan_ChiTiet", model);
         }
-
+        
         [HttpGet]
         public IActionResult VanBan_PhienBan_Delete(string idvb, string idphienban, string trangthai)
         {
@@ -713,6 +805,14 @@ namespace WebTools.Controllers
             var data = comments.Select(i => new { FileTitle = i.FileTitle, Author = i.Author.DisplayName, Content = i.Content, createdDate = i.CreatedDate, modifiedDate = i.ModifiedDate }).ToList();
             return Json(new { data });
         }
+        #endregion
+
+        #region Send Email
+        public IActionResult SendMail()
+        {
+            return View();
+        }
+
         #endregion
     }
 }

@@ -14,5 +14,6 @@ namespace WebTools.Services.Interface
         string DeleteFile(string filePath);
 
         Task<FileImport> ReadExcelFile(IFormFile fileUpload);
+        Task<string> FileNameCache(string NewFileName, string OldFileName);
     }
 }

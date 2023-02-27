@@ -143,6 +143,42 @@ namespace WebTools.Services.Repositories
                 return data;
             }
         }
+        public async Task<List<VanBanChiTiet>> Table_VanBanChiTiet_Google(Search_VanBanChiTiet search = null, List<GoogleDriveFile> table = null)
+        {
+            List<VanBanChiTiet> data = new List<VanBanChiTiet>();
+
+            try
+            {
+                using (IDbConnection dbConnection = Connection)
+                {
+                    if (dbConnection.State == ConnectionState.Closed)
+                        dbConnection.Open();
+                    data = (await dbConnection.QueryAsync<VanBanChiTiet>("sp_Report_Detail_List_Content",
+                    new
+                    {
+                        TenVB = search.TenVB,
+                        LoaiVB = search.LoaiVB,
+                        NgayBHBD = search.NgayBHBD,
+                        NgayBHKT = search.NgayBHKT,
+                        NgayHLBD = search.NgayHLBD,
+                        NgayHLKT = search.NgayHLKT,
+                        BPSoanThao = search.BPSoanThao,
+                        DonViApDung = search.DonViApDung,
+                        DoiTuongApDung = search.DoiTuongApDung,
+                        user = search.user,
+                        FileName = table.AsTableValuedParameter("dbo.ReportFileName", new[] { "FileName" }),
+                    },
+                    commandType: CommandType.StoredProcedure)).ToList();
+                    dbConnection.Close();
+                }
+                return data;
+            }
+            catch (Exception ex)
+            {
+                string errorMsg = ex.Message;
+                return data;
+            }
+        }
         public async Task<string> ViewLog(string idvb, string user)
         {
             string result = String.Empty;
@@ -209,7 +245,7 @@ namespace WebTools.Services.Repositories
                 using (IDbConnection dbConnection = Connection)
                 {
                     dbConnection.Open();
-                    var data = await dbConnection.ExecuteAsync("sp_Report_Version_Add",
+                    var data = await dbConnection.ExecuteScalarAsync("sp_Report_Version_Add",
                         new
                         {
                             IDBieuMau = phienban.ID,
@@ -223,9 +259,13 @@ namespace WebTools.Services.Repositories
                             User = user
                         },
                         commandType: CommandType.StoredProcedure);
-                    if (data > 0)
+                    if (data.ToString() == "0")
                     {
                         result = "OK";
+                    }
+                    else
+                    {
+                        result = data.ToString();
                     }
                     dbConnection.Close();
                 }
@@ -463,7 +503,6 @@ namespace WebTools.Services.Repositories
                 return result;
             }
         }
-
         public async Task<string> FileImport(string loaiFile, DataTable table, string user)
         {
             string result = String.Empty;
@@ -478,6 +517,36 @@ namespace WebTools.Services.Repositories
                     dbConnection.Open();
                     var data = await dbConnection.ExecuteScalarAsync("sp_FileImport", parameter, commandType: CommandType.StoredProcedure);
                     if (data.ToString() == "0")
+                    {
+                        result = "OK";
+                    }
+                    else { result = data.ToString(); }
+                    dbConnection.Close();
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                result = ex.Message;
+                return result;
+            }
+        }
+        public async Task<string> UpdateFileLink(string IDFileLink, string FileLink)
+        {
+            string result = String.Empty;
+            string query = "UPDATE [Tools].[dbo].[Report_File] SET FileLink = @FileLink WHERE ID = @IDFileLink";
+            try
+            {
+                using (IDbConnection dbConnection = Connection)
+                {
+                    dbConnection.Open();
+                    var data = await dbConnection.ExecuteAsync(query,
+                        new
+                        {
+                            FileLink = FileLink,
+                            IDFileLink = IDFileLink
+                        });
+                    if (data > 0)
                     {
                         result = "OK";
                     }

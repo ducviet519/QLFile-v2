@@ -1,0 +1,69 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Tam Anh Hospital</title>
+    <style>
+        body{
+            font-family:'Times New Roman', Times, serif;
+            font-size: 1rem;
+        }
+
+        .container{
+            margin: 10px;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <p>Thông báo ban hành Quy trình/Quy định & Biểu mẫu: @ViewBag.TenVB</p>
+        <br />
+        <p>
+            <strong>Kính gửi:</strong>
+            Ban Giám Đốc,
+            <br />&emsp;&emsp;&emsp;&emsp;&nbsp;Các Trung tâm/ Khoa/ Phòng/ Bộ phận,
+        </p>
+        <p>Bộ phận PHVB kính gửi tới các Anh/Chị: @ViewBag.NguoiNhan., chi tiết như sau: </p>
+        <div style="margin: 10px 0 10px 0;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tên văn bản</th>
+                        <th>Mã văn bản + version</th>
+                        <th>Nội dung chỉnh sửa</th>
+                        <th>Đối tượng áp dụng</th>
+                        <th>Hình thức áp dụng</th>
+                        <th>Link VBNB</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>@ViewBag.TenVB</td>
+                        <td>@ViewBag.MaVB</td>
+                        <td>@ViewBag.NoiDung</td>
+                        <td>@ViewBag.DoiTuong</td>
+                        <td>@ViewBag.HinhThuc</td>
+                        <td><a href="@ViewBag.Link">Link</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <p>
+            <strong>Ngày phát hành: <span style="color:red;">@ViewBag.NgayPhatHanh</span></strong>
+            <br />
+            <strong>Ngày hiệu lực: <span style="color:red;">@ViewBag.NgayHieuLuc</span></strong>
+            <br />
+            <br />
+            &nbsp;&nbsp;&nbsp;&nbsp;- Trưởng Đơn vị có trách nhiệm đào tạo và giám sát việc tuân thủ của các thành viên Đơn vị mình phụ trách.
+            <br />
+            &nbsp;&nbsp;&nbsp;&nbsp;- Các thành viên Đơn vị trong phạm vi áp dụng ký xác nhận vào phiếu <strong>Xác nhận làm quen tài liệu</strong>, hạn hoàn thành <span style="background-color:yellow">trong vòng 07 ngày</span> kể từ ngày tài liệu được gửi.
+            <br />
+            <br />
+            <strong>Trân trọng!</strong>
+        </p>
+    </div>
+</body>
+</html>

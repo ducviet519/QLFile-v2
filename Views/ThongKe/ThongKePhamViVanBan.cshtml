@@ -79,7 +79,9 @@
     .dataTables_filter {
         display: none;
     }
-
+    .bg-warning, .bg-warning > a{
+        color: white!important;
+    }
 </style>
 <div class="invoice p-3 mb-3">
     <h2 class="text-center">Báo cáo thống kê Chi tiết Theo phạm vi văn bản</h2>
@@ -89,46 +91,48 @@
         <div class="fieldset ml-1 mr-1 mt-3 mb-3">
             <h1 class="search-panel">Chức năng tìm kiếm</h1>
             <div class="search-advance">
-                <div class="row">
-                    <div class="form-group row col-auto">
-                        <div class="col-sm">
-                            <div class="form-group row mb-0">
-                                <label class="col-75 col-form-label"> Từ ngày: </label>
-                                <input type="text" id="tungay" name="tungay" class="form-control form-control-sm datetimepicker-input col-120 rounded-0" data-toggle="datetimepicker" data-target="#tungay" autocomplete="off" data-timepicker="date">
+                <form id="frmThongKePhamVi">
+                    <div class="row">
+                        <div class="form-group row col-auto">
+                            <div class="col-sm">
+                                <div class="form-group row mb-0">
+                                    <label class="col-75 col-form-label"> Từ ngày: </label>
+                                    <input type="text" id="tungay" name="tungay" class="form-control form-control-sm datetimepicker-input col-120 rounded-0" data-toggle="datetimepicker" data-target="#tungay" autocomplete="off" data-timepicker="date">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row col">
+                            <label for="DoiTuongApDung" class="col-form-label col-130 ml-3">Đối tượng áp dụng:</label>
+                            <select class="custom-select custom-select-sm col rounded-0" id="DoiTuongApDung" name="DoiTuongApDung" select2="doituong"></select>
+                        </div>
+                        <div class="form-group row col">
+                            <label for="LoaiVB" class="col-form-label col-95 ml-3">Loại văn bản:</label>
+                            <div class="col">
+                                <select class="custom-select custom-select-sm col rounded-0" id="LoaiVB" name="LoaiVB" select2="loaivb"></select>
                             </div>
                         </div>
                     </div>
-                    <div class="form-group row col">
-                        <label for="txtSearch" class="col-form-label col-130 ml-3">Đối tượng áp dụng:</label>
-                        <select class="custom-select custom-select-sm col rounded-0" id="DoiTuongApDung" name="DoiTuongApDung" select2="doituong"></select>
-                    </div>
-                    <div class="form-group row col">
-                        <label for="txtSearch" class="col-form-label col-95 ml-3">Loại văn bản:</label>
-                        <div class="col">
-                            <select class="custom-select custom-select-sm col rounded-0" id="LoaiVB" name="LoaiVB" select2="loaivanban"></select>
+                    <div class="row">
+                        <div class="form-group row col-auto">
+                            <div class="col-sm">
+                                <div class="form-group row mb-0">
+                                    <label class="col-75 col-form-label"> Đến ngày:</label>
+                                    <input type="text" id="denngay" name="denngay" class="form-control form-control-sm datetimepicker-input col-120 rounded-0" data-toggle="datetimepicker" data-target="#denngay" autocomplete="off" data-timepicker="date">
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="form-group row col-auto">
-                        <div class="col-sm">
-                            <div class="form-group row mb-0">
-                                <label class="col-75 col-form-label"> Đến ngày:</label>
-                                <input type="text" id="denngay" name="denngay" class="form-control form-control-sm datetimepicker-input col-120 rounded-0" data-toggle="datetimepicker" data-target="#denngay" autocomplete="off" data-timepicker="date">
+                        <div class="form-group row col">
+                            <label for="DonViApDung" class="col-form-label col-130 ml-3">Đơn vị áp dụng:</label>
+                            <select class="custom-select custom-select-sm col rounded-0" id="DonViApDung" name="DonViApDung" select2="depts"></select>
+                        </div>
+                        <div class="form-group row col">
+                            <label for="PhamVi" class="col-form-label col-95 ml-3">Phạm vi:</label>
+                            <div class="col">
+                                <select class="custom-select custom-select-sm col rounded-0" id="PhamVi" name="PhamVi" select2="phamvi9"></select>
                             </div>
                         </div>
                     </div>
-                    <div class="form-group row col">
-                        <label for="txtSearch" class="col-form-label col-130 ml-3">Đơn vị áp dụng:</label>
-                        <select class="custom-select custom-select-sm col rounded-0" id="DonViApDung" name="DonViApDung" select2="depts"></select>
-                    </div>
-                    <div class="form-group row col">
-                        <label for="txtSearch" class="col-form-label col-95 ml-3">Phạm vi:</label>
-                        <div class="col">
-                            <select class="custom-select custom-select-sm rounded-0" id="PhamVi" name="PhamVi" select2="phamvi"></select>
-                        </div>
-                    </div>
-                </div>
+                </form>
                 <div class="row d-flex justify-content-center">
                     <button type="button" class="btn btn-primary btn-flat ml-3" data-toggle="search"><i class="fas fa-search"></i> Tìm kiếm</button>
                     <div class="" id="btn-export"></div>
@@ -143,20 +147,19 @@
                 <th>Tên văn bản</th>
                 <th>Mã văn bản</th>
                 <th>Phiên bản</th>
-                <th>Đối tượng áp dụng</th>
-                <th>Đơn vị áp dụng</th>
                 <th>Nhóm văn bản</th>
                 <th>Ngày phát hành</th>
-                <th>Ngày upload lại</th>
-                <th>Ngày kiểm soát</th>
-                <th>Ngày cập nhật review</th>
+                <th>Ngày xem lại kế tiếp</th>
                 <th>Trạng thái</th>
+                <th>Ghi chú</th>
+                <th>Đối tượng áp dụng</th>
+                <th>Đơn vị áp dụng</th>
                 <th>Ghi chú</th>
             </tr>
         </thead>
         <tfoot>
             <tr class="tfoot">
-                <th colspan="13">Tổng số:</th>
+                <th colspan="9">Tổng số:</th>
             </tr>
         </tfoot>
     </table>
@@ -198,11 +201,14 @@
                     placeholder: placeholder,
                     allowClear: true,
                     language: "vi",
+                    escapeMarkup: function (markup) {
+                        return markup;
+                    },
                 });
             }
-            selectList("phamvi", "/DanhMuc/Get_Select_PhamViThongKe", "--Chọn--")
+            selectList("phamvi9", "/DanhMuc/Get_Select_PhamViThongKeChiTiet", "--Chọn--")
             selectList("depts", "/DanhMuc/Get_Select_Depts", "--Chọn--")
-            selectList("loaivanban", "/DanhMuc/Get_Select_LoaiVanBan", "--Chọn--")
+            selectList("loaivb", "/DanhMuc/Get_Select_LoaiVanBan", "--Chọn--")
             selectList("doituong", "/DanhMuc/Get_Select_DoiTuongApDung", "--Chọn--")
 
             $('input[data-timepicker="date"]').datetimepicker({ format: 'DD/MM/YYYY', locale: 'vi', });
@@ -220,7 +226,9 @@
                     $(id).find('tbody').empty();
                 }
                 var table = $(id).DataTable({
-                    "paging": true,
+                    "scrollY": '420px',
+                    "scrollCollapse": true,
+                    "paging": false,
                     "lengthChange": false,
                     "searching": true,
                     "processing": true,
@@ -265,8 +273,8 @@
                         "className": "btn btn-success btn-flat ml-3",
                         "title": "Báo cáo thông kê chi tiết theo phạm vi văn bản",
                         "sheetName": "Thống kê",
-                        "footer": true
-                        //"exportOptions": { columns: array },
+                        "footer": true,
+                        "exportOptions": { columns: [0,1,2,3,9,10,4,5,6,7,11] },
 
                     }],
                     "footerCallback": function (row, data, start, end, display) {
@@ -282,46 +290,62 @@
             }
 
             var columnData = [
-                { "data": "stt" },
-                { "data": "tenBM" },
-                { "data": "maBM" },
-                { "data": "phienBan1" },
-                { "data": "doituongapdung" },
-                { "data": "donviapdung" },
-                { "data": "nhomvanban" },
+                {
+                    "data": {},
+                    "render": function (data, type, full, meta) {
+                        var stt = meta.row + 1;
+                        return stt;
+                    },
+                },
+                { "data": "tenVanBan" },
+                { "data": "maVanBan" },
+                { "data": "phienBan" },
+                { "data": "cabinet" },
                 { "data": "ngayBanHanh" },
-                { "data": "createdDate" },
-                { "data": "ngaykiemsoat" },
-                { "data": "updatedDate" },
-                { "data": "phanMem1" },
-                { "data": "ghiChu" },
+                { "data": "ngayXLKT" },
+                {
+                    "data": { trangThai: "trangThai" },
+                    "render": function (data, type, full, meta) {
+                        if (data.trangThai === "Đang sử dụng") {
+                            return '<span class="badge bg-success">' + data.trangThai + '</span>';
+                        }
+                        else if (data.trangThai === "Đã hủy") {
+                            return '<span class="badge bg-danger">' + data.trangThai + '</span>';
+                        }
+                        else if (data.trangThai === "Chờ ban hành") {
+                            return '<span class="badge bg-warning">' + data.trangThai + '</span>';
+                        }
+                        else { return data.trangThai; }
+                    },
+                },
+                {
+                    "data": { ghiChu: "ghiChu" },
+                    "render": function (data, type, full, meta) {
+                        if (data.ghiChu === 1 || data.ghiChu === "1") {                           
+                            return '<i class="fas fa-check-circle text-primary"></i>';
+                        }
+                        else { return ''; }                        
+                    },
+                },
+                {
+                    "data": "doiTuongApDung",
+                    "visible": false
+                },
+                {
+                    "data": "donViApDung",
+                    "visible": false
+                },
+                {
+                    "data": "ghiChuFull",
+                    "visible": false
+                },
             ]
 
-            tableThongKeVanBan("#tbThongKePhamVi", columnData, "/ThongKe/GetTable_ThongKePhamViVanBan", "")
+            tableThongKeVanBan("#tbThongKePhamVi", columnData, "/ThongKe/GetTable_ThongKeTheoPhamVi", "")
 
             $('body').on('click', 'button[data-toggle="search"]', function () {
-                var tungay = ((document.getElementById("tungay") || {}).value) || "";
-                var denngay = ((document.getElementById("denngay") || {}).value) || "";
-                var DoiTuongApDung = $("#DoiTuongApDung").val() || "";
-                var DonViApDung = $("#DonViApDung").val() || "";
-                var phamvi = $("#phamvi").val() || "";
-                var LoaiVB = $("#LoaiVB").val() || "";
-
-                var searchTerm = "loai=1";
-                if (tungay != "")
-                    searchTerm += "&tungay=" + tungay;
-                if (denngay != "")
-                    searchTerm += "&denngay=" + denngay;
-                if (doituongapdung != "")
-                    searchTerm += "&DoiTuongApDung=" + DoiTuongApDung;
-                if (donviapdung != "")
-                    searchTerm += "&DonViApDung=" + DonViApDung;
-                if (phamvi != "")
-                    searchTerm += "&phamvi=" + phamvi;
-                if (loaivanban != "")
-                    searchTerm += "&LoaiVB=" + LoaiVB;
-
-                var table = tableThongKeVanBan("#tbThongKePhamVi", columnData, "/ThongKe/GetTable_ThongKePhamViVanBan?" + searchTerm, "")
+                var form = $("#frmThongKePhamVi");
+                var table = tableThongKeVanBan("#tbThongKePhamVi", columnData, "/ThongKe/GetTable_ThongKeTheoPhamVi?" + form.serialize(), "")
 
             });
         });

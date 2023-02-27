@@ -105,6 +105,7 @@ namespace WebTools.Models.Entities
         public string GhiChu { get; set; }
         public string NgayUpload { get; set; }
         public string IDPhienBan { get; set; }
+        public string IDFileLink { get; set; }
 
         [DataType(DataType.Upload)]
         [BindProperty]

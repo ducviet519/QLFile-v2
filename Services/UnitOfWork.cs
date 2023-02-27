@@ -27,6 +27,7 @@ namespace WebTools.Services
         public IThuMucServices ThuMuc { get; }
         public IPhanQuyenServices PhanQuyen { get; }
         public IThongKeServices ThongKe { get; }
+        public IMailService MailService { get; }
 
         public UnitOfWork
             (
@@ -48,7 +49,8 @@ namespace WebTools.Services
                 IVanBanServices _vanBanServices,
                 IThuMucServices _thuMucServices,
                 IPhanQuyenServices _phanQuyenServices,
-                IThongKeServices _thongKeServices
+                IThongKeServices _thongKeServices,
+                IMailService mailService
 
             )
         {
@@ -65,6 +67,7 @@ namespace WebTools.Services
             GoogleDriveAPI = _GoogleDriveAPI;
             GoogleDriveV2 = _googleDriverV2;
             UploadFile = _UploadFile;
+            MailService = mailService;
 
             DanhMuc = _danhMucServices;
             VanBan = _vanBanServices;

@@ -30,10 +30,9 @@ namespace WebTools.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> GetTable_ThongKePhamViVanBan(string loai, string tungay = null, string denngay = null, string doituongapdung = null, string donviapdung = null, string phamvi = null, string loaivanban = null)
+        public async Task<JsonResult> GetTable_ThongKeTheoPhamVi(SearchThongKe search)
         {
-            var data = (await _services.Report_List.GetReportListAsync()).Take(10).ToList();
-            return Json(new { data });
+            return Json(new { data = await _services.ThongKe.GetData_ThongKePhamVi(search) });
         }
         #endregion
 
@@ -49,6 +48,7 @@ namespace WebTools.Controllers
         {
             return Json(new { data = await _services.ThongKe.GetData_BaoCaoDocHieu(search) });
         }
+
         #endregion
 
         #region Báo cáo thống kê tổng hợp
@@ -57,10 +57,9 @@ namespace WebTools.Controllers
             return View();
         }
 
-        public async Task<JsonResult> GetTable_ThongKeTongHop(string loai, string tungay = null, string denngay = null, string doituongapdung = null, string donviapdung = null)
+        public async Task<JsonResult> GetTable_ThongKeTongHop(SearchThongKe search)
         {
-            var data = (await _services.Report_List.GetReportListAsync()).Take(10).ToList();
-            return Json(new { data });
+            return Json(new { data = await _services.ThongKe.GetData_ThongKeTongHop(search) });
         }
         #endregion
 

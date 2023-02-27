@@ -1,9 +1,12 @@
 ﻿using ClosedXML.Excel;
+using Dapper;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Dynamic;
 using System.IO;
 using System.Linq;
@@ -16,9 +19,19 @@ namespace WebTools.Services
     public class UploadFileServices : IUploadFileServices
     {
         private readonly IWebHostEnvironment _webHostEnvironment;
-        public UploadFileServices(IWebHostEnvironment webHostEnvironment)
+        private readonly IConfiguration _configuration;
+        public UploadFileServices(IWebHostEnvironment webHostEnvironment, IConfiguration configuration)
         {
             _webHostEnvironment = webHostEnvironment;
+            _configuration = configuration;
+            ConnectionString = _configuration.GetConnectionString("ToolsDB");
+            provideName = "System.Data.SqlClient";
+        }
+        public string ConnectionString { get; }
+        public string provideName { get; }
+        public IDbConnection Connection
+        {
+            get { return new SqlConnection(ConnectionString); }
         }
         public string DeleteFile(string filePath)
         {
@@ -34,6 +47,36 @@ namespace WebTools.Services
                 result = "Lỗi! Xóa file không thành công";
             }
             return result;
+        }
+
+        public async Task<string> FileNameCache(string NewFileName, string OldFileName)
+        {
+            string result = String.Empty;
+            try
+            {
+                using (IDbConnection dbConnection = Connection)
+                {
+                    dbConnection.Open();
+                    var data = await dbConnection.ExecuteAsync("sp_Report_FilenameCache_Upsert",
+                        new
+                        {
+                            OldFileName = OldFileName,
+                            RenamedFileName = NewFileName
+                        },
+                        commandType: CommandType.StoredProcedure);
+                    if (data > 0)
+                    {
+                        result = "OK";
+                    }
+                    dbConnection.Close();
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                result = ex.Message;
+                return result;
+            }
         }
 
         public async Task<FileImport> ReadExcelFile(IFormFile fileUpload)

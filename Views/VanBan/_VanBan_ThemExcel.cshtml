@@ -1,4 +1,12 @@
-﻿<!-- Modal -->
+﻿<style>
+    .table-hide{
+        display:none;
+    }
+    #modalThemExcel .card {
+        box-shadow: unset;
+    }
+</style>
+<!-- Modal -->
 <div class="modal fade bd-example-modal-xl" id="modalThemExcel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
@@ -9,129 +17,203 @@
                 </button>
             </div>
             <div class="modal-body">
-                <div class="form-group row">
-                    <label class="col-form-label col-auto">Tệp tin Excel:</label>
-                    <div class="col-5 mr-3">
-                        <form id="frmFileUpload">
-                            <div class="custom-file">
-                                <input type="file" class="custom-file-input" id="fileUpload" name="fileUpload">
-                                <label class="custom-file-label" for="fileUpload">Chọn file</label>
+                <div class="">
+                    <div class="card card-default">
+                        <div class="card-header">
+                            <h3 class="card-title">Thêm nhiều văn bản</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group row">
+                                <label class="col-form-label col-auto">Tệp tin Excel:</label>
+                                <div class="col-5 mr-3">
+                                    <form id="frmFileUpload">
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input" id="fileUpload" name="fileUpload">
+                                            <label class="custom-file-label" for="fileUpload">Chọn file</label>
+                                        </div>
+                                    </form>
+                                </div>
+                                <button type="button" class="btn btn-success mr-3" data-toggle="upload" uploadExcel><i class="fas fa-upload mr-1"></i>Tải lên</button>
+                                <a class="btn btn-success mr-3" href="/files/File Mau.xlsx" download><i class="fas fa-file-download mr-1"></i>Tải file mẫu</a>
                             </div>
-                        </form>
+                        </div>
+                        <div class="table-hide" id="table-hide">
+                            <table id="example" class="table table-bordered table-striped" width="100%">
+                                <thead class="thead">
+                                    <tr>
+                                        @for (int i = 1; i <= 50; i++)
+                                        {
+                                            <th>Col @i</th>
+                                        }
+                                    </tr>
+                                </thead>
+                            </table>
+                            <div class="row d-flex justify-content-center mt-3"><button id="AddDataExcel" class="btn btn-success">Lưu Dữ liệu Excel</button></div>
+                        </div>
                     </div>
-                    <button type="button" class="btn btn-success mr-3" data-toggle="upload" uploadExcel><i class="fas fa-upload mr-1"></i>Tải lên</button>
-                    <a class="btn btn-success mr-3" href="/files/File Mau.xlsx" download><i class="fas fa-file-download mr-1"></i>Tải file mẫu</a>
-                </div>
+                </div>                
                 <div class="mt-5">
-                    <h3 class="text-center">Dữ liệu file upload</h3>
-                    <table class="table table-bordered table-striped" id="tbImportExcel">
-                        <thead class="thead">
-                            <tr>
-                                <th>STT</th>
-                                <th>Tên văn bản</th>
-                                <th>Mã văn bản</th>
-                                <th>Phiên bản</th>
-                                <th>Ngày phát hành</th>
-                                <th>Ngày hiệu lực</th>
-                                <th>Ngày upload</th>
-                                <th>Khoa phòng soạn thảo</th>
-                                <th>Người soạn thảo</th>
-                                <th>Đối tượng áp dụng</th>
-                                <th>Đơn vị áp dụng</th>
-                                <th>Loại văn bản</th>
-                                <th>Tên thư mục</th>
-                                <th>Mã thư mục</th>
-                            </tr>
-                        </thead>
-                    </table>
+                    <div class="card card-default">
+                        <div class="card-header">
+                            <h3 class="card-title">Tải lên files văn bản đính kèm</h3>
+                        </div>
+                        <div class="card-body">
+                            <div id="actions" class="row">
+                                <div class="col-lg-6">
+                                    <div class="btn-group w-100">
+                                        <span class="btn btn-success col fileinput-button">
+                                            <i class="fas fa-plus"></i>
+                                            <span>Thêm files</span>
+                                        </span>
+                                        <button type="submit" class="btn btn-primary col start">
+                                            <i class="fas fa-upload"></i>
+                                            <span>Tải lên toàn bộ files</span>
+                                        </button>
+                                        <button type="reset" class="btn btn-warning col cancel">
+                                            <i class="fas fa-times-circle"></i>
+                                            <span>Xóa hết files</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 d-flex align-items-center">
+                                    <div class="fileupload-process w-100">
+                                        <div id="total-progress" class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                                            <div class="progress-bar bg-primary progress-bar-striped" style="width:0%;" data-dz-uploadprogress></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="table table-striped files" id="previews">
+                                <div id="template" class="row mt-2">
+                                    <div class="col-auto">
+                                        <span class="preview"><img src="data:," alt="" data-dz-thumbnail /></span>
+                                    </div>
+                                    <div class="col d-flex align-items-center">
+                                        <p class="mb-0">
+                                            <span class="lead" data-dz-name></span>
+                                            (<span data-dz-size></span>)
+                                        </p>
+                                        <strong class="error text-danger" data-dz-errormessage></strong>
+                                    </div>
+                                    <div class="col-4 d-flex align-items-center">
+                                        <div class="progress progress-striped active w-100" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                                            <div class="progress-bar bg-primary progress-bar-striped" style="width:0%;" data-dz-uploadprogress></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-auto d-flex align-items-center">
+                                        <div class="btn-group">
+                                            <button class="btn btn-primary start">
+                                                <i class="fas fa-upload"></i>
+                                                <span>Tải lên</span>
+                                            </button>
+                                            @*<button data-dz-remove class="btn btn-warning cancel">
+                                        <i class="fas fa-times-circle"></i>
+                                        <span>Hủy</span>
+                                    </button>*@
+                                            <button data-dz-remove class="btn btn-danger delete">
+                                                <i class="fas fa-trash"></i>
+                                                <span>Xóa</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.card-body -->
+                        <div class="card-footer">
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary"><i class="fas fa-save"></i> Lưu</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Đóng</button>
             </div>
         </div>
     </div>
 </div>
-
+<!-- dropzonejs -->
+<script src="~/lib/dropzone/min/dropzone.min.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
+
         $(document).on({
             ajaxStart: function () { $(document.body).addClass("loading"); },
             ajaxStop: function () { $(document.body).removeClass("loading"); }
         });
         bsCustomFileInput.init()
 
-        $('#tbImportExcel').DataTable();
+        // BS-Stepper Init
+        document.addEventListener('DOMContentLoaded', function () {
+            window.stepper = new Stepper(document.querySelector('.bs-stepper'))
+        })
 
-        function callDataTableScroll_Json(id, data) {
-            var table = $(id).DataTable();
-            if ($.fn.dataTable.isDataTable(id)) {
-                table.destroy();
-                $(id).find('tbody').empty();
+        // DropzoneJS Demo Code Start
+        Dropzone.autoDiscover = false
+
+        // Get the template HTML and remove it from the doumenthe template HTML and remove it from the doument
+        var previewNode = document.querySelector("#template")
+        previewNode.id = ""
+        var previewTemplate = previewNode.parentNode.innerHTML
+        previewNode.parentNode.removeChild(previewNode)
+
+        var myDropzone = new Dropzone(document.body, { // Make the whole body a dropzone
+            url: "/Upload/UploadMultipleFile", // Set the url
+            uploadMultiple: true,
+            thumbnailWidth: 80,
+            thumbnailHeight: 80,
+            parallelUploads: 20,
+            previewTemplate: previewTemplate,
+            autoQueue: false, // Make sure the files aren't queued until manually added
+            previewsContainer: "#previews", // Define the container to display the previews
+            clickable: ".fileinput-button" // Define the element that should be used as click trigger to select files.
+        })
+
+        myDropzone.on("addedfile", function (file) {
+            // Hookup the start button
+            file.previewElement.querySelector(".start").onclick = function () { myDropzone.enqueueFile(file) }
+        })
+
+        // Update the total progress bar
+        myDropzone.on("totaluploadprogress", function (progress) {
+            document.querySelector("#total-progress .progress-bar").style.width = progress + "%"
+        })
+
+        myDropzone.on("sending", function (file) {
+            // Show the total progress bar when upload starts
+            document.querySelector("#total-progress").style.opacity = "1"
+            // And disable the start button
+            file.previewElement.querySelector(".start").setAttribute("disabled", "disabled")
+            file.previewElement.querySelector(".delete").setAttribute("disabled", "disabled")
+        })
+
+        myDropzone.on("success", function (file, data) {
+            console.log(data.messages);
+            if (data.status) {
+                $(this).callToast("success", "Thành công", "Đã tải lên file:" + file.upload.filename)
             }
+            else {
+                $(this).callToast("error", "Lỗi", "Không thể tải file:" + file.upload.filename)
+            }
+        })
 
-            var table = $(id).DataTable({
-                "processing": true,
-                "autoWidth": true,
-                "responsive": true,
-                "lengthChange": false,
-                "searching": false,
-                "info": true,
-                "ordering": false,
-                "paging": false,
-                "fixedHeader": true,
-                "pageLength": 260,
-                "scrollY": 300,
-                "scrollX": true,
-                "scrollCollapse": true,
-                "deferRender": true,
-                "data": data,
-                "columns": [
-                    { data: 'stt' },
-                    { data: 'tenvanban' },
-                    { data: 'mavanban' },
-                    { data: 'phienban' },
-                    { data: 'ngayphathanh' },
-                    { data: 'ngayhieuluc' },
-                    { data: 'ngayupload' },
-                    { data: 'khoaphongsoanthao' },
-                    { data: 'nguoisoanthao' },
-                    { data: 'doituongapdung' },
-                    { data: 'donviapdung' },
-                    { data: 'loaivanban' },
-                    { data: 'tenthumuc' },
-                    { data: 'mathumuc' }
-                ],
-                "columnDefs": [
-                    { className: "text-wrap", targets: "_all" },
-                    { defaultContent: '', targets: "_all" },
-                ],
-                "language": {
-                    "sProcessing": "Đang tải dữ liệu...",
-                    "sLengthMenu": "Xem _MENU_ mục",
-                    "sZeroRecords": "Không tìm thấy dòng nào phù hợp",
-                    "sInfo": "Đang xem _START_ đến _END_ trong tổng số _TOTAL_ mục",
-                    "sInfoEmpty": "Đang xem 0 đến 0 trong tổng số 0 mục",
-                    "sInfoFiltered": "(được lọc từ _MAX_ mục)",
-                    "sInfoPostFix": "",
-                    "sSearch": "Tìm:",
-                    "sUrl": "",
-                    "oPaginate": {
-                        "sFirst": "Đầu",
-                        "sPrevious": "Trước",
-                        "sNext": "Tiếp",
-                        "sLast": "Cuối"
-                    }
-                },
-            });
-            return table;
+        // Hide the total progress bar when nothing's uploading anymore
+        myDropzone.on("queuecomplete", function (progress, data) {
+            document.querySelector("#total-progress").style.opacity = "0"
+        })
+
+        // Setup the buttons for all transfers
+        // The "add files" button doesn't need to be setup because the config
+        // `clickable` has already been specified.
+        document.querySelector("#actions .start").onclick = function () {
+            myDropzone.enqueueFiles(myDropzone.getFilesWithStatus(Dropzone.ADDED))
+        }
+        document.querySelector("#actions .cancel").onclick = function () {
+            myDropzone.removeAllFiles(true)
         }
 
-        $('body .modal').on('click', 'button[uploadExcel]', function (event) {
+        $('body #modalThemExcel').on('click', 'button[uploadExcel]', function (event) {
             var formData = new FormData();
             formData.append("fileUpload", $("#fileUpload")[0].files[0]);
-
             $.ajax({
                 type: 'POST',
                 url: '/VanBan/UploadExcelFile',
@@ -142,19 +224,77 @@
                     $('button[uploadExcel]').attr("disabled", true);
                 },
                 success: function (data) {
-                    console.log(data.data);
-                    callDataTableScroll_Json("#tbImportExcel", data.data);
                     $(this).callToast(data.result, data.title, data.message);
+                    var datadb = $.parseJSON(data.data);
+                    columnNames = Object.keys(datadb[0]);
+                    var columns = [];
+                    for (var i in columnNames) {
+                        columns.push({
+                            data: columnNames[i],
+                        });
+                    }
+                    var table = $('#example').DataTable();
+                    if ($.fn.dataTable.isDataTable('#example')) {
+                        table.destroy();
+                        $('#example').find('tbody').empty();
+                    }
+
+                    $('#example').DataTable({
+                        "scrollY": '370px',
+                        "scrollCollapse": true,
+                        "paging": false,
+                        "lengthChange": false,
+                        "data": datadb,
+                        "columns": columns,
+                        "info": true,
+                        "autoWidth": false,
+                        "responsive": true,
+                        initComplete: function (settings, json) {
+                            const api = this.api();
+                            api.columns().every(function (index) {
+                                const isEmpty = this.data().map(x => ['0', '-', ' ', ''].includes(x) ? "" : x).join('') === '';
+                                if (isEmpty) {
+                                    api.columns(index).visible(false)
+                                }
+                            });
+                        },
+                    });
+                    document.getElementById("table-hide").style.display = "block";
+                    $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();
                 },
                 error: function (data) {
                     $(this).callToast(data.result, data.title, data.message);
                 },
-                complete: function () {
+                complete: function (data) {
                     $('button[uploadExcel]').attr("disabled", false);
+                    
                 },
             })
         });
 
+        $('body #modalThemExcel').on('click', '#AddDataExcel', function (event) {
+            var formData = new FormData();
+            formData.append("fileUpload", $("#fileUpload")[0].files[0]);
+            $.ajax({
+                type: 'POST',
+                url: '/VanBan/DataExcel',
+                data: formData,
+                processData: false,
+                contentType: false,
+                beforeSend: function () {
+                    $('button[uploadExcel]').attr("disabled", true);
+                },
+                success: function (data) {
+                    $(this).callToast(data.result, data.title, data.message);                    
+                },
+                error: function (data) {
+                    $(this).callToast(data.result, data.title, data.message);
+                },
+                complete: function (data) {
+                    $('button[uploadExcel]').attr("disabled", false);
 
+                },
+            })
+        });
     });
 </script>

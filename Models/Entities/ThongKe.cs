@@ -36,5 +36,34 @@ namespace WebTools.Models.Entities
         public string DoiTuong { get; set; }
         public string DonVi { get; set; }
         public string LoaiVB { get; set; }
+        public string PhamVi { get; set; }
+    }
+
+    public class ThongKe_PhamViVB
+    {
+        public string DocID { get; set; }
+        public string TenVanBan { get; set; }
+        public string MaVanBan { get; set; }
+        public string PhienBan { get; set; }
+        public string Cabinet { get; set; }
+        public string NgayBanHanh { get; set; }
+        public string NgayHieuLuc { get; set; }
+        public string NgayXLKT { get; set; }
+        public string TrangThai { get; set; }
+        public string GhiChu { get; set; }
+        public string DoiTuongApDung { get; set; }
+        public string DonViApDung { get; set; }
+        public string GhiChuFull { get; set; }
+    }
+
+    public class ThongKe_TongHop
+    {
+        public string NoiDung { get; set; }
+        public string Tong { get; set; }
+        public string DaDcKiemSoat { get; set; }
+        public string DenHanKiemSoat { get; set; }
+        public string PhatHanhMoi { get; set; }
+        public string CapNhatPB { get; set; }
+        public string NgungSD { get; set; }
     }
 }

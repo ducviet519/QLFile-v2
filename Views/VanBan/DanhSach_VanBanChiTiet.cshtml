@@ -115,6 +115,16 @@
     .search-panel {
         cursor: pointer;
     }
+        .search-panel:hover {
+            background-color: #3882b6;
+            border-radius: 5px;
+            color: white;
+            padding: 2px;
+        }
+
+    .search-advance{
+        display: none;
+    }
 
     #mainpanel {
         height: auto;
@@ -142,6 +152,9 @@
         color: unset !important;
         background-color: unset !important;
     }
+    .bg-warning, .bg-warning > a {
+        color: white !important;
+    }
 </style>
 <link rel="stylesheet" type="text/css" href="~/css/checkbox.css">
 @await Html.PartialAsync("Shared/_StyleUI_ComboBox")
@@ -157,16 +170,6 @@
     <input type="hidden" id="sLoaiVB" name="sLoaiVB" value="@Model.SearchList.LoaiVB" />
     <input type="hidden" id="suser" name="suser" value="@Model.SearchList.user" />
     <input type="hidden" id="sloaitimkiem" name="sloaitimkiem" value="@Model.SearchList.loaitimkiem" />
-</div>
-<div class="row mb-2 ml-2">
-    @if ((AuthorizationService.AuthorizeAsync(User, "Permission.ThemThuMuc")).Result.Succeeded)
-    {
-    <button class="btn btn-secondary btn-flat ml-2" data-toggle="ajax-modal" data-target="#modalTaoMuc" data-url="@Url.Action("ThuMuc_ThemMoi", "VanBan")">Tạo Nhóm</button>
-    }
-    @if ((AuthorizationService.AuthorizeAsync(User, "Permission.ChuyenViTri")).Result.Succeeded)
-    {
-    <button class="btn btn-secondary btn-flat ml-2" data-toggle="ajax-modal" data-target="#modalChuyenNhom" data-url="@Url.Action("ThuMuc_ChuyenNhom", "VanBan")">Chuyển Nhóm</button>
-    }
 </div>
 <div class="easyui-layout panel-vanban" id="cc" data-options="fit:true">
     <div id="leftpanel" data-options="region:'west',split:true" title="Danh mục" style="width:200px">
@@ -195,7 +198,7 @@
     </div>
     <div id="mainpanel" data-options="region:'center'" title="Danh sách văn bản chi tiết">
         <div class="fieldset ml-1 mr-1 mt-3">
-            <h1 class="search-panel">Chức năng tìm kiếm</h1>
+            <h1 class="search-panel">Bấm để Tìm kiếm nâng cao</h1>
             <div class="search-advance">
                 <div class="row">
                     <div class="form-group row col-7">
@@ -273,7 +276,7 @@
                         <th class="w-auto ">Ngày hiệu lực</th>
                         <th class="w-auto ">Ngày XLKT</th>
                         <th class="w-auto ">Trạng thái</th>
-                        <th class="w-auto "></th>
+                        <th class="w-auto no-order"></th>
                         <th class="w-auto "></th>
                         <th class="w-auto ">Đã đọc</th>
                         <th class="w-auto ">Đã hiểu</th>
@@ -424,6 +427,9 @@
                         else if (data.trangThai === "Đã hủy") {
                             return '<span class="badge bg-danger">' + data.trangThai + '</span>';
                         }
+                        else if (data.trangThai === "Chờ ban hành") {
+                            return '<span class="badge bg-warning text-white">' + data.trangThai + '</span>';
+                        }
                         else { return data.trangThai; }
                     },
                     "className": "text-center"
@@ -492,9 +498,9 @@
                     "searching": true,
                     "processing": true,
                     "ordering": true,
-                    "info": true,
+                    //"info": true,
                     "autoWidth": true,
-                    "responsive": true,
+                    //"responsive": true,
                     "orderCellsTop": true,
                     "order": [[2, 'asc']],
                     "dom": "<'row'<'col-sm-3'l><'col-sm-3'f><'col-sm-6'p>>" +
