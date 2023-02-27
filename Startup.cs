@@ -4,11 +4,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using System;
+using System.IO;
 using System.Threading.Tasks;
 using WebTools.Authorization;
 using WebTools.Context;
@@ -76,7 +79,9 @@ namespace WebTools
             services.AddScoped<IUploadFileServices, UploadFileServices>();
             services.AddScoped<IGopYServices, GopYServices>();           
             services.AddDbContext<DatabaseContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ToolsDB")));
-
+            services.AddMvc().AddRazorPagesOptions(o => {
+                o.Conventions.ConfigureFilter(new IgnoreAntiforgeryTokenAttribute());
+            });
             services.AddInfrastructure();
         }
 
@@ -101,6 +106,11 @@ namespace WebTools
             //----------------------
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(env.ContentRootPath, "node_modules")),
+                RequestPath = "/node_modules"
+            });
 
             app.UseRouting();
 
