@@ -40,7 +40,7 @@
                                     </form>
                                 </div>
                                 <button type="button" class="btn btn-success mr-3" id="btnUploadFileExcel"><i class="fas fa-upload mr-1"></i>Tải lên</button>
-                                <a class="btn btn-success mr-3" href="/files/File Mau.xlsx" download><i class="fas fa-file-download mr-1"></i>Tải file mẫu</a>
+                                <a class="btn btn-success mr-3" href="/files/ImportTemplate.xlsx" download><i class="fas fa-file-download mr-1"></i>Tải file mẫu</a>
                             </div>
                         </div>
                         <div class="table-hide" id="table-hide">
@@ -146,6 +146,7 @@
 <!-- dropzonejs -->
 <script src="~/lib/dropzone/min/dropzone.min.js"></script>
 <script type="text/javascript">
+    Dropzone.autoDiscover = false
     $(document).ready(function () {
         $(document).on({
             ajaxStart: function () { $(document.body).addClass("loading"); },
@@ -309,73 +310,68 @@
 
         bsCustomFileInput.init()
 
-        //// BS-Stepper Init
-        //document.addEventListener('DOMContentLoaded', function () {
-        //    window.stepper = new Stepper(document.querySelector('.bs-stepper'))
-        //})
+        $('#modalThemExcel').on('shown.bs.modal', function (e) {
 
-        // DropzoneJS Demo Code Start
-        //Dropzone.autoDiscover = false
+            // Get the template HTML and remove it from the doumenthe template HTML and remove it from the doument
+            var previewNode = document.querySelector("#template")
+            previewNode.id = ""
+            var previewTemplate = previewNode.parentNode.innerHTML
+            previewNode.parentNode.removeChild(previewNode)
 
-        // Get the template HTML and remove it from the doumenthe template HTML and remove it from the doument
-        var previewNode = document.querySelector("#template")
-        previewNode.id = ""
-        var previewTemplate = previewNode.parentNode.innerHTML
-        previewNode.parentNode.removeChild(previewNode)
+            var myDropzone = new Dropzone('div#actions', { // Make the whole body a dropzone
+                url: "/Upload/UploadMultipleFile", // Set the url
+                uploadMultiple: true,
+                thumbnailWidth: 80,
+                thumbnailHeight: 80,
+                parallelUploads: 20,
+                previewTemplate: previewTemplate,
+                autoQueue: false, // Make sure the files aren't queued until manually added
+                previewsContainer: "#previews", // Define the container to display the previews
+                clickable: ".fileinput-button" // Define the element that should be used as click trigger to select files.
+            })
 
-        var myDropzone = new Dropzone(document.body, { // Make the whole body a dropzone
-            url: "/Upload/UploadMultipleFile", // Set the url
-            uploadMultiple: true,
-            thumbnailWidth: 80,
-            thumbnailHeight: 80,
-            parallelUploads: 20,
-            previewTemplate: previewTemplate,
-            autoQueue: false, // Make sure the files aren't queued until manually added
-            previewsContainer: "#previews", // Define the container to display the previews
-            clickable: ".fileinput-button" // Define the element that should be used as click trigger to select files.
-        })
+            myDropzone.on("addedfile", function (file) {
+                // Hookup the start button
+                file.previewElement.querySelector(".start").onclick = function () { myDropzone.enqueueFile(file) }
+            })
 
-        myDropzone.on("addedfile", function (file) {
-            // Hookup the start button
-            file.previewElement.querySelector(".start").onclick = function () { myDropzone.enqueueFile(file) }
-        })
+            // Update the total progress bar
+            myDropzone.on("totaluploadprogress", function (progress) {
+                document.querySelector("#total-progress .progress-bar").style.width = progress + "%"
+            })
 
-        // Update the total progress bar
-        myDropzone.on("totaluploadprogress", function (progress) {
-            document.querySelector("#total-progress .progress-bar").style.width = progress + "%"
-        })
+            myDropzone.on("sending", function (file) {
+                // Show the total progress bar when upload starts
+                document.querySelector("#total-progress").style.opacity = "1"
+                // And disable the start button
+                file.previewElement.querySelector(".start").setAttribute("disabled", "disabled")
+                file.previewElement.querySelector(".delete").setAttribute("disabled", "disabled")
+            })
 
-        myDropzone.on("sending", function (file) {
-            // Show the total progress bar when upload starts
-            document.querySelector("#total-progress").style.opacity = "1"
-            // And disable the start button
-            file.previewElement.querySelector(".start").setAttribute("disabled", "disabled")
-            file.previewElement.querySelector(".delete").setAttribute("disabled", "disabled")
-        })
+            myDropzone.on("success", function (file, data) {
+                console.log(data.messages);
+                if (data.status) {
+                    $(this).callToast("success", "Thành công", "Đã tải lên file:" + file.upload.filename)
+                }
+                else {
+                    $(this).callToast("error", "Lỗi", "Không thể tải file:" + file.upload.filename)
+                }
+            })
 
-        myDropzone.on("success", function (file, data) {
-            console.log(data.messages);
-            if (data.status) {
-                $(this).callToast("success", "Thành công", "Đã tải lên file:" + file.upload.filename)
+            // Hide the total progress bar when nothing's uploading anymore
+            myDropzone.on("queuecomplete", function (progress, data) {
+                document.querySelector("#total-progress").style.opacity = "0"
+            })
+
+            // Setup the buttons for all transfers
+            // The "add files" button doesn't need to be setup because the config
+            // `clickable` has already been specified.
+            document.querySelector("#actions .start").onclick = function () {
+                myDropzone.enqueueFiles(myDropzone.getFilesWithStatus(Dropzone.ADDED))
             }
-            else {
-                $(this).callToast("error", "Lỗi", "Không thể tải file:" + file.upload.filename)
+            document.querySelector("#actions .cancel").onclick = function () {
+                myDropzone.removeAllFiles(true)
             }
         })
-
-        // Hide the total progress bar when nothing's uploading anymore
-        myDropzone.on("queuecomplete", function (progress, data) {
-            document.querySelector("#total-progress").style.opacity = "0"
-        })
-
-        // Setup the buttons for all transfers
-        // The "add files" button doesn't need to be setup because the config
-        // `clickable` has already been specified.
-        document.querySelector("#actions .start").onclick = function () {
-            myDropzone.enqueueFiles(myDropzone.getFilesWithStatus(Dropzone.ADDED))
-        }
-        document.querySelector("#actions .cancel").onclick = function () {
-            myDropzone.removeAllFiles(true)
-        }
     });
 </script>

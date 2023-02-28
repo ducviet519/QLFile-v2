@@ -81,7 +81,6 @@ namespace WebTools.Services
                 return result;
             }
         }
-
         public async Task<FileImport> ReadExcelFile(IFormFile fileUpload)
         {
             FileImport data = new FileImport();
@@ -150,11 +149,10 @@ namespace WebTools.Services
                 return data;
             }
         }
-
         public async Task<string> UploadFileAsync(IFormFile fileUpload)
         {
             string FileLink = "";
-            string getDateS = DateTime.Now.ToString("ddMMyyyyHHmmss");
+            string getDateS = Guid.NewGuid().ToString("N");
             string uploadsFolder = "D:\\VanBan";
             if (!Directory.Exists(uploadsFolder)) { Directory.CreateDirectory(uploadsFolder); }
 
@@ -228,7 +226,6 @@ namespace WebTools.Services
                 return result;
             }
         }
-
         public async Task<string> UpsertDataExcel(string user, List<FileData> listFiles)
         {
             string result = String.Empty;

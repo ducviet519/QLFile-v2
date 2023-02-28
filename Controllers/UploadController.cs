@@ -34,10 +34,11 @@ namespace WebTools.Controllers
             {
                 foreach (var file in files)
                 {
+                    string getDateS = Guid.NewGuid().ToString("N");
+                    //string getDateS = DateTime.Now.ToString("ddMMyyyyHHmmss");
                     try
                     {
                         string msg = String.Empty;
-                        string getDateS = DateTime.Now.ToString("ddMMyyyyHHmmss");
                         string uploadsFolder = "D:\\VanBan";
                         if (!Directory.Exists(uploadsFolder)) { Directory.CreateDirectory(uploadsFolder); }
                         string fileOldName = file.FileName;
