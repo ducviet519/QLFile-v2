@@ -4,18 +4,45 @@
     ViewData["Title"] = "Văn bản nội bộ";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<style>
+    .text-stype{
+        font-size:20px;
+        text-transform: uppercase;
+        font-weight:bold;
+        text-align:center;
+    }
+    .card {
+        box-shadow: unset;
+        margin-bottom:0;
+
+    }
+    .border-style {
+        width: 100%;
+        margin: 7.5px;
+        /*box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;*/
+        box-shadow: rgba(255, 255, 255, 0.2) 0px 0px 0px 1px inset, rgba(0, 0, 0, 0.9) 0px 0px 0px 1px;
+        background-color: ghostwhite;
+    }
+</style>
 <input type="hidden" id="count" value="@Model.countBC" />
 @{
     int i = 1;
     foreach(var item in Model.ListBieuDo)
     {
-    <div class="card row">
+    <div class="card card-primary row">
         <input type="hidden" id="LoaiBC-@i" value="@item.LoaiBC" />
-        <div class="card-body d-flex justify-content-center">
-            <div style="width: 100%; max-height: 500px; border-style: groove;">
-                <canvas id="myChart-@i" style="width:fit-content; max-width:1100px;"></canvas>
+        <div class="card-body d-flex justify-content-center row">
+            <div class="border-style">
+                <div class="col-12 mt-3">
+                    <div style="width: 100%; max-height: 500px;">
+                        <canvas id="myChart-@i" style="width:fit-content; max-width:1100px;"></canvas>
+                    </div>
+                </div>
+                <div class="col-12 mb-3">
+                    <div class="text-stype">@item.TenBC</div>
+                </div>
             </div>
-        </div>
+        </div>        
     </div>
         i++;
     }
@@ -37,11 +64,11 @@
                         enabled: true
                     },
                     title: {
-                        display: true,
+                        display: false,
                         text: '',
+                        padding: 30,
                         position: 'bottom',
-                        fontSize: 20,
-                        padding: 50
+                        fontSize: 20,                       
                     },
                     responsive: true,
                     layout: {
@@ -49,7 +76,7 @@
                             left: 10,
                             right: 10,
                             top: 200,
-                            bottom: 50
+                            bottom: 200
                         }
                     },
                     legend: {
@@ -96,7 +123,7 @@
                             valuePrecision: 1,
                             percentPrecision: 2,
                             zoomOutPercentage: 100,
-                        }
+                        },
                     },
                 };
 

@@ -24,7 +24,5 @@ namespace WebTools.Services.Interface
         public Task<string> Add_VanBan(VanBan_CRUD vanban, List<VanBan_ID> listID, string user);
         public Task<string> Update_VanBan(VanBan_CRUD vanban, List<VanBan_ID> listID, string user);
         public Task<string> Delete_VanBan(string idvb);
-        public Task<string> FileImport(string loaiFile, DataTable table, string user);
-        public Task<string> UpdateFileLink(string IDFileLink, string FileLink);
     }
 }

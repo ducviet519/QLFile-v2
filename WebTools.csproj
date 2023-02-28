@@ -18,6 +18,11 @@
     <PackageReference Include="DevExpress.AspNetCore.Core" Version="21.2.6" />
     <PackageReference Include="DevExpress.AspNetCore.RichEdit" Version="21.2.6" />
     <PackageReference Include="DevExpress.AspNetCore.Spreadsheet" Version="21.2.6" />
+    <PackageReference Include="DevExpress.Data" Version="21.2.6" />
+    <PackageReference Include="DevExpress.Document.Processor" Version="21.2.6" />
+    <PackageReference Include="DevExpress.Office.Core" Version="21.2.6" />
+    <PackageReference Include="DevExpress.Pdf.Core" Version="21.2.6" />
+    <PackageReference Include="DevExpress.Printing.Core" Version="21.2.6" />
     <PackageReference Include="GleamTech.DocumentUltimate" Version="6.2.0" />
     <PackageReference Include="Google.Apis.Auth.AspNetCore3" Version="1.57.0" />
     <PackageReference Include="Google.Apis.Docs.v1" Version="1.59.0.2833" />

@@ -11,6 +11,7 @@ using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using WebTools.Context;
 using WebTools.Models.Entities;
 using WebTools.Services.Interface;
 
@@ -18,6 +19,7 @@ namespace WebTools.Services
 {
     public class UploadFileServices : IUploadFileServices
     {
+        #region Database Connection
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IConfiguration _configuration;
         public UploadFileServices(IWebHostEnvironment webHostEnvironment, IConfiguration configuration)
@@ -32,7 +34,8 @@ namespace WebTools.Services
         public IDbConnection Connection
         {
             get { return new SqlConnection(ConnectionString); }
-        }
+        } 
+        #endregion
         public string DeleteFile(string filePath)
         {
             string result = "";
@@ -172,6 +175,109 @@ namespace WebTools.Services
             else
                 return FileLink = "";
         }
+        public async Task<List<FileData>> FileImport(string loaiFile, DataTable table, string user)
+        {
+            List<FileData> data = new List<FileData>();
+            var parameter = new DynamicParameters();
+            parameter.Add("LoaiFile", loaiFile);
+            parameter.Add("UserAcc", user);
+            parameter.Add("FileTable", value: table, dbType: DbType.Object);
+            try
+            {
+                using (IDbConnection dbConnection = Connection)
+                {
+                    dbConnection.Open();
+                    data = (await dbConnection.QueryAsync<FileData>("sp_FileImport", parameter, commandType: CommandType.StoredProcedure)).ToList();
+                    dbConnection.Close();
+                }
+                return data;
+            }
+            catch (Exception ex)
+            {
+                string result = ex.Message;
+                return data;
+            }
+        }
+        public async Task<string> UpdateFileLink(string IDFileLink, string FileLink)
+        {
+            string result = String.Empty;
+            string query = "UPDATE [Tools].[dbo].[Report_File] SET FileLink = @FileLink WHERE ID = @IDFileLink";
+            try
+            {
+                using (IDbConnection dbConnection = Connection)
+                {
+                    dbConnection.Open();
+                    var data = await dbConnection.ExecuteAsync(query,
+                        new
+                        {
+                            FileLink = FileLink,
+                            IDFileLink = IDFileLink
+                        });
+                    if (data > 0)
+                    {
+                        result = "OK";
+                    }
+                    else { result = data.ToString(); }
+                    dbConnection.Close();
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                result = ex.Message;
+                return result;
+            }
+        }
 
+        public async Task<string> UpsertDataExcel(string user, List<FileData> listFiles)
+        {
+            string result = String.Empty;
+            List<FileSend> table = new List<FileSend>();
+            foreach(var item in listFiles)
+            {
+                FileSend file = new FileSend()
+                {
+                    LoaiVanBan = item.LoaiVanBan,
+                    TenVanBan = item.TenVanBan,
+                    MaVanBan = item.MaVanBan,
+                    NgayBanHanh = item.NgayBanHanh,
+                    NgayHieuLuc = item.NgayHieuLuc,
+                    TenFile = item.RenamedFileName,
+                    PhienBan = item.PhienBan,
+                    TheLoaiBM = item.TheLoaiBM,
+                    Cabinet = item.Cabinet,
+                    Watermark = item.Watemark,
+                    IDVanBan = item.IDVanBan,
+                    IDPhienBan = item.IDPhienBan,
+                    IDFileLink = item.IDFileLink,
+                };
+                table.Add(file);
+            }
+            try
+            {
+                using (IDbConnection dbConnection = Connection)
+                {
+                    dbConnection.Open();
+                    var data = await dbConnection.ExecuteAsync("sp_FileImportUpsert",
+                        new
+                        {
+                            UserAcc = user,
+                            Data = table.AsTableValuedParameter("dbo.DataPro", new[] { "LoaiVanBan", "TenVanBan", "MaVanBan", "NgayBanHanh", "NgayHieuLuc", "TenFile", "PhienBan", "TheLoaiBM", "Cabinet", "Watermark", "IDVanBan", "IDPhienBan", "IDFileLink" }),
+                        },
+                        commandType: CommandType.StoredProcedure);
+                    if (data > 0)
+                    {
+                        result = "OK";
+                    }
+                    dbConnection.Close();
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                result = ex.Message;
+                return result;
+            }
+        }
     }
 }

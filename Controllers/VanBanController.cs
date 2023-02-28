@@ -381,82 +381,6 @@ namespace WebTools.Controllers
             return PartialView("_VanBan_ThemExcel");
         }
 
-        [HttpPost]
-        public async Task<JsonResult> UploadExcelFile(IFormFile fileUpload)
-        {
-            string message = String.Empty;
-            string title = String.Empty;
-            string result = String.Empty;
-            FileImport data = new FileImport();
-            string user = HttpContext.User.Claims.First(c => c.Type == ClaimTypes.GivenName).Value ?? HttpContext.User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
-            try
-            {
-                if (fileUpload != null)
-                {
-                    data = await _services.UploadFile.ReadExcelFile(fileUpload);
-                    if (data.status == "OK")
-                    {
-                        message = $"Lấy thành công {data.dataExcels.Rows.Count} văn bản";
-                        title = "Thành công!";
-                        result = "success";
-                        
-                    }
-                    else
-                    {
-                        message = data.status;
-                        title = "Lỗi!";
-                        result = "error";
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                message = ex.Message;
-                title = "Lỗi!";
-                result = "error";
-            }
-            string json = JsonConvert.SerializeObject(data.dataExcels, Formatting.Indented);
-            return Json(new { Result = result, Title = title, Message = message, data = json });
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> DataExcel(IFormFile fileUpload)
-        {
-            string message = String.Empty;
-            string title = String.Empty;
-            string result = String.Empty;
-            FileImport data = new FileImport();
-            string user = HttpContext.User.Claims.First(c => c.Type == ClaimTypes.GivenName).Value ?? HttpContext.User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
-            try
-            {
-                if (fileUpload != null)
-                {
-                    data = await _services.UploadFile.ReadExcelFile(fileUpload);
-                    if (data.status == "OK")
-                    {
-                        string check = await _services.VanBan.FileImport("1", data.dataExcels, user);
-                        message = $"Lưu thành công {data.dataExcels.Rows.Count} văn bản";
-                        title = "Thành công!";
-                        result = "success";
-
-                    }
-                    else
-                    {
-                        message = data.status;
-                        title = "Lỗi!";
-                        result = "error";
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                message = ex.Message;
-                title = "Lỗi!";
-                result = "error";
-            }
-            return Json(new { Result = result, Title = title, Message = message});
-        }
-
         [HttpGet]
         [Authorize(Roles = "Admin, Document")]
         public IActionResult ThemVanBan(int? parentid)
@@ -549,7 +473,7 @@ namespace WebTools.Controllers
                 }
                 else
                 {
-                    result = await _services.VanBan.UpdateFileLink(vanBan_PhienBan.IDFileLink, vanBan_PhienBan.FileLink);
+                    result = await _services.UploadFile.UpdateFileLink(vanBan_PhienBan.IDFileLink, vanBan_PhienBan.FileLink);
                     if (result == "OK")
                     {
                         message = $"Đã thay thế file</b>";
