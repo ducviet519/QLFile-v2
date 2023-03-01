@@ -122,7 +122,7 @@ namespace WebTools.Controllers
                 if (UserInfo == null)
                 {
                     TempData["Error"] = "Lỗi! Thông tin tài khoản hoặc mật khẩu không chính xác";
-                    if (!String.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                    if (!String.IsNullOrEmpty(returnUrl))
                         return Redirect(returnUrl);
                     else
                         return View();
@@ -178,7 +178,7 @@ namespace WebTools.Controllers
                 else
                 {
                     TempData["Error"] = "Lỗi! Thông tin tài khoản hoặc mật khẩu không chính xác";
-                    if (!String.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                    if (!String.IsNullOrEmpty(returnUrl))
                         return Redirect(returnUrl);
                     else
                         return View();
@@ -189,7 +189,7 @@ namespace WebTools.Controllers
             {
                 var errorMessage = ex.Message;
                 TempData["Error"] = $"Lỗi! Thông tin tài khoản hoặc mật khẩu không chính xác";
-                if (!String.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                if (!String.IsNullOrEmpty(returnUrl))
                     return Redirect(returnUrl);
                 else
                     return View();
