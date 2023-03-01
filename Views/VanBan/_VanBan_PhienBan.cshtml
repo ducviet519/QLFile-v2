@@ -24,6 +24,12 @@
     .bg-warning, .bg-warning > a {
         color: white !important;
     }
+
+    .text-content {
+        font-weight: bold !important;
+        color: dodgerblue;
+        white-space: pre-line;
+    }
 </style>
 <!-- Modal -->
 <div class="modal fade bd-example-modal-xl" id="modalPhienBan" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -39,13 +45,13 @@
                 <form id="frmAddPhienBan" method="post" enctype="multipart/form-data">
                     <div class="form-group row">
                         <label class="col-form-label col-90">Tên văn bản:</label>
-                        <label class="col-form-label col-auto">@Model.VanBanInfo.TenVanBan</label>
+                        <label class="col-form-label col text-content">@Model.VanBanInfo.TenVanBan</label>
                         <input type="hidden" id="ID" name="ID" value="@Model.VanBanInfo.ID" />
                     </div>
                     <div class="row justify-content-between">
                         <div class="form-group row col-6">
                             <label class="col-form-label col-90">Mã văn bản:</label>
-                            <label class="col-form-label col-auto">@Model.VanBanInfo.MaVanBan</label>
+                            <label class="col-form-label col text-content">@Model.VanBanInfo.MaVanBan</label>
                         </div>
                         <div class="form-group row col-3 justify-content-end">
                             <label class="col-form-label col-115">Ngày phát hành:</label>

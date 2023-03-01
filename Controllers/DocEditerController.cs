@@ -21,7 +21,8 @@ namespace WebTools.Controllers
         }
         public IActionResult Index()
         {
-            string filePath = Path.Combine(System.IO.Directory.GetCurrentDirectory(), "wwwroot\\files\\Form email PHVB.docx");
+            //string filePath = Path.Combine(System.IO.Directory.GetCurrentDirectory(), "wwwroot\\files\\Form email PHVB.docx");
+            string filePath = "D:\\VanBan\\Form email PHVB.docx";
             ViewBag.Document = filePath;
             return View();
         }
