@@ -26,7 +26,7 @@ namespace WebTools.Controllers
             ViewBag.DoiTuong = "Phòng CNTT";
             ViewBag.HinhThuc = "Khác";
             ViewBag.Link = @"https://vb.bvta.vn/Preview/VanBan?file=5EE2E62A-CE08-4985-9BF1-011972211D85";
-            ViewBag.NguoiNhan = "Lương Đức Việt";
+            ViewBag.NguoiNhan = "..............";
             ViewBag.NgayPhatHanh = "27/02/2023";
             ViewBag.NgayHieuLuc = "27/02/2023";
             if(type == 1)

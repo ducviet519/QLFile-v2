@@ -2,23 +2,9 @@
 <html>
 <head>
     <title>Tam Anh Hospital</title>
-    <style>
-        body{
-            font-family:'Times New Roman', Times, serif;
-            font-size: 1rem;
-        }
-
-        .container{
-            margin: 10px;
-        }
-        th, td {
-            border: 1px solid black;
-            padding: 5px;
-        }
-    </style>
 </head>
-<body>
-    <div class="container">
+<body style="font-family: 'Times New Roman', Times, serif; font-size: 1rem; ">
+    <div class="container" style="margin: 10px;">
         <p>Thông báo ban hành Biểu mẫu: @ViewBag.TenVB</p>
         <br />
         <p>
@@ -28,27 +14,27 @@
         </p>
         <p>Bộ phận PHVB kính gửi tới các Anh/Chị: @ViewBag.NguoiNhan., chi tiết như sau: </p>
         <div style="margin: 10px 0 10px 0;">
-            <table>
+            <table style="border-collapse: collapse;" border="1">
                 <thead>
                     <tr>
-                        <th>Ngày áp dụng</th>
-                        <th>Tên văn bản</th>
-                        <th>Mã văn bản + version</th>
-                        <th>Nội dung chỉnh sửa</th>
-                        <th>Đối tượng áp dụng</th>
-                        <th>Hình thức áp dụng</th>
-                        <th>Link VBNB</th>
+                        <th style="padding: 5px;">Ngày áp dụng</th>
+                        <th style="padding: 5px;">Tên văn bản</th>
+                        <th style="padding: 5px;">Mã văn bản + version</th>
+                        <th style="padding: 5px;">Nội dung chỉnh sửa</th>
+                        <th style="padding: 5px;">Đối tượng áp dụng</th>
+                        <th style="padding: 5px;">Hình thức áp dụng</th>
+                        <th style="padding: 5px;">Link VBNB</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>@ViewBag.NgayApDung</td>
-                        <td>@ViewBag.TenVB</td>
-                        <td>@ViewBag.MaVB</td>
-                        <td>@ViewBag.NoiDung</td>
-                        <td>@ViewBag.DoiTuong</td>
-                        <td>@ViewBag.HinhThuc</td>
-                        <td><a href="@ViewBag.Link">Link</a></td>
+                        <td style="padding: 5px;">@ViewBag.NgayApDung</td>
+                        <td style="padding: 5px;">@ViewBag.TenVB</td>
+                        <td style="padding: 5px;">@ViewBag.MaVB</td>
+                        <td style="padding: 5px;">@ViewBag.NoiDung</td>
+                        <td style="padding: 5px;">@ViewBag.DoiTuong</td>
+                        <td style="padding: 5px;">@ViewBag.HinhThuc</td>
+                        <td style="padding: 5px;"><a href="@ViewBag.Link">Link</a></td>
                     </tr>
                 </tbody>
             </table>
