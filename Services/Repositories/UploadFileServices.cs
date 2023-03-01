@@ -255,16 +255,20 @@ namespace WebTools.Services
                 using (IDbConnection dbConnection = Connection)
                 {
                     dbConnection.Open();
-                    var data = await dbConnection.ExecuteAsync("sp_FileImportUpsert",
+                    var data = await dbConnection.ExecuteScalarAsync("sp_FileImportUpsert",
                         new
                         {
                             UserAcc = user,
                             Data = table.AsTableValuedParameter("dbo.DataPro", new[] { "LoaiVanBan", "TenVanBan", "MaVanBan", "NgayBanHanh", "NgayHieuLuc", "TenFile", "PhienBan", "TheLoaiBM", "Cabinet", "Watermark", "IDVanBan", "IDPhienBan", "IDFileLink" }),
                         },
                         commandType: CommandType.StoredProcedure);
-                    if (data > 0)
+                    if (data.ToString() == "0")
                     {
                         result = "OK";
+                    }
+                    else
+                    {
+                        result = data.ToString();
                     }
                     dbConnection.Close();
                 }
