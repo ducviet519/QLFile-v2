@@ -734,22 +734,31 @@
 
             $('body').on('click', 'a[data-toggle="deletevanban"]', function (e) {
                 var url = $(this).data('url');
-                var result = confirm("Xóa văn bản không thể khôi phục! Bạn có chắc chắn muốn xóa?");
-                if (result) {
-                    $.ajax({
-                    type: 'POST',
-                    url: url,
-                    success: function (data) {
-                        $(this).callToast(data.result, data.title, data.message);
-                        var exid = document.getElementById('exID').value;
-                        tableVanBanChiTiet("#tbVanBanChiTiet", columnData, "/VanBan/GetData_VanBanChiTiet?loaitimkiem=1&loaivb=" + exid);
-                    },
-                    error: function (data) {
-                        $(this).callToast(data.result, data.title, data.message);
-                    },
-                });
-                }
-
+                Swal.fire({
+                    title: 'Bạn có chắc chắn muốn xóa?',
+                    text: "Xóa văn bản không thể khôi phục!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Xác nhận xóa',
+                    cancelButtonText: 'Hủy'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            type: 'POST',
+                            url: url,
+                            success: function (data) {
+                                $(this).callToast(data.result, data.title, data.message);
+                                var exid = document.getElementById('exID').value;
+                                tableVanBanChiTiet("#tbVanBanChiTiet", columnData, "/VanBan/GetData_VanBanChiTiet?loaitimkiem=1&loaivb=" + exid);
+                            },
+                            error: function (data) {
+                                $(this).callToast(data.result, data.title, data.message);
+                            },
+                        });                       
+                    }
+                })
             });
 
             $('.search-panel').click(function (e) {
@@ -913,7 +922,20 @@
                         arrayCabinet.push(value.viTriCabinet)
                     });
                     if (arrayCabinet.length > 1) {
-                        if (confirm("Cảnh báo: những văn bản đang chọn thuộc nhiều nhóm khác nhau. Bạn vẫn muốn tiếp tục chuyển nhóm.")) { SendAjax() }
+                        Swal.fire({
+                            title: 'Những văn bản đang chọn thuộc nhiều nhóm khác nhau. Bạn vẫn muốn tiếp tục chuyển nhóm.?',
+                            text: "",
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'Có, tiếp tục chuyển',
+                            cancelButtonText: 'Không'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                SendAjax()
+                            }
+                        })
                     }
                     else {
                         SendAjax()
