@@ -67,5 +67,10 @@ namespace WebTools.Controllers
             }
             return Json(new { Result = result, Title = title, Message = message });
         }
+
+        public IActionResult GiuongBenh()
+        {
+            return View();
+        }
     }
 }

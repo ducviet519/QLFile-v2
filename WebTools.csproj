@@ -30,6 +30,7 @@
     <PackageReference Include="Google.Apis.Drive.v3" Version="1.57.0.2831" />
     <PackageReference Include="Google.Apis.Plus.v1" Version="1.49.0.1627" />
     <PackageReference Include="Google.Apis.Sheets.v4" Version="1.59.0.2909" />
+    <PackageReference Include="jose-jwt" Version="4.1.0" />
     <PackageReference Include="MailKit" Version="3.4.2" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="5.0.17" />
@@ -53,6 +54,9 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="RestSharp" Version="108.0.3" />
+    <PackageReference Include="Spire.PDF" Version="7.1.10" />
+    <PackageReference Include="Spire.PDF.NETCore" Version="7.1.10" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
     <PackageReference Include="System.DirectoryServices.AccountManagement" Version="6.0.0" />
     <PackageReference Include="xunit.extensibility.core" Version="2.4.2" />

@@ -1,0 +1,49 @@
+﻿
+@{
+    ViewData["Title"] = "GiuongBenh";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+
+</style>
+<h1>GiuongBenh</h1>
+<section class="content">
+    <div class="card card-solid">
+        <div class="card-body pb-0">
+            <div class="row d-flex justify-content-between">
+                <div class="col-12 col-sm-12 col-md-6 d-flex align-items-stretch flex-column">
+                    <div class="card bg-light d-flex flex-fill">
+                        
+                    </div>
+                </div>
+                @for (int i = 1; i <= 20; i++)
+                {
+                    <div class="col-12 col-sm-6 col-md-3 d-flex align-items-stretch flex-column">
+                        <div class="card bg-light d-flex flex-fill">
+                            <div class="card-header text-muted border-bottom-0">
+                                Số @i
+                            </div>
+                            <div class="card-body pt-0">
+                                <div class="row">
+                                    <div class="col-7">
+                                        <h2 class="lead"><b>Bệnh nhân @i</b></h2>
+                                        <p class="text-muted text-sm"><b>Thông tin: </b> abc </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <div class="text-right">
+                                    <a href="#" class="btn btn-sm bg-teal">
+                                        <i class="fas fa-comments"></i>Comment bàn giao!
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+</section>
+
