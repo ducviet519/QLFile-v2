@@ -14,7 +14,6 @@
     <link rel="stylesheet" href="~/css/loading.css">
     <link rel="stylesheet" href="~/lib/admin-lte/css/adminlte.min.css">
     <link rel="stylesheet" href="~/css/site_default.css">
-    @await Html.PartialAsync("_DevExpressResources")
     <style>
         .narh-50 {
             height: 50px;
@@ -40,19 +39,26 @@
                                 <li><a asp-area="" asp-controller="VanBan" asp-action="DanhSach_VanBanChiTiet" class="dropdown-item">Danh sách chi tiết văn bản</a></li>
                                 @if (User.IsInRole("Admin"))
                                 {
-                                <li><a asp-area="" asp-controller="Report" asp-action="Index" class="dropdown-item">Danh sách tổng hợp</a></li>
+                                    <li><a asp-area="" asp-controller="Report" asp-action="Index" class="dropdown-item">Danh sách tổng hợp</a></li>
                                 }
                                 @if (User.IsInRole("Admin") || User.IsInRole("Document"))
                                 {
-                                <li class="nav-item dropdown-submenu dropdown-hover">
-                                    <a class="dropdown-item">Báo cáo Thống kê</a>
-                                    <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
-                                        <li><a asp-area="" asp-controller="ThongKe" asp-action="ThongKePhamViVanBan" class="dropdown-item">Thống kê theo phạm vi văn bản</a></li>
-                                        <li><a asp-area="" asp-controller="ThongKe" asp-action="ThongKeSoLuongXacNhan" class="dropdown-item">Thống kê đã đọc và hiểu văn bản</a></li>
-                                        <li><a asp-area="" asp-controller="ThongKe" asp-action="ThongKeTongHop" class="dropdown-item">Thống kê tổng hợp</a></li>
-                                        <li><a asp-area="" asp-controller="ThongKe" asp-action="BieuDoThongKe" class="dropdown-item">Biểu đồ tròn</a></li>
-                                    </ul>
-                                </li>
+                                    <li class="nav-item dropdown-submenu dropdown-hover">
+                                        <a class="dropdown-item">Báo cáo Thống kê</a>
+                                        <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
+                                            <li><a asp-area="" asp-controller="ThongKe" asp-action="ThongKePhamViVanBan" class="dropdown-item">Thống kê theo phạm vi văn bản</a></li>
+                                            <li><a asp-area="" asp-controller="ThongKe" asp-action="ThongKeSoLuongXacNhan" class="dropdown-item">Thống kê đã đọc và hiểu văn bản</a></li>
+                                            <li><a asp-area="" asp-controller="ThongKe" asp-action="ThongKeTongHop" class="dropdown-item">Thống kê tổng hợp</a></li>
+                                            <li><a asp-area="" asp-controller="ThongKe" asp-action="BieuDoThongKe" class="dropdown-item">Biểu đồ tròn</a></li>
+                                        </ul>
+                                    </li>
+                                    <li class="nav-item dropdown-submenu dropdown-hover">
+                                        <a class="dropdown-item">Danh mục</a>
+                                        <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
+                                            <li><a asp-area="" asp-controller="DanhMuc" asp-action="Cabinet" class="dropdown-item">Danh mục Cabinet</a></li>
+                                            <li><a asp-area="" asp-controller="DanhMuc" asp-action="LoaiVanBan" class="dropdown-item">Danh mục Loại văn bản</a></li>
+                                        </ul>
+                                    </li>
                                 }
                             </ul>
                         </li>

@@ -3,6 +3,8 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <UserSecretsId>2aa03c02-faf0-42ca-bbcb-4ab77704e99c</UserSecretsId>
+    <ApplicationIcon>wwwroot\images\favicon.ico</ApplicationIcon>
+    <Win32Resource />
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -12,10 +14,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="BuildBundlerMinifier" Version="3.2.449" />
     <PackageReference Include="Catel.Core" Version="5.12.22" />
     <PackageReference Include="ClosedXML" Version="0.97.0" />
     <PackageReference Include="Dapper" Version="2.0.123" />
     <PackageReference Include="DevExpress.AspNetCore.Core" Version="21.2.6" />
+    <PackageReference Include="DevExpress.AspNetCore.Reporting" Version="21.2.6" />
     <PackageReference Include="DevExpress.AspNetCore.RichEdit" Version="21.2.6" />
     <PackageReference Include="DevExpress.AspNetCore.Spreadsheet" Version="21.2.6" />
     <PackageReference Include="DevExpress.Data" Version="21.2.6" />
@@ -23,6 +27,7 @@
     <PackageReference Include="DevExpress.Office.Core" Version="21.2.6" />
     <PackageReference Include="DevExpress.Pdf.Core" Version="21.2.6" />
     <PackageReference Include="DevExpress.Printing.Core" Version="21.2.6" />
+    <PackageReference Include="DevExpress.Reporting.Core" Version="21.2.6" />
     <PackageReference Include="GleamTech.DocumentUltimate" Version="6.2.0" />
     <PackageReference Include="Google.Apis.Auth.AspNetCore3" Version="1.57.0" />
     <PackageReference Include="Google.Apis.Docs.v1" Version="1.59.0.2833" />
@@ -49,6 +54,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Identity.Web" Version="1.25.3" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
+    <PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="2.1.175" />
     <PackageReference Include="MimeKit" Version="3.4.2" />
     <PackageReference Include="MimeTypes" Version="2.4.0">
       <PrivateAssets>all</PrivateAssets>

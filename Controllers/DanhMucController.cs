@@ -19,6 +19,7 @@ namespace WebTools.Controllers
         }
         #endregion
 
+        #region Select List Json
         public async Task<JsonResult> Get_Select_Depts(string key = null, string term = null, int page = 1)
         {
             var data = (await _services.DanhMuc.Get_DM_Depts()).OrderBy(i => i.KhoaP).Select(i => new { id = i.STT, text = i.KhoaP });
@@ -38,14 +39,11 @@ namespace WebTools.Controllers
                 return Json(new { data });
             }
         }
-
         public async Task<JsonResult> Get_List_Depts()
         {
             var data = (await _services.DanhMuc.Get_DM_Depts()).OrderBy(i => i.KhoaP);
             return Json(new { data });
         }
-
-        //Danh mục Loại văn bản Mainscreen
         public async Task<JsonResult> Get_Select_LoaiVanBan(string key = null, string term = null, int page = 1)
         {
             var data = (await _services.DanhMuc.Get_LoaiCabinet()).Select(i => new { id = i.ID, text = i.DES });
@@ -65,7 +63,6 @@ namespace WebTools.Controllers
                 return Json(new { data });
             }
         }
-
         public async Task<JsonResult> Get_Select_DoiTuongApDung(string key = null, string term = null, int page = 1)
         {
             var data = (await _services.DanhMuc.Get_DM_DoiTuongApDung()).OrderBy(i => i.TypeDes).Select(i => new { id = i.ID, text = i.TypeDes });
@@ -85,13 +82,11 @@ namespace WebTools.Controllers
                 return Json(new { data });
             }
         }
-
         public async Task<JsonResult> Get_List_DoiTuongApDung()
         {
             var data = (await _services.DanhMuc.Get_DM_DoiTuongApDung()).OrderBy(i => i.TypeDes);
             return Json(new { data });
         }
-
         public async Task<JsonResult> Get_Select_PhamViThongKe(string key = null, string term = null, int page = 1)
         {
             var data = (await _services.DanhMuc.Get_LoaiVanBanHienThi()).OrderBy(i => i.DES).Select(i => new { id = i.ID, text = i.DES });
@@ -113,7 +108,7 @@ namespace WebTools.Controllers
             {
                 var data = list.Where(i => StaticHelper.convertToUnSign(i.MaNV.ToLower()).Contains(StaticHelper.convertToUnSign(term.ToLower())) || StaticHelper.convertToUnSign(i.HoTen.ToLower()).Contains(StaticHelper.convertToUnSign(term.ToLower())))
                     .Select(i => new { id = i.ID, text = $"{i.MaNV}|{i.HoTen}" })
-                    .ToList();               
+                    .ToList();
                 return Json(new { data });
             }
             if (!String.IsNullOrEmpty(key) && String.IsNullOrEmpty(term))
@@ -124,7 +119,6 @@ namespace WebTools.Controllers
             }
             return Json(new { data = list.Skip(10 * (page - 1)).Take(10).Select(i => new { id = i.ID, text = $"{i.MaNV}|{i.HoTen}" }).ToList() });
         }
-
         public async Task<JsonResult> Get_Select_LoaiBieuMau(string key = null, string term = null, int page = 1)
         {
             var list = (await _services.DanhMuc.Get_DM_LoaiBieuMau());
@@ -143,13 +137,12 @@ namespace WebTools.Controllers
             }
             return Json(new { data = list.Skip(10 * (page - 1)).Take(10).Select(i => new { id = i.ID, text = i.MoTa }).ToList() });
         }
-
         public async Task<JsonResult> Get_Select_TenVanBan(string key = null, string term = null, int page = 1)
         {
             var list = (await _services.VanBan.Get_ListTenVanBan());
             if (!String.IsNullOrEmpty(term))
             {
-                var data = list.Where(i => i.MaVB != null && StaticHelper.RemoveSpecialCharacters(i.MaVB.ToUpper()).Contains(StaticHelper.RemoveSpecialCharacters(term.ToUpper())) ||  StaticHelper.convertToUnSign(i.TenVB.ToLower()).Contains(StaticHelper.convertToUnSign(term.ToLower())))
+                var data = list.Where(i => i.MaVB != null && StaticHelper.RemoveSpecialCharacters(i.MaVB.ToUpper()).Contains(StaticHelper.RemoveSpecialCharacters(term.ToUpper())) || StaticHelper.convertToUnSign(i.TenVB.ToLower()).Contains(StaticHelper.convertToUnSign(term.ToLower())))
                     .Skip(10 * (page - 1)).Take(10)
                     .ToList();
                 return Json(new { data });
@@ -162,13 +155,12 @@ namespace WebTools.Controllers
             }
             return Json(new { data = list.Skip(10 * (page - 1)).Take(10).ToList() });
         }
-
         public async Task<JsonResult> Get_Select_NhomQuyen(string key = null, string term = null, int page = 1)
         {
             var list = (await _services.DanhMuc.Get_DM_NhomQuyen()).Select(i => new { id = i.IDGroup, text = i.Groupname });
             if (!String.IsNullOrEmpty(term))
             {
-                var data = list.Where(i => StaticHelper.convertToUnSign(i.text.ToLower()).Contains(StaticHelper.convertToUnSign(term.ToLower())))                    
+                var data = list.Where(i => StaticHelper.convertToUnSign(i.text.ToLower()).Contains(StaticHelper.convertToUnSign(term.ToLower())))
                     .ToList();
                 return Json(new { data });
             }
@@ -179,7 +171,6 @@ namespace WebTools.Controllers
             }
             return Json(new { data = list.Skip(10 * (page - 1)).Take(10).ToList() });
         }
-
         public async Task<JsonResult> Get_Select_TrangThaiVanBan(string key = null, string term = null, int page = 1)
         {
             var list = (await _services.DanhMuc.Get_DM_TrangThaiVanBan());
@@ -198,7 +189,6 @@ namespace WebTools.Controllers
             }
             return Json(new { data = list.Skip(10 * (page - 1)).Take(10).Select(i => new { id = i.ID, text = i.MoTa }).ToList() });
         }
-
         public async Task<JsonResult> Get_Select_PhamViThongKeChiTiet(string key = null, string term = null, int page = 1)
         {
             var list = new List<DanhMuc>();
@@ -222,6 +212,33 @@ namespace WebTools.Controllers
                 return Json(new { data = item });
             }
             return Json(new { data = list.Skip(10 * (page - 1)).Take(10).Select(i => new { id = i.ID, text = i.DES }).ToList() });
+        }
+        #endregion
+
+
+
+        [ActionName("Cabinet")]
+        public IActionResult DanhMucCabinet()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> Get_DanhMucCabinet()
+        {
+            return Json(new { data = await _services.DanhMuc.Get_DM_Cabinet() });
+        }
+
+        [ActionName("LoaiVanBan")]
+        public IActionResult DanhMucQuyenLoaiVB()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> Get_DanhMucQuyenLoaiVB()
+        {
+            return Json(new { data = await _services.DanhMuc.Get_DM_QuyenLoaiVB() });
         }
     }
 }

@@ -38,15 +38,25 @@ namespace WebTools.Extensions
             return Convert.ToBase64String(bytes);
         }
 
-        public static string DecodeBase64ToFilePDF(string fileBase64, string fileName)
+        public static string DecodeBase64ToFilePDF(string fileBase64, string fileName, string uploadFolder)
         {
             if (fileBase64 == null) return null;
             string randomID = Guid.NewGuid().ToString("N");
             byte[] tempBytes = Convert.FromBase64String(fileBase64);
-            string filePath = @$"D:\VanBan\{randomID}_{fileName}.pdf";
+            if (!Directory.Exists(uploadFolder))
+            {
+                Directory.CreateDirectory(uploadFolder);
+            }
+            string filePath = Path.Combine(uploadFolder, $"{randomID}_{fileName}.pdf");
             File.WriteAllBytes(filePath, tempBytes);
-            if (File.Exists(filePath)) { return filePath; }
-            else { return String.Empty; }
+            if (File.Exists(filePath))
+            {
+                return filePath;
+            }
+            else
+            {
+                return String.Empty;
+            }
         }
         #endregion
     }

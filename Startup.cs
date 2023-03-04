@@ -1,3 +1,5 @@
+using DevExpress.AspNetCore;
+using DevExpress.AspNetCore.Reporting;
 using GleamTech.AspNet.Core;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -68,6 +70,14 @@ namespace WebTools
                 //options.Cookie.IsEssential = true;
             });
             services.AddGleamTech();
+            services.AddDevExpressControls();
+            services.AddMvc();
+            services.ConfigureReportingServices(configurator => {
+                configurator.ConfigureWebDocumentViewer(viewerConfigurator => {
+                    viewerConfigurator.UseCachedReportSourceBuilder();
+                });
+                configurator.UseAsyncEngine();
+            });
             services.AddScoped<IReportListServices, ReportListServices>();
             services.AddScoped<IReportVersionServices, ReportVersionServices>();
             services.AddScoped<IReportSoftServices, ReportSoftServices>();
@@ -88,7 +98,8 @@ namespace WebTools
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-
+            app.UseDevExpressControls();
+            System.Net.ServicePointManager.SecurityProtocol |= System.Net.SecurityProtocolType.Tls12;
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

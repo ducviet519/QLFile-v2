@@ -1,0 +1,117 @@
+﻿
+@{
+    ViewData["Title"] = "DanhMucCabinet";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .dataTables_filter {
+        display: none;
+    }
+    pre {
+        margin: 0 !important;
+        padding: 0 !important;
+        font-family: unset !important;
+        font-size: unset !important;
+        overflow: hidden;
+    }
+</style>
+<div class="container-fluid">
+    <div class="invoice p-3 mb-3">
+        <h2 class="text-center">Danh mục Cabinet</h2>
+    </div>
+    <div class="d-flex justify-content-end mr-3">
+        <div class="" id="btn-export"></div>
+    </div>
+    <table class="table table-bordered table-striped" id="tbCabinet">
+        <thead class="thead">
+            <tr>
+                <th></th>
+                <th></th>
+                <th>ID thư mục</th>
+                <th>Tên thư mục</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+@section Scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var table = $("#tbCabinet").DataTable({
+                "scrollY": '420px',
+                "scrollCollapse": true,
+                "paging": false,
+                "lengthChange": false,
+                "searching": true,
+                "processing": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": true,
+                "responsive": false,
+                "order": [[0, 'asc']],
+                "columnDefs": [
+                    { orderable: false, targets: 'no-order' },
+                    { className: "text-wrap", targets: "_all" },
+                    { defaultContent: '', targets: "_all" },
+                ],
+                "ajax": {
+                    "url": '/DanhMuc/Get_DanhMucCabinet',
+                    "type": "GET",
+                    "datatype": "json"
+                },
+                "columns": [
+                    {
+                        "data": {},
+                        "render": function (data, type, full, meta) {
+                            var stt = meta.row + 1;
+                            return stt;
+                        },
+                        "visible": false
+                    },
+                    {
+                        "data": { noiDung: "noiDung" },
+                        "render": function (data, type, full, meta) {
+                            return '<pre>' + data.noiDung + '</pre>';
+                        },
+                    },
+                    {
+                        "data": "idCabin",
+                        "className": "text-center"
+                    },
+                    { "data": "tenCabin" },
+                ],
+                "language": {
+                    "sProcessing": "Đang tải dữ liệu...",
+                    "sLengthMenu": "Xem _MENU_ mục",
+                    "sZeroRecords": "Không tìm thấy dòng nào phù hợp",
+                    "sInfo": "Đang xem _START_ đến _END_ trong tổng số _TOTAL_ mục",
+                    "sInfoEmpty": "Đang xem 0 đến 0 trong tổng số 0 mục",
+                    "sInfoFiltered": "(được lọc từ _MAX_ mục)",
+                    "sInfoPostFix": "",
+                    "sSearch": "Tìm:",
+                    "sUrl": "",
+                    "oPaginate": {
+                        "sFirst": "Đầu",
+                        "sPrevious": "Trước",
+                        "sNext": "Tiếp",
+                        "sLast": "Cuối"
+                    }
+                },
+                "dom": 'Bfrtip',
+                "buttons": [{
+                    "extend": 'excel',
+                    "text": '<i class="fas fa-file-download"></i> Xuất Excel</button>',
+                    "className": "btn btn-success btn-flat ml-3",
+                    "title": "Danh mục Cabinet",
+                    "sheetName": "Thống kê",
+                    "footer": true
+                    //"exportOptions": { columns: array },
+
+                }],
+                "initComplete": function (settings, json) {
+                    table.buttons().container().appendTo('#btn-export');
+                }
+            });
+        });
+
+    </script>
+}

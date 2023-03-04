@@ -10,4 +10,11 @@ namespace WebTools.Models.Entities
         public string fileName { get; set; }
         public string filePath { get; set; }
     }
+
+    public class TextCoordinates
+    {
+        public int X { get; set; }
+        public int Y { get; set; }
+        public int pageIndex { get; set; }
+    }
 }

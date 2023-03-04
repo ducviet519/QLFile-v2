@@ -3,7 +3,11 @@
   "name": "asp.net",
   "private": true,
   "dependencies": {
-    "devextreme": "21.2.12",
-    "devexpress-richedit": "21.2.12"
+    "bootstrap": "^4.3.1",
+    "devextreme": "21.2.*",
+    "devexpress-richedit": "21.2.*",
+    "@devexpress/analytics-core": "21.2.*",
+    "devexpress-reporting": "21.2.*",
+    "jquery-ui-dist": "^1.13.2"
   }
 }
