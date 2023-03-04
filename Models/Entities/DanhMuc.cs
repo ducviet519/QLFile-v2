@@ -70,4 +70,10 @@ namespace WebTools.Models.Entities
         public string TaiVe { get; set; }
         public string TrangThai { get; set; }
     }
+
+    public class DanhMuc_KhoaPhong
+    {
+        public string ID { get; set; }
+        public string KhoaP { get; set; }
+    }
 }

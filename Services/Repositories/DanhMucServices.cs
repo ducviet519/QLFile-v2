@@ -265,5 +265,27 @@ namespace WebTools.Services.Repositories
                 return data;
             }
         }
+
+        public async Task<List<DanhMuc_KhoaPhong>> Get_DM_KhoaPhong()
+        {
+            List<DanhMuc_KhoaPhong> data = new List<DanhMuc_KhoaPhong>();
+            string query = @"SELECT STT AS ID,KhoaP FROM dbo.Depts";
+            try
+            {
+                using (IDbConnection dbConnection = Connection)
+                {
+                    if (dbConnection.State == ConnectionState.Closed)
+                        dbConnection.Open();
+                    data = (await dbConnection.QueryAsync<DanhMuc_KhoaPhong>(query)).ToList();
+                    dbConnection.Close();
+                }
+                return data;
+            }
+            catch (Exception ex)
+            {
+                string errorMsg = ex.Message;
+                return data;
+            }
+        }
     }
 }

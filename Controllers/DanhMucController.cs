@@ -240,5 +240,17 @@ namespace WebTools.Controllers
         {
             return Json(new { data = await _services.DanhMuc.Get_DM_QuyenLoaiVB() });
         }
+
+        [ActionName("KhoaPhong")]
+        public IActionResult DanhMucKhoaPhong()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> Get_DanhMucKhoaPhong()
+        {
+            return Json(new { data = await _services.DanhMuc.Get_DM_KhoaPhong() });
+        }
     }
 }

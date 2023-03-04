@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "DanhMucQuyenLoaiVB";
+    ViewData["Title"] = "KhoaPhong";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <style>
@@ -10,20 +10,16 @@
 </style>
 <div class="container">
     <div class="invoice p-3 mb-3">
-        <h2 class="text-center">Danh mục Loại văn bản</h2>
+        <h2 class="text-center">Danh mục Khoa phòng</h2>
     </div>
     <div class="d-flex justify-content-end mr-3">
         <div class="" id="btn-export"></div>
     </div>
-    <table class="table table-bordered table-striped" id="tbQuyenLoai">
+    <table class="table table-bordered table-striped" id="tbKhoaPhong">
         <thead class="thead">
             <tr>
-                <th>ID</th>
-                <th>Tên loại biểu mẫu</th>
-                <th>Xem</th>
-                <th>In</th>
-                <th>Tải về</th>
-                <th>Trạng thái</th>
+                <th class="w-auto">ID Khoa phòng</th>
+                <th class="w-75">Tên Khoa phòng</th>
             </tr>
         </thead>
     </table>
@@ -31,7 +27,7 @@
 @section Scripts{
     <script type="text/javascript">
         $(document).ready(function () {
-            var table = $("#tbQuyenLoai").DataTable({
+            var table = $("#tbKhoaPhong").DataTable({
                 "scrollY": '420px',
                 "scrollCollapse": true,
                 "paging": false,
@@ -49,7 +45,7 @@
                     { defaultContent: '', targets: "_all" },
                 ],
                 "ajax": {
-                    "url": '/DanhMuc/Get_DanhMucQuyenLoaiVB',
+                    "url": '/DanhMuc/Get_DanhMucKhoaPhong',
                     "type": "GET",
                     "datatype": "json"
                 },
@@ -58,47 +54,7 @@
                         "data": "id",
                         "className": "text-center"
                     },
-                    { "data": "tenLoaiBM" },
-                    {
-                        "data": { doc: "doc"},
-                        "render": function (data, type, full, meta) {
-                            if (data.doc === "Có") {
-                                return '<span class="badge bg-success">' + data.doc + '</span>';
-                            }
-                            else { return '';}
-                        },
-                        "className": "text-center"
-                    },
-                    {
-                        "data": { inRa: "inRa" },
-                        "render": function (data, type, full, meta) {
-                            if (data.inRa === "Có") {
-                                return '<span class="badge bg-success">' + data.inRa + '</span>';
-                            }
-                            else { return ''; }
-                        },
-                        "className": "text-center"
-                    },
-                    {
-                        "data": { taiVe: "taiVe" },
-                        "render": function (data, type, full, meta) {
-                            if (data.taiVe === "Có") {
-                                return '<span class="badge bg-success">' + data.taiVe + '</span>';
-                            }
-                            else { return ''; }
-                        },
-                        "className": "text-center"
-                    },
-                    {
-                        "data": { trangThai: "trangThai" },
-                        "render": function (data, type, full, meta) {
-                            if (data.trangThai === "Đang sử dụng") {
-                                return '<span class="badge bg-success">' + data.trangThai + '</span>';
-                            }
-                            else { return ''; }
-                        },
-                        "className": "text-center"
-                    },
+                    { "data": "khoaP" },
                 ],
                 "language": {
                     "sProcessing": "Đang tải dữ liệu...",
@@ -122,7 +78,7 @@
                     "extend": 'excel',
                     "text": '<i class="fas fa-file-download"></i> Xuất Excel</button>',
                     "className": "btn btn-success btn-flat ml-3",
-                    "title": "Danh mục Loại văn bản",
+                    "title": "Danh mục Khoa phòng",
                     "sheetName": "Thống kê",
                     "footer": true
                     //"exportOptions": { columns: array },
