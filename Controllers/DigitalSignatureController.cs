@@ -4,9 +4,9 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Threading;
 using System.Threading.Tasks;
 using GleamTech.DocumentUltimate;
-using Jose;
 using Microsoft.AspNetCore.Mvc;
 using Spire.Pdf;
 using Spire.Pdf.General.Find;
@@ -131,20 +131,19 @@ namespace WebTools.Controllers
 
         public JsonResult Index()
         {
-            //string filePathInput = "D:\\VanBan\\BM.02.QLCL.57.V1. Bien ban ban giao mau phoi tru dong.docx";
-            //string fileOutput = DocConvert(filePathInput, "D:\\SignFileOutput");
+            string filePathInput = "D:\\VanBan\\BM.02.QLCL.57.V1. Bien ban ban giao mau phoi tru dong.docx";
+            string fileOutput = DocConvert(filePathInput, "D:\\SignFileOutput");
 
-            //string imagePath = "C:\\Users\\vietld\\Downloads\\logo_300x300.png";
-            //var signImageOutput = SignPDFWithImage(fileOutput, imagePath);
+            string imagePath = "C:\\Users\\vietld\\Downloads\\logo_300x300.png";
+            var signImageOutput = SignPDFWithImage(fileOutput, imagePath);
 
-            //List<FileSignPDF> listFilePDF = new List<FileSignPDF>() 
-            //{ 
-            //    new FileSignPDF() { filePath = fileOutput } 
-            //};
-            //var signInviableOuput = SignPDFInviciable(listFilePDF);
+            List<FileSignPDF> listFilePDF = new List<FileSignPDF>()
+            {
+                new FileSignPDF() { filePath = fileOutput }
+            };
+            var signInviableOuput = SignPDFInviciable(listFilePDF);
 
-            //return Json(new { filePath = fileOutput, signImageOutput = signImageOutput, signInviableOuput = signInviableOuput });
-            return Json(new { });
+            return Json(new { filePath = fileOutput, signImageOutput = signImageOutput, signInviableOuput = signInviableOuput });
         }
     }
 }

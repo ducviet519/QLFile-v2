@@ -1,5 +1,4 @@
 using DevExpress.AspNetCore;
-using DevExpress.AspNetCore.Reporting;
 using GleamTech.AspNet.Core;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -72,12 +71,6 @@ namespace WebTools
             services.AddGleamTech();
             services.AddDevExpressControls();
             services.AddMvc();
-            services.ConfigureReportingServices(configurator => {
-                configurator.ConfigureWebDocumentViewer(viewerConfigurator => {
-                    viewerConfigurator.UseCachedReportSourceBuilder();
-                });
-                configurator.UseAsyncEngine();
-            });
             services.AddScoped<IReportListServices, ReportListServices>();
             services.AddScoped<IReportVersionServices, ReportVersionServices>();
             services.AddScoped<IReportSoftServices, ReportSoftServices>();

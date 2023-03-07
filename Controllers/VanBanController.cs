@@ -738,5 +738,58 @@ namespace WebTools.Controllers
         }
 
         #endregion
+
+        #region Ban hành văn bản
+        [HttpPost]
+        public async Task<IActionResult> BanHanhVanBan([FromBody] List<VanBan_ID> listID)
+        {
+            
+            var listVanBan = (await _services.VanBan.BanHanhVanBan(listID)).ToList();
+            ViewBag.JsonData = JsonConvert.SerializeObject(listVanBan);
+            return PartialView("_VanBan_BanHanh");
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> BanHanhVanBanUpsert([FromBody] VanBanBanHanhRequest data)
+        {
+            string message = "";
+            string title = "";
+            string result = "";
+            string user = HttpContext.User.Claims.First(c => c.Type == ClaimTypes.GivenName).Value ?? HttpContext.User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
+            try
+            {
+                result = await _services.VanBan.BanHanhVanBan_Upsert(data.listID, user);
+                if (result == "OK")
+                {
+                    message = $"Đã phát hành {data.listID.Count} văn bản";
+                    title = "Thành công!";
+                    result = "success";
+                    foreach (var email in data.listEmail)
+                    {
+                        MailRequest request = new MailRequest()
+                        {
+                            Body = data.emailBody,
+                            ToEmail = email,
+                            Subject = "Thông báo ban hành văn bản"
+                        };
+                        await _services.MailService.SendEmailAsync(request);                     
+                    }
+                }
+                else
+                {
+                    message = $"Lỗi! {result}";
+                    title = "Lỗi!";
+                    result = "error";
+                }
+            }
+            catch (Exception ex)
+            {
+                message = ex.Message;
+                title = "Lỗi!";
+                result = "error";
+            }
+            return Json(new { Result = result, Title = title, Message = message });
+        }
+        #endregion
     }
 }

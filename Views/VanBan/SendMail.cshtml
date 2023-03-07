@@ -37,10 +37,7 @@
             ajaxStop: function () { $(document.body).removeClass("loading"); }
         });
 
-        $('#ToEmail').select2({
-            tags: true,
-
-        });
+        $('#ToEmail').select2({ tags: true });
 
         function getData(url) {
             var result = null;

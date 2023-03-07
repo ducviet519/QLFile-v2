@@ -1,0 +1,231 @@
+﻿@using WebTools.Models.ViewModel
+<style>
+    .fieldset {
+        position: relative;
+        border: 1px solid #ddd;
+        padding: 10px;
+    }
+
+        .fieldset h1 {
+            position: absolute;
+            top: 0;
+            font-size: 14px;
+            line-height: 1;
+            margin: -9px 0 0; /* half of font-size */
+            background: #fff;
+            padding: 0 3px;
+        }
+
+    #tbVanBanBanHanh tbody tr.selected {
+        color: unset !important;
+        background-color: unset !important;
+    }
+
+    #sendMail {
+        display: none;
+    }
+</style>
+@await Html.PartialAsync("Shared/_StyleUI_ComboBox")
+<!-- Modal -->
+<div class="modal fade bd-example-modal-xl" id="modalPhatHanhVanBan" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"><i class="fas fa-shipping-fast"></i> Phát hành văn bản</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="col-12">
+                    <div class="col pl-0">
+                        <label class="label-checkbox"><input type="checkbox" id="customControlAutosizing" name="customControlAutosizing" />Gửi mail phát hành văn bản</label>
+                    </div>
+                    <div class="" id="sendMail">
+                        <div class="form-group row col-12">
+                            <label class="col-form-label col-auto">Email người nhận: </label>
+                            <div class="col">
+                                <select class="form-control" id="ToEmail" name="ToEmail" multiple="multiple"></select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <table id="tbVanBanBanHanh" class="table table-bordered table-striped" width="100%">
+                    <thead class="thead">
+                        <tr>
+                            <th></th>
+                            <th>Tên VB</th>
+                            <th>Mã VB</th>
+                            <th>Ngày BH</th>
+                            <th>Ngày HL</th>
+                            <th>Khoa phòng</th>
+                            <th>Đối tượng</th>
+                            <th>Nội dung</th>
+                        </tr>
+                    </thead>
+                </table>
+                <input type="hidden" id="jsonData" value="@ViewBag.JsonData" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-save="phathanhvanban"><i class="fas fa-save"></i> Phát hành</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#ToEmail').select2({ tags: true, width: "100%" });
+
+        $('#customControlAutosizing').change(function () {
+            $('#sendMail').toggle();
+        });
+
+        var data = jQuery.parseJSON(document.getElementById('jsonData').value);
+
+        var columnData = [
+            { "data": "ID" },
+            { "data": "TenVanBan" },
+            { "data": "MaVanBan" },
+            { "data": "NgayBanHanh" },
+            { "data": "NgayHieuLuc" },
+            { "data": "KPApDung" },
+            { "data": "DoiTuongApDung" },
+            { "data": "NoiDung" },
+        ];
+
+        var table = $("#tbVanBanBanHanh").DataTable({
+            "scrollY": '50vh',
+            "scrollX": true,
+            "paging": false,
+            "fixedHeader": true,
+            "lengthChange": false,
+            "data": data,
+            "columns": columnData,
+            "columnDefs": [
+                { "orderable": false, "targets": 'no-order' },
+                { "className": "text-nowrap", "targets": "_all" },
+                { "defaultContent": '', "targets": "_all" },
+                { "targets": 0, "checkboxes": { "selectRow": true } }
+            ],
+            "select": {
+                "style": "multi",
+                "selector": '.dt-checkboxes'
+            },
+            "language": {
+                "sProcessing": "Đang tải dữ liệu...",
+                "sLengthMenu": "Xem _MENU_ mục",
+                "sZeroRecords": "Không tìm thấy dòng nào phù hợp",
+                "sInfo": "Đang xem _START_ đến _END_ trong tổng số _TOTAL_ mục",
+                "sInfoEmpty": "Đang xem 0 đến 0 trong tổng số 0 mục",
+                "sInfoFiltered": "(được lọc từ _MAX_ mục)",
+                "sInfoPostFix": "",
+                "sSearch": "Tìm:",
+                "sUrl": "",
+                "oPaginate": {
+                    "sFirst": "Đầu",
+                    "sPrevious": "Trước",
+                    "sNext": "Tiếp",
+                    "sLast": "Cuối"
+                }
+            },
+            'initComplete': function (settings) {
+                var api = this.api();
+
+                api.cells(
+                    api.rows(function (idx, data, node) {
+                        return (data[0] !== '') ? true : false;
+                    }).indexes(),
+                    0
+                ).checkboxes.select();
+            },
+        });
+
+        function getData(dataToSend) {
+            var result = null;
+            $.ajax({
+                url: '/Mail/MailTemplate',
+                type: "POST",
+                contentType: 'application/json; charset=UTF-8',
+                data: dataToSend,
+                dataType: 'html',
+                async: false,
+                success: function (data) {
+                    result = data;
+                }
+            });
+            return result;
+        }
+
+        $('body #modalPhatHanhVanBan').on('click', 'button[data-save="phathanhvanban"]', function (e) {
+            var rows = table.rows({ selected: true }).data();
+
+            if (rows.length > 0) {
+                var listID = new Array();
+                var listVanBan = new Array();
+                $.each(rows, function (index, value) {
+                    var id = {};
+                    id.IDVanBan = value.ID;
+                    id.IDPhienBan = value.IDPhienBan;
+                    listID.push(id);
+                    var vanban = {};
+                    vanban.ID = value.ID;
+                    vanban.IDPhienBan = value.IDPhienBan;
+                    vanban.TenVanBan = value.TenVanBan;
+                    vanban.MaVanBan = value.MaVanBan;
+                    vanban.NgayBanHanh = value.NgayBanHanh;
+                    vanban.NgayHieuLuc = value.NgayHieuLuc;
+                    vanban.KPApDung = value.KPApDung;
+                    vanban.DoiTuongApDung = value.DoiTuongApDung;
+                    vanban.NoiDung = value.NoiDung;
+                    listVanBan.push(vanban);
+                });
+                if ($('#customControlAutosizing').is(':checked')) {
+                    var toEmail = $('#ToEmail').val();
+                    var htmldata = getData(JSON.stringify(listVanBan));
+                    var dataToSend = JSON.stringify({ 'emailBody': htmldata, 'listEmail': toEmail, 'listID': listID });
+                    SendAjax(dataToSend);
+                }
+                else {                   
+                    var dataToSend = JSON.stringify({ 'listID': listID });
+                    SendAjax(dataToSend);
+                }
+
+                function SendAjax(dataToSend) {
+                    $.ajax({
+                        type: 'POST',
+                        url: '/VanBan/BanHanhVanBanUpsert',
+                        contentType: 'application/json; charset=UTF-8',
+                        data: dataToSend,
+                        dataType: "json",
+                        beforeSend: function () {
+                            $('button[data-save="phathanhvanban"]').attr("disabled", true);
+                        },
+                        success: function (data) {
+                            $(this).callToast(data.result, data.title, data.message);
+                        },
+                        error: function (data) {
+                            $(this).callToast(data.result, data.title, data.message);
+                        },
+                        complete: function () {
+                            $('button[data-save="phathanhvanban"]').attr("disabled", false);
+                        },
+                    });
+                }
+            }
+            else {
+                Swal.fire(
+                    'Bạn chưa chọn văn bản nào!',
+                    'Chọn văn bản trước khi phát hành văn bản',
+                    'warning'
+                )
+            }
+            e.preventDefault();
+        });
+
+        $('#modalPhatHanhVanBan').on('shown.bs.modal', function (e) {
+            $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();
+        });
+    });
+</script>

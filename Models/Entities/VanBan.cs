@@ -179,4 +179,30 @@ namespace WebTools.Models.Entities
         public string TenVB { get; set; }
         public string MaVB { get; set; }
     }
+
+    public class VanBan_BanHanh
+    {
+        public string TenVanBan { get; set; }
+        public string MaVanBan { get; set; }
+        public string NoiDung { get; set; }
+        public string KPApDung { get; set; }
+        public string DoiTuongApDung { get; set; }
+        public string NgayBanHanh { get; set; }
+        public string NgayHieuLuc { get; set; }
+        public string ID { get; set; }
+        public string IDPhienBan { get; set; }
+    }
+
+    public class VanBanPhienBan_ID
+    {
+        public string IDVanBan { get; set; }
+        public string IDPhienBan { get; set; }
+    }
+
+    public class VanBanBanHanhRequest
+    {
+        public string emailBody { get; set; }
+        public List<string> listEmail { get; set; }
+        public List<VanBanPhienBan_ID> listID { get; set; }
+    }
 }
