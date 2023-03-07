@@ -29,7 +29,7 @@ namespace WebTools.Controllers
         public async Task<IActionResult> GetReport()
         {
             var report = StiReport.CreateNewReport();
-            var path = StiNetCoreHelper.MapPath(this, "Reports/DemoReport.mrt");
+            var path = Path.Combine(_webHostEnvironment.WebRootPath, "Reports\\DemoReport.mrt");
             using (var stream = System.IO.File.OpenRead(path))
             {
                 report.Load(stream);
@@ -49,7 +49,7 @@ namespace WebTools.Controllers
         public async Task<IActionResult> ExportReport()
         {
             var report = StiReport.CreateNewReport();
-            var path = StiNetCoreHelper.MapPath(this, "Reports/DemoReport.mrt");
+            var path = Path.Combine(_webHostEnvironment.WebRootPath, "Reports\\DemoReport.mrt");
             using (var stream = System.IO.File.OpenRead(path))
             {
                 report.Load(stream);

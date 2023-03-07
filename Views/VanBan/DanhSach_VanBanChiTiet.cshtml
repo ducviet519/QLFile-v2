@@ -255,7 +255,10 @@
                         {
                             <button type="button" class="btn btn-info ml-2" data-toggle="modal" data-target="#modalDoiNhomVB"><i class="fas fa-random"></i> Chức năng đổi nhóm</button>
                         }
-                        <button type="button" class="btn btn-success ml-2" id="btnBanHanhVanBan"><i class="fas fa-shipping-fast"></i> Ban hành</button>
+                        @if ((AuthorizationService.AuthorizeAsync(User, "Permission.PhatHanhVanBan")).Result.Succeeded)
+                        {
+                            <button type="button" class="btn btn-success ml-2" id="btnBanHanhVanBan"><i class="fas fa-shipping-fast"></i> Ban hành</button>
+                        }
                     </div>
                 </div>
             </div>

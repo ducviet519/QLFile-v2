@@ -135,6 +135,7 @@
     <None Include="wwwroot\lib\moment\moment.min.js" />
     <None Include="wwwroot\lib\moment\moment.min.js.map" />
     <None Include="wwwroot\localization\vi.xml" />
+    <None Include="wwwroot\Reports\DemoReport.mrt" />
   </ItemGroup>
 
   <ItemGroup>
