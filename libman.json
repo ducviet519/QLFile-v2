@@ -1,14 +1,16 @@
 {
   "version": "1.0",
-  "defaultProvider": "cdnjs",
+  "defaultProvider": "filesystem",
   "libraries": [
+
     {
-      "library": "admin-lte@3.2.0",
-      "destination": "wwwroot/lib/admin-lte/"
-    },
-    {
-      "library": "tempusdominus-bootstrap-4@5.39.0",
-      "destination": "wwwroot/lib/tempusdominus-bootstrap-4/"
+      "library": "node_modules/devextreme/dist/css/icons/",
+      "destination": "wwwroot/css/icons",
+      "files": [
+        "dxicons.ttf",
+        "dxicons.woff2",
+        "dxicons.woff"
+      ]
     }
   ]
 }

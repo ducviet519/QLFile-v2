@@ -28,6 +28,7 @@ namespace WebTools.Services
         public IPhanQuyenServices PhanQuyen { get; }
         public IThongKeServices ThongKe { get; }
         public IMailService MailService { get; }
+        public IEasySignServices DigitalSign { get; }
 
         public UnitOfWork
             (
@@ -36,22 +37,19 @@ namespace WebTools.Services
                 IReportSoftServices _Report_Soft,
                 IReportDetailServices _Report_Detail,
                 IGopYServices _Report_GopY,
-
                 IReportURDServices _DM_URDs,
                 IDepts _DM_Depts,
                 ISoftwareServices _DM_Softwares,
-
                 IGoogleDriveAPI _GoogleDriveAPI,
                 IGoogleDriverV2 _googleDriverV2,
                 IUploadFileServices _UploadFile,
-
                 IDanhMucServices _danhMucServices,
                 IVanBanServices _vanBanServices,
                 IThuMucServices _thuMucServices,
                 IPhanQuyenServices _phanQuyenServices,
                 IThongKeServices _thongKeServices,
-                IMailService mailService
-
+                IMailService _mailService,
+                IEasySignServices _easySignServices
             )
         {
             Report_List = _Report_List;
@@ -67,7 +65,7 @@ namespace WebTools.Services
             GoogleDriveAPI = _GoogleDriveAPI;
             GoogleDriveV2 = _googleDriverV2;
             UploadFile = _UploadFile;
-            MailService = mailService;
+            MailService = _mailService;
 
             DanhMuc = _danhMucServices;
             VanBan = _vanBanServices;
@@ -75,6 +73,7 @@ namespace WebTools.Services
             PhanQuyen = _phanQuyenServices;
             ThongKe = _thongKeServices;
 
+            DigitalSign = _easySignServices;
         }
 
     }

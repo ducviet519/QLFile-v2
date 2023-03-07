@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using RestSharp.Authenticators;
 using WebTools.Services;
 using WebTools.Services.Interface;
 using WebTools.Services.Repositories;
@@ -28,6 +29,7 @@ namespace WebTools.Services
             services.AddTransient<IPhanQuyenServices, PhanQuyenServices>();
             services.AddTransient<IThongKeServices, ThongKeServices>();
             services.AddTransient<IMailService, MailService>();
+            services.AddTransient<IEasySignServices, EasySignServices>();
         }
     }
 }

@@ -16,5 +16,8 @@ namespace WebTools.Services.Interface
         Task<List<DanhMuc_LoaiBieuMau>> Get_DM_LoaiBieuMau();
         Task<List<DanhMuc_NhomQuyen>> Get_DM_NhomQuyen();
         Task<List<DanhMuc_LoaiBieuMau>> Get_DM_TrangThaiVanBan();
+        Task<List<DanhMuc_Cabinet>> Get_DM_Cabinet();
+        Task<List<DanhMuc_QuyenLoaiBM>> Get_DM_QuyenLoaiVB();
+        Task<List<DanhMuc_KhoaPhong>> Get_DM_KhoaPhong();
     }
 }

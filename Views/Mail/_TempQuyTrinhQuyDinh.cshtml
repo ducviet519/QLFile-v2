@@ -1,61 +1,56 @@
-﻿<!DOCTYPE html>
+﻿@using WebTools.Models.ViewModel
+@model BanHanhVanBanVM
+<!DOCTYPE html>
 <html>
 <head>
     <title>Tam Anh Hospital</title>
-    <style>
-        body{
-            font-family:'Times New Roman', Times, serif;
-            font-size: 1rem;
-        }
-
-        .container{
-            margin: 10px;
-        }
-        th, td {
-            border: 1px solid black;
-            padding: 5px;
-        }
-    </style>
 </head>
-<body>
-    <div class="container">
-        <p>Thông báo ban hành Quy trình/Quy định & Biểu mẫu: @ViewBag.TenVB</p>
+<body style="font-family: 'Times New Roman', Times, serif; font-size: 1rem; ">
+    <div class="container" style="margin: 10px;">
+        <p>Thông báo ban hành Quy trình/Quy định & Biểu mẫu: ........................</p>
         <br />
         <p>
             <strong>Kính gửi:</strong>
             Ban Giám Đốc,
             <br />&emsp;&emsp;&emsp;&emsp;&nbsp;Các Trung tâm/ Khoa/ Phòng/ Bộ phận,
         </p>
-        <p>Bộ phận PHVB kính gửi tới các Anh/Chị: @ViewBag.NguoiNhan., chi tiết như sau: </p>
+        <p>Bộ phận PHVB kính gửi tới các Anh/Chị: ......................, chi tiết như sau: </p>
         <div style="margin: 10px 0 10px 0;">
-            <table>
+            <table style="border-collapse: collapse;" border="1">
                 <thead>
                     <tr>
-                        <th>Tên văn bản</th>
-                        <th>Mã văn bản + version</th>
-                        <th>Nội dung chỉnh sửa</th>
-                        <th>Đối tượng áp dụng</th>
-                        <th>Hình thức áp dụng</th>
-                        <th>Link VBNB</th>
+                        <th style="padding: 5px;">Tên văn bản</th>
+                        <th style="padding: 5px;">Mã văn bản + version</th>
+                        <th style="padding: 5px;">Nội dung chỉnh sửa</th>
+                        <th style="padding: 5px;">Ngày ban hành</th>
+                        <th style="padding: 5px;">Ngày hiệu lực</th>
+                        <th style="padding: 5px;">Đối tượng áp dụng</th>
+                        <th style="padding: 5px;">Khoa phòng áp dụng</th>
+                        <th style="padding: 5px;">Link VBNB</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>@ViewBag.TenVB</td>
-                        <td>@ViewBag.MaVB</td>
-                        <td>@ViewBag.NoiDung</td>
-                        <td>@ViewBag.DoiTuong</td>
-                        <td>@ViewBag.HinhThuc</td>
-                        <td><a href="@ViewBag.Link">Link</a></td>
-                    </tr>
+                    @if (Model.listVanBan.Count > 0 && Model.listVanBan != null)
+                    {
+                        @foreach (var vanban in Model.listVanBan)
+                        {
+                            <tr>
+                                <td style="padding: 5px;">@vanban.TenVanBan</td>
+                                <td style="padding: 5px;">@vanban.MaVanBan</td>
+                                <td style="padding: 5px;">@vanban.NoiDung</td>
+                                <td style="padding: 5px;">@vanban.NgayBanHanh</td>
+                                <td style="padding: 5px;">@vanban.NgayHieuLuc</td>
+                                <td style="padding: 5px;">@vanban.DoiTuongApDung</td>
+                                <td style="padding: 5px;">@vanban.KPApDung</td>
+                                <td style="padding: 5px; text-align:center;"><a href="https://vb.bvta.vn/Preview/VanBan?file=@vanban.ID">Link văn bản</a></td>
+                            </tr>
+                        }
+                    }
+
                 </tbody>
             </table>
         </div>
         <p>
-            <strong>Ngày phát hành: <span style="color:red;">@ViewBag.NgayPhatHanh</span></strong>
-            <br />
-            <strong>Ngày hiệu lực: <span style="color:red;">@ViewBag.NgayHieuLuc</span></strong>
-            <br />
             <br />
             &nbsp;&nbsp;&nbsp;&nbsp;- Trưởng Đơn vị có trách nhiệm đào tạo và giám sát việc tuân thủ của các thành viên Đơn vị mình phụ trách.
             <br />

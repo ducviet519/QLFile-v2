@@ -29,7 +29,6 @@ namespace WebTools.Services.Repositories
             get { return new SqlConnection(ConnectionString); }
         }
         #endregion
-
         public async Task<List<BangTinVanBan>> Get_BangTinVanBan(string user, string loaivb = null)
         {
             List<BangTinVanBan> data = new List<BangTinVanBan>();
@@ -57,6 +56,7 @@ namespace WebTools.Services.Repositories
                 return data;
             }
         }
+        
         public async Task<List<VanBan_PhienBan>> Get_DanhSachPhienBan(string idvb)
         {
             List<VanBan_PhienBan> data = new List<VanBan_PhienBan>();
@@ -82,6 +82,7 @@ namespace WebTools.Services.Repositories
                 return data;
             }
         }
+        
         public async Task<List<PreviewVanBan>> Preview_VanBan(string user, string idvanban = null)
         {
             List<PreviewVanBan> data = new List<PreviewVanBan>();
@@ -108,6 +109,7 @@ namespace WebTools.Services.Repositories
                 return data;
             }
         }
+        
         public async Task<List<VanBanChiTiet>> Table_VanBanChiTiet(Search_VanBanChiTiet search = null)
         {
             List<VanBanChiTiet> data = new List<VanBanChiTiet>();
@@ -143,6 +145,7 @@ namespace WebTools.Services.Repositories
                 return data;
             }
         }
+        
         public async Task<List<VanBanChiTiet>> Table_VanBanChiTiet_Google(Search_VanBanChiTiet search = null, List<GoogleDriveFile> table = null)
         {
             List<VanBanChiTiet> data = new List<VanBanChiTiet>();
@@ -179,6 +182,7 @@ namespace WebTools.Services.Repositories
                 return data;
             }
         }
+        
         public async Task<string> ViewLog(string idvb, string user)
         {
             string result = String.Empty;
@@ -208,6 +212,7 @@ namespace WebTools.Services.Repositories
                 return result;
             }
         }
+        
         public async Task<string> SendLike(string idvb, string user)
         {
             string result = String.Empty;
@@ -237,6 +242,7 @@ namespace WebTools.Services.Repositories
                 return result;
             }
         }
+        
         public async Task<string> Upsert_PhienBan(VanBan_PhienBan phienban, string user)
         {
             string result = String.Empty;
@@ -277,6 +283,7 @@ namespace WebTools.Services.Repositories
                 return result;
             }
         }
+        
         public async Task<string> StatUpdate_PhienBan(string idvb, string idphienban, int cmdtype, string user)
         {
             string result = String.Empty;
@@ -308,6 +315,7 @@ namespace WebTools.Services.Repositories
                 return result;
             }
         }
+        
         public async Task<string> Upsert_VanBan_ThuMuc(List<VanBan_ID> listID, int IDCabinet, string user)
         {
             string result = String.Empty;
@@ -338,6 +346,7 @@ namespace WebTools.Services.Repositories
                 return result;
             }
         }
+        
         public async Task<List<VanBan_ListName>> Get_ListTenVanBan(string text = null)
         {
             List<VanBan_ListName> data = new List<VanBan_ListName>();
@@ -364,6 +373,7 @@ namespace WebTools.Services.Repositories
                 return data;
             }
         }
+        
         public async Task<string> Add_VanBan(VanBan_CRUD vanban, List<VanBan_ID> listID, string user)
         {
             string result = String.Empty;
@@ -409,6 +419,7 @@ namespace WebTools.Services.Repositories
                 return result;
             }
         }
+        
         public async Task<List<VanBan_ByID>> Get_VanBanByID(string docID = null)
         {
             List<VanBan_ByID> data = new List<VanBan_ByID>();
@@ -435,6 +446,7 @@ namespace WebTools.Services.Repositories
                 return data;
             }
         }
+        
         public async Task<string> Update_VanBan(VanBan_CRUD vanban, List<VanBan_ID> listID, string user)
         {
             string result = String.Empty;
@@ -474,6 +486,7 @@ namespace WebTools.Services.Repositories
                 return result;
             }
         }
+        
         public async Task<string> Delete_VanBan(string idvb)
         {
             string result = String.Empty;
@@ -503,50 +516,50 @@ namespace WebTools.Services.Repositories
                 return result;
             }
         }
-        public async Task<string> FileImport(string loaiFile, DataTable table, string user)
+
+        public async Task<List<VanBan_BanHanh>> BanHanhVanBan(List<VanBan_ID> listID)
         {
-            string result = String.Empty;
-            var parameter = new DynamicParameters();
-            parameter.Add("LoaiFile", loaiFile);
-            parameter.Add("UserAcc", user);
-            parameter.Add("FileTable", value: table, dbType: DbType.Object);
+            List<VanBan_BanHanh> data = new List<VanBan_BanHanh>();
+
             try
             {
                 using (IDbConnection dbConnection = Connection)
                 {
-                    dbConnection.Open();
-                    var data = await dbConnection.ExecuteScalarAsync("sp_FileImport", parameter, commandType: CommandType.StoredProcedure);
-                    if (data.ToString() == "0")
+                    if (dbConnection.State == ConnectionState.Closed)
+                        dbConnection.Open();
+                    data = (await dbConnection.QueryAsync<VanBan_BanHanh>("sp_Report_BanHanh",
+                    new
                     {
-                        result = "OK";
-                    }
-                    else { result = data.ToString(); }
+                        ID = listID.AsTableValuedParameter("dbo.ReportID", new[] { "ReportID" }),
+                    },
+                    commandType: CommandType.StoredProcedure)).ToList();
                     dbConnection.Close();
                 }
-                return result;
+                return data;
             }
             catch (Exception ex)
             {
-                result = ex.Message;
-                return result;
+                string errorMsg = ex.Message;
+                return data;
             }
         }
-        public async Task<string> UpdateFileLink(string IDFileLink, string FileLink)
+
+        public async Task<string> BanHanhVanBan_Upsert(List<VanBanPhienBan_ID> listID, string user)
         {
             string result = String.Empty;
-            string query = "UPDATE [Tools].[dbo].[Report_File] SET FileLink = @FileLink WHERE ID = @IDFileLink";
             try
             {
                 using (IDbConnection dbConnection = Connection)
                 {
                     dbConnection.Open();
-                    var data = await dbConnection.ExecuteAsync(query,
+                    var data = await dbConnection.ExecuteScalarAsync("sp_Report_BanHanhUpsert",
                         new
                         {
-                            FileLink = FileLink,
-                            IDFileLink = IDFileLink
-                        });
-                    if (data > 0)
+                            ID = listID.AsTableValuedParameter("dbo.ReportIDPhienBan", new[] { "IDVanBan", "IDPhienBan" }),
+                            User = user
+                        },
+                        commandType: CommandType.StoredProcedure);
+                    if (data.ToString() == "0")
                     {
                         result = "OK";
                     }

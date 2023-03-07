@@ -381,82 +381,6 @@ namespace WebTools.Controllers
             return PartialView("_VanBan_ThemExcel");
         }
 
-        [HttpPost]
-        public async Task<JsonResult> UploadExcelFile(IFormFile fileUpload)
-        {
-            string message = String.Empty;
-            string title = String.Empty;
-            string result = String.Empty;
-            FileImport data = new FileImport();
-            string user = HttpContext.User.Claims.First(c => c.Type == ClaimTypes.GivenName).Value ?? HttpContext.User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
-            try
-            {
-                if (fileUpload != null)
-                {
-                    data = await _services.UploadFile.ReadExcelFile(fileUpload);
-                    if (data.status == "OK")
-                    {
-                        message = $"Lấy thành công {data.dataExcels.Rows.Count} văn bản";
-                        title = "Thành công!";
-                        result = "success";
-                        
-                    }
-                    else
-                    {
-                        message = data.status;
-                        title = "Lỗi!";
-                        result = "error";
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                message = ex.Message;
-                title = "Lỗi!";
-                result = "error";
-            }
-            string json = JsonConvert.SerializeObject(data.dataExcels, Formatting.Indented);
-            return Json(new { Result = result, Title = title, Message = message, data = json });
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> DataExcel(IFormFile fileUpload)
-        {
-            string message = String.Empty;
-            string title = String.Empty;
-            string result = String.Empty;
-            FileImport data = new FileImport();
-            string user = HttpContext.User.Claims.First(c => c.Type == ClaimTypes.GivenName).Value ?? HttpContext.User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
-            try
-            {
-                if (fileUpload != null)
-                {
-                    data = await _services.UploadFile.ReadExcelFile(fileUpload);
-                    if (data.status == "OK")
-                    {
-                        string check = await _services.VanBan.FileImport("1", data.dataExcels, user);
-                        message = $"Lưu thành công {data.dataExcels.Rows.Count} văn bản";
-                        title = "Thành công!";
-                        result = "success";
-
-                    }
-                    else
-                    {
-                        message = data.status;
-                        title = "Lỗi!";
-                        result = "error";
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                message = ex.Message;
-                title = "Lỗi!";
-                result = "error";
-            }
-            return Json(new { Result = result, Title = title, Message = message});
-        }
-
         [HttpGet]
         [Authorize(Roles = "Admin, Document")]
         public IActionResult ThemVanBan(int? parentid)
@@ -549,7 +473,7 @@ namespace WebTools.Controllers
                 }
                 else
                 {
-                    result = await _services.VanBan.UpdateFileLink(vanBan_PhienBan.IDFileLink, vanBan_PhienBan.FileLink);
+                    result = await _services.UploadFile.UpdateFileLink(vanBan_PhienBan.IDFileLink, vanBan_PhienBan.FileLink);
                     if (result == "OK")
                     {
                         message = $"Đã thay thế file</b>";
@@ -813,6 +737,62 @@ namespace WebTools.Controllers
             return View();
         }
 
+        #endregion
+
+        #region Ban hành văn bản
+        [HttpPost]
+        public async Task<IActionResult> BanHanhVanBan([FromBody] List<VanBan_ID> listID)
+        {
+            
+            var listVanBan = (await _services.VanBan.BanHanhVanBan(listID)).ToList();
+            ViewBag.JsonData = JsonConvert.SerializeObject(listVanBan);
+            return PartialView("_VanBan_BanHanh");
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> BanHanhVanBanUpsert([FromBody] VanBanBanHanhRequest data)
+        {
+            string message = "";
+            string title = "";
+            string result = "";
+            string user = HttpContext.User.Claims.First(c => c.Type == ClaimTypes.GivenName).Value ?? HttpContext.User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
+            try
+            {
+                result = await _services.VanBan.BanHanhVanBan_Upsert(data.listID, user);
+                if (result == "OK")
+                {
+                    message = $"Đã phát hành {data.listID.Count} văn bản";
+                    title = "Thành công!";
+                    result = "success";
+                    if(data.listEmail != null)
+                    {
+                        foreach (var email in data.listEmail)
+                        {
+                            MailRequest request = new MailRequest()
+                            {
+                                Body = data.emailBody,
+                                ToEmail = email,
+                                Subject = "Thông báo ban hành văn bản"
+                            };
+                            await _services.MailService.SendEmailAsync(request);
+                        }
+                    }               
+                }
+                else
+                {
+                    message = $"Lỗi! {result}";
+                    title = "Lỗi!";
+                    result = "error";
+                }
+            }
+            catch (Exception ex)
+            {
+                message = ex.Message;
+                title = "Lỗi!";
+                result = "error";
+            }
+            return Json(new { Result = result, Title = title, Message = message });
+        }
         #endregion
     }
 }

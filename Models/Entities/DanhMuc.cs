@@ -53,4 +53,27 @@ namespace WebTools.Models.Entities
         public string IDGroup { get; set; }
         public string Groupname { get; set; }
     }
+
+    public class DanhMuc_Cabinet
+    {
+        public string NoiDung { get; set; }
+        public string IDCabin { get; set; }
+        public string TenCabin { get; set; }
+    }
+
+    public class DanhMuc_QuyenLoaiBM
+    {
+        public string ID { get; set; }
+        public string TenLoaiBM { get; set; }
+        public string Doc { get; set; }
+        public string InRa { get; set; }
+        public string TaiVe { get; set; }
+        public string TrangThai { get; set; }
+    }
+
+    public class DanhMuc_KhoaPhong
+    {
+        public string ID { get; set; }
+        public string KhoaP { get; set; }
+    }
 }

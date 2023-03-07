@@ -1,0 +1,96 @@
+﻿
+@{
+    ViewData["Title"] = "KhoaPhong";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .dataTables_filter {
+        display: none;
+    }
+</style>
+<div class="container">
+    <div class="invoice p-3 mb-3">
+        <h2 class="text-center">Danh mục Khoa phòng</h2>
+    </div>
+    <div class="d-flex justify-content-end mr-3">
+        <div class="" id="btn-export"></div>
+    </div>
+    <table class="table table-bordered table-striped" id="tbKhoaPhong">
+        <thead class="thead">
+            <tr>
+                <th class="w-auto">ID Khoa phòng</th>
+                <th class="w-75">Tên Khoa phòng</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+@section Scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var table = $("#tbKhoaPhong").DataTable({
+                "scrollY": '420px',
+                "scrollCollapse": true,
+                "paging": false,
+                "lengthChange": false,
+                "searching": true,
+                "processing": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": true,
+                "responsive": false,
+                "order": [[0, 'asc']],
+                "columnDefs": [
+                    { orderable: false, targets: 'no-order' },
+                    { className: "text-wrap", targets: "_all" },
+                    { defaultContent: '', targets: "_all" },
+                ],
+                "ajax": {
+                    "url": '/DanhMuc/Get_DanhMucKhoaPhong',
+                    "type": "GET",
+                    "datatype": "json"
+                },
+                "columns": [
+                    {
+                        "data": "id",
+                        "className": "text-center"
+                    },
+                    { "data": "khoaP" },
+                ],
+                "language": {
+                    "sProcessing": "Đang tải dữ liệu...",
+                    "sLengthMenu": "Xem _MENU_ mục",
+                    "sZeroRecords": "Không tìm thấy dòng nào phù hợp",
+                    "sInfo": "Đang xem _START_ đến _END_ trong tổng số _TOTAL_ mục",
+                    "sInfoEmpty": "Đang xem 0 đến 0 trong tổng số 0 mục",
+                    "sInfoFiltered": "(được lọc từ _MAX_ mục)",
+                    "sInfoPostFix": "",
+                    "sSearch": "Tìm:",
+                    "sUrl": "",
+                    "oPaginate": {
+                        "sFirst": "Đầu",
+                        "sPrevious": "Trước",
+                        "sNext": "Tiếp",
+                        "sLast": "Cuối"
+                    }
+                },
+                "dom": 'Bfrtip',
+                "buttons": [{
+                    "extend": 'excel',
+                    "text": '<i class="fas fa-file-download"></i> Xuất Excel</button>',
+                    "className": "btn btn-success btn-flat ml-3",
+                    "title": "Danh mục Khoa phòng",
+                    "sheetName": "Thống kê",
+                    "footer": true
+                    //"exportOptions": { columns: array },
+
+                }],
+                "initComplete": function (settings, json) {
+                    table.buttons().container().appendTo('#btn-export');
+                }
+            });
+        });
+
+    </script>
+}
+
+

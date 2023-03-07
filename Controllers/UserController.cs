@@ -114,6 +114,7 @@ namespace WebTools.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel login)
         {
+            string returnUrl = Request.Form["ReturnUrl"];
             try
             {
                 #region Lấy thông tin người dùng từ Windows Account
@@ -121,7 +122,10 @@ namespace WebTools.Controllers
                 if (UserInfo == null)
                 {
                     TempData["Error"] = "Lỗi! Thông tin tài khoản hoặc mật khẩu không chính xác";
-                    return View(login);
+                    if (!String.IsNullOrEmpty(returnUrl))
+                        return Redirect(returnUrl);
+                    else
+                        return View();
                 }
                 #endregion
 
@@ -166,7 +170,6 @@ namespace WebTools.Controllers
                         {
                             IsPersistent = login.RememberLogin
                         });
-                    string returnUrl = Request.Form["ReturnUrl"];
                     if (!String.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
                         return Redirect(returnUrl);
                     else
@@ -175,7 +178,10 @@ namespace WebTools.Controllers
                 else
                 {
                     TempData["Error"] = "Lỗi! Thông tin tài khoản hoặc mật khẩu không chính xác";
-                    return View();
+                    if (!String.IsNullOrEmpty(returnUrl))
+                        return Redirect(returnUrl);
+                    else
+                        return View();
                 }
                 #endregion
             }
@@ -183,7 +189,10 @@ namespace WebTools.Controllers
             {
                 var errorMessage = ex.Message;
                 TempData["Error"] = $"Lỗi! Thông tin tài khoản hoặc mật khẩu không chính xác";
-                return View();
+                if (!String.IsNullOrEmpty(returnUrl))
+                    return Redirect(returnUrl);
+                else
+                    return View();
             }
         }
 

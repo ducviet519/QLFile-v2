@@ -37,10 +37,7 @@
             ajaxStop: function () { $(document.body).removeClass("loading"); }
         });
 
-        $('#ToEmail').select2({
-            tags: true,
-
-        });
+        $('#ToEmail').select2({ tags: true });
 
         function getData(url) {
             var result = null;
@@ -57,7 +54,7 @@
         }
         $('body').on('click', '#btnCreate', function () {
             var toEmail = $('#ToEmail').val();
-            var htmldata = getData('/Mail/TempQuyTrinhQuyDinh');
+            var htmldata = getData('/Mail/MailTemplate');
             console.log(htmldata);
             console.log(toEmail);
             var dataToSend = JSON.stringify({ 'Body': htmldata, 'ListEmail': toEmail });

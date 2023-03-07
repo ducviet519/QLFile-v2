@@ -50,7 +50,7 @@ namespace WebTools.Services.Repositories
                 return data;
             }
         }
-
+        
         public async Task<List<DanhMuc>> Get_LoaiVanBanHienThi()
         {
             List<DanhMuc> data = new List<DanhMuc>();
@@ -72,7 +72,7 @@ namespace WebTools.Services.Repositories
                 return data;
             }
         }
-
+        
         public async Task<List<DanhMuc_Depts>> Get_DM_Depts()
         {
             List<DanhMuc_Depts> data = new List<DanhMuc_Depts>();
@@ -94,7 +94,7 @@ namespace WebTools.Services.Repositories
                 return data;
             }
         }
-
+        
         public async Task<List<DanhMuc_DoiTuongApDung>> Get_DM_DoiTuongApDung()
         {
             List<DanhMuc_DoiTuongApDung> data = new List<DanhMuc_DoiTuongApDung>();
@@ -116,7 +116,7 @@ namespace WebTools.Services.Repositories
                 return data;
             }
         }
-
+        
         public async Task<List<DanhMuc_HRMUsers>> Get_DM_NguoiSoanThao()
         {
             List<DanhMuc_HRMUsers> data = new List<DanhMuc_HRMUsers>();
@@ -143,7 +143,7 @@ namespace WebTools.Services.Repositories
                 return data;
             }
         }
-
+        
         public async Task<List<DanhMuc_LoaiBieuMau>> Get_DM_LoaiBieuMau()
         {
             List<DanhMuc_LoaiBieuMau> data = new List<DanhMuc_LoaiBieuMau>();
@@ -165,7 +165,7 @@ namespace WebTools.Services.Repositories
                 return data;
             }
         }
-
+        
         public async Task<List<DanhMuc_NhomQuyen>> Get_DM_NhomQuyen()
         {
             List<DanhMuc_NhomQuyen> data = new List<DanhMuc_NhomQuyen>();
@@ -187,7 +187,7 @@ namespace WebTools.Services.Repositories
                 return data;
             }
         }
-
+        
         public async Task<List<DanhMuc_LoaiBieuMau>> Get_DM_TrangThaiVanBan()
         {
             List<DanhMuc_LoaiBieuMau> data = new List<DanhMuc_LoaiBieuMau>();
@@ -199,6 +199,84 @@ namespace WebTools.Services.Repositories
                     if (dbConnection.State == ConnectionState.Closed)
                         dbConnection.Open();
                     data = (await dbConnection.QueryAsync<DanhMuc_LoaiBieuMau>(query)).ToList();
+                    dbConnection.Close();
+                }
+                return data;
+            }
+            catch (Exception ex)
+            {
+                string errorMsg = ex.Message;
+                return data;
+            }
+        }
+
+        public async Task<List<DanhMuc_Cabinet>> Get_DM_Cabinet()
+        {
+            List<DanhMuc_Cabinet> data = new List<DanhMuc_Cabinet>();
+
+            try
+            {
+                using (IDbConnection dbConnection = Connection)
+                {
+                    if (dbConnection.State == ConnectionState.Closed)
+                        dbConnection.Open();
+                    data = (await dbConnection.QueryAsync<DanhMuc_Cabinet>("sp_Report_DMCabinet",
+                    new
+                    {
+
+                    },
+                    commandType: CommandType.StoredProcedure)).ToList();
+                    dbConnection.Close();
+                }
+                return data;
+            }
+            catch (Exception ex)
+            {
+                string errorMsg = ex.Message;
+                return data;
+            }
+        }
+
+        public async Task<List<DanhMuc_QuyenLoaiBM>> Get_DM_QuyenLoaiVB()
+        {
+            List<DanhMuc_QuyenLoaiBM> data = new List<DanhMuc_QuyenLoaiBM>();
+            string query = @"SELECT
+	                ID
+	                ,MoTa AS TenLoaiBM
+	                ,CASE WHEN ReadR = 1 THEN N'Có' ELSE '' END AS Doc
+	                ,CASE WHEN PrintR = 1 THEN N'Có' ELSE '' END AS InRa
+	                ,CASE WHEN DownloadR = 1 THEN N'Có' ELSE '' END AS TaiVe
+	                ,CASE WHEN TrangThai = 1 THEN N'Đang sử dụng' ELSE '' END AS TrangThai
+                FROM Report_DMBieuMau";
+            try
+            {
+                using (IDbConnection dbConnection = Connection)
+                {
+                    if (dbConnection.State == ConnectionState.Closed)
+                        dbConnection.Open();
+                    data = (await dbConnection.QueryAsync<DanhMuc_QuyenLoaiBM>(query)).ToList();
+                    dbConnection.Close();
+                }
+                return data;
+            }
+            catch (Exception ex)
+            {
+                string errorMsg = ex.Message;
+                return data;
+            }
+        }
+
+        public async Task<List<DanhMuc_KhoaPhong>> Get_DM_KhoaPhong()
+        {
+            List<DanhMuc_KhoaPhong> data = new List<DanhMuc_KhoaPhong>();
+            string query = @"SELECT STT AS ID,KhoaP FROM dbo.Depts";
+            try
+            {
+                using (IDbConnection dbConnection = Connection)
+                {
+                    if (dbConnection.State == ConnectionState.Closed)
+                        dbConnection.Open();
+                    data = (await dbConnection.QueryAsync<DanhMuc_KhoaPhong>(query)).ToList();
                     dbConnection.Close();
                 }
                 return data;

@@ -27,4 +27,12 @@ namespace WebTools.Models.Entities
         public string Host { get; set; }
         public int Port { get; set; }
     }
+
+    public class MailData
+    {
+        public string IDVanBan { get; set; }
+        public string emailBody { get; set; }
+        public string emailAttachments { get; set; }
+        public string emailSubject { get; set; }
+    }
 }

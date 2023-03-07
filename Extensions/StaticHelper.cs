@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -27,5 +29,35 @@ namespace WebTools.Extensions
         }
         #endregion
 
+        #region Encode and Decode a base64 string
+        //base64 = EncodeBase64(text, Encoding.ASCII);
+        public static string EncodeFileToBase64(string filePath)
+        {
+            if (filePath == null) return null;
+            var bytes = File.ReadAllBytes(filePath);
+            return Convert.ToBase64String(bytes);
+        }
+
+        public static string DecodeBase64ToFilePDF(string fileBase64, string fileName, string uploadFolder)
+        {
+            if (fileBase64 == null) return null;
+            string randomID = Guid.NewGuid().ToString("N");
+            byte[] tempBytes = Convert.FromBase64String(fileBase64);
+            if (!Directory.Exists(uploadFolder))
+            {
+                Directory.CreateDirectory(uploadFolder);
+            }
+            string filePath = Path.Combine(uploadFolder, $"{randomID}_{fileName}.pdf");
+            File.WriteAllBytes(filePath, tempBytes);
+            if (File.Exists(filePath))
+            {
+                return filePath;
+            }
+            else
+            {
+                return String.Empty;
+            }
+        }
+        #endregion
     }
 }

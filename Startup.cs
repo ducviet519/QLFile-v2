@@ -1,14 +1,18 @@
+using DevExpress.AspNetCore;
 using GleamTech.AspNet.Core;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using System;
+using System.IO;
 using System.Threading.Tasks;
 using WebTools.Authorization;
 using WebTools.Context;
@@ -65,6 +69,8 @@ namespace WebTools
                 //options.Cookie.IsEssential = true;
             });
             services.AddGleamTech();
+            services.AddDevExpressControls();
+            services.AddMvc();
             services.AddScoped<IReportListServices, ReportListServices>();
             services.AddScoped<IReportVersionServices, ReportVersionServices>();
             services.AddScoped<IReportSoftServices, ReportSoftServices>();
@@ -76,14 +82,17 @@ namespace WebTools
             services.AddScoped<IUploadFileServices, UploadFileServices>();
             services.AddScoped<IGopYServices, GopYServices>();           
             services.AddDbContext<DatabaseContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ToolsDB")));
-
+            services.AddMvc().AddRazorPagesOptions(o => {
+                o.Conventions.ConfigureFilter(new IgnoreAntiforgeryTokenAttribute());
+            });
             services.AddInfrastructure();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-
+            app.UseDevExpressControls();
+            System.Net.ServicePointManager.SecurityProtocol |= System.Net.SecurityProtocolType.Tls12;
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -101,6 +110,11 @@ namespace WebTools
             //----------------------
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(env.ContentRootPath, "node_modules")),
+                RequestPath = "/node_modules"
+            });
 
             app.UseRouting();
 

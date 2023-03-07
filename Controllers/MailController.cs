@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WebTools.Models.Entities;
+using WebTools.Models.ViewModel;
 using WebTools.Services;
 
 namespace WebTools.Controllers
@@ -18,22 +19,12 @@ namespace WebTools.Controllers
         }
         #endregion
 
-        public IActionResult MailTemplate(int type)
+        [HttpPost]
+        public IActionResult MailTemplate([FromBody]List<VanBan_BanHanh> vanban)
         {
-            ViewBag.TenVB = "Văn bản test gửi mail";
-            ViewBag.MaVB = "88888888";
-            ViewBag.NoiDung = "Nội dung chỉnh sửa";
-            ViewBag.DoiTuong = "Phòng CNTT";
-            ViewBag.HinhThuc = "Khác";
-            ViewBag.Link = @"https://vb.bvta.vn/Preview/VanBan?file=5EE2E62A-CE08-4985-9BF1-011972211D85";
-            ViewBag.NguoiNhan = "Lương Đức Việt";
-            ViewBag.NgayPhatHanh = "27/02/2023";
-            ViewBag.NgayHieuLuc = "27/02/2023";
-            if(type == 1)
-            {
-                return PartialView("_TempBieuMau");
-            }
-            return PartialView("_TempQuyTrinhQuyDinh");
+            BanHanhVanBanVM model = new BanHanhVanBanVM();
+            model.listVanBan = vanban;
+            return PartialView("_TempQuyTrinhQuyDinh", model);
         }
 
         [HttpPost]
