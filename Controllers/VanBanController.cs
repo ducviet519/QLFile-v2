@@ -764,16 +764,19 @@ namespace WebTools.Controllers
                     message = $"Đã phát hành {data.listID.Count} văn bản";
                     title = "Thành công!";
                     result = "success";
-                    foreach (var email in data.listEmail)
+                    if(data.listEmail != null)
                     {
-                        MailRequest request = new MailRequest()
+                        foreach (var email in data.listEmail)
                         {
-                            Body = data.emailBody,
-                            ToEmail = email,
-                            Subject = "Thông báo ban hành văn bản"
-                        };
-                        await _services.MailService.SendEmailAsync(request);                     
-                    }
+                            MailRequest request = new MailRequest()
+                            {
+                                Body = data.emailBody,
+                                ToEmail = email,
+                                Subject = "Thông báo ban hành văn bản"
+                            };
+                            await _services.MailService.SendEmailAsync(request);
+                        }
+                    }               
                 }
                 else
                 {
