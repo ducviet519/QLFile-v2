@@ -18,19 +18,22 @@
         padding: 0.375rem 1.75rem 0.375rem 0.75rem;
     }
 </style>
-<div class="card">
-    <div class="card-body">
-        <div class="tab-custom-content"><label class="col-form-label col-12 text-center">Phân quyền theo vai trò hệ thống</label></div>
-        <table class="table table-bordered table-striped" width="100%" role="grid" id="tbListHRMUsers">
-            <thead class="thead">
-                <tr>
-                    <th class="text-wrap w-auto">STT</th>
-                    <th class="text-wrap w-auto">Mã nhân viên</th>
-                    <th class="text-wrap w-auto">Tên nhân viên</th>
-                    <th class="text-wrap w-auto">Phân quyền</th>
-                </tr>
-            </thead>
-        </table>
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-body">
+            <div class="tab-custom-content"><label class="col-form-label col-12 text-center">Phân quyền theo vai trò hệ thống</label></div>
+            <table class="table table-bordered table-striped" width="100%" role="grid" id="tbListHRMUsers">
+                <thead class="thead">
+                    <tr>
+                        <th class="text-wrap w-auto">STT</th>
+                        <th class="text-wrap w-auto">Mã nhân viên</th>
+                        <th class="text-wrap w-auto">Tài khoản</th>
+                        <th class="text-wrap w-auto">Tên nhân viên</th>
+                        <th class="text-wrap w-auto">Phân quyền</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
     </div>
 </div>
 @section Scripts{
@@ -43,14 +46,23 @@
                     "render": function (data, type, full, meta) {
                         return parseInt(meta.row) + 1;
                     },
+                    "className": "text-center"
                 },
-                { "data": "maNV" },
+                {
+                    "data": "maNV",
+                    "className": "text-center"
+                },
+                {
+                    "data": "userName",
+                    "className": "text-center"
+                },
                 { "data": "hoTen" },
                 {
                     "data": { userName: "userName" },
                     "render": function (data, type, full, meta) {
                         return '<button class="btn btn-outline-info btn-sm" data-toggle="phanquyenmodal" data-target="#modalVaiTroNguoiDung-' + meta.row + '" data-url="/PhanQuyen/VaiTroNguoiDung?UserName=' + data.userName + '&HoTen=' + data.hoTen + '&MaNV=' + data.maNV + '">Phân quyền</button>';
                     },
+                    "className": "text-center"
                 },
             ]
 

@@ -27,7 +27,7 @@
 </div>
 
 <script type="text/javascript">
-    $(document).ready(function () {       
+    $(document).ready(function () {
         var columnData = [
             {
                 "data": {},
@@ -43,15 +43,21 @@
             { "data": "ngayDoc" },
             { "data": "ngayXacNhan" },
         ];
-
-        var table = $("#tbDocHieuChiTiet").DataTable({
+        function tableDocHieuChiTiet(id, url, columnData) {
+            var table = $(id).DataTable();
+            if ($.fn.dataTable.isDataTable(id)) {
+                table.destroy();
+                $(id).find('thead .filters').remove();
+                $(id).find('tbody').empty();
+            }
+            var table = $(id).DataTable({
             "scrollY": '50vh',
             "scrollX": true,
             "paging": false,
             "fixedHeader": true,
             "lengthChange": false,
             "ajax": {
-                "url": '/ThongKe/Get_ThongKeDocHieuChiTiet?idvb=@ViewBag.IDVB',
+                "url": url,
                 "type": "GET",
                 "datatype": "json"
             },
@@ -77,9 +83,10 @@
                     "sNext": "Tiếp",
                     "sLast": "Cuối"
                 }
-            },           
-        });        
-
+            },
+        });
+        }
+        tableDocHieuChiTiet('#tbDocHieuChiTiet','/ThongKe/Get_ThongKeDocHieuChiTiet?idvb=@ViewBag.IDVB', columnData);
         $('#modalThongKeDocHieuChiTiet').on('shown.bs.modal', function (e) {
             $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();
         });
