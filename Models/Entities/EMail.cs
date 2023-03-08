@@ -8,6 +8,10 @@ namespace WebTools.Models.Entities
 {
     public class EMail
     {
+        public string emailTo { get; set; }
+        public string emailSubject { get; set; }
+        public string emailBody { get; set; }
+        public List<IFormFile> emailAttachment { get; set; }
     }
 
     public class MailRequest

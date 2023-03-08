@@ -907,8 +907,8 @@
 
             $('body').on('click', '#btnDoiNhom', function (e) {
                 var table = $('#tbVanBanChiTiet').DataTable()
-                var arrayCabinet = [];
                 var rows = table.rows({ selected: true }).data();
+                var arrayCabinet = new Array();
                 if (rows.length > 0) {
                     var listID = new Array();
                     var listCabinet = new Array();
@@ -1059,15 +1059,27 @@
             $(document).on('show.bs.modal', '#modalDoiNhomVB', function (e) {
                 var table = $('#tbVanBanChiTiet').DataTable()
                 var rows = table.rows({ selected: true }).data();
-                var loaivb = rows[0].viTriCabinet;
-                $('input[combotree]').combotree({
-                    url: '/VanBan/Get_ThuMucCha?type=2&parentid=' + parseInt(loaivb),
-                    method: 'get',
-                    editable: true,
-                    loadFilter: function (data) {
-                        return convert(data.rows);
-                    }
-                });
+                if (rows.length > 0) {
+                    var loaivb = rows[0].viTriCabinet;
+                    $('input[combotree]').combotree({
+                        url: '/VanBan/Get_ThuMucCha?type=2&parentid=' + parseInt(loaivb),
+                        method: 'get',
+                        editable: true,
+                        loadFilter: function (data) {
+                            return convert(data.rows);
+                        }
+                    });
+                }
+                else {
+                    $('input[combotree]').combotree({
+                        url: '/VanBan/Get_ThuMucCha',
+                        method: 'get',
+                        editable: true,
+                        loadFilter: function (data) {
+                            return convert(data.rows);
+                        }
+                    });
+                }
             });
 
             $(document).on('hidden.bs.modal', '#modalPhienBan', function () {

@@ -1,0 +1,117 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="">
+        <div class="card card-primary card-outline">
+            <div class="card-header">
+                <h3 class="card-title">Gửi mail</h3>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <form id="frmEmailData">
+                    <div class="form-group">
+                        <select class="form-control" id="emailTo" name="emailTo" multiple="multiple" required></select>
+                    </div>
+                    <div class="form-group">
+                        <input class="form-control" id="emailSubject" name="emailSubject" placeholder="Tiêu đề thư:" required>
+                    </div>
+                    <div class="form-group">
+
+                        <textarea id="emailBody" name="emailBody" class="form-control" style="display: none;"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <div class="btn btn-default btn-file">
+                            <i class="fas fa-paperclip"></i> Đính kèm file
+                            <input type="file" name="emailAttachment" id="emailAttachment" multiple>
+                        </div>
+                        <p class="help-block">Max. 32MB</p>
+                    </div>
+                </form>
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer">
+                <div class="float-right">
+                    <button type="button" class="btn btn-primary" id="btnSendEmail"><i class="far fa-envelope"></i> Gửi</button>
+                </div>
+            </div>
+            <!-- /.card-footer -->
+        </div>
+        <!-- /.card -->
+    </div>
+</div>
+
+@section Scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000
+            });
+
+            $(function () {
+                //Add text editor
+                $('#emailBody').summernote({
+                    height: 300,
+                    placeholder: 'Nội dung thư',
+                    lang: 'vi-VN'
+                });
+
+                $('#emailTo').select2({ tags: true });
+            });
+
+            $('body').on('click', '#btnSendEmail', function () {
+                var form = $("#frmEmailData")
+                if (form[0].checkValidity() === true) {
+                    var files = document.getElementById('emailAttachment').files;
+                    var formData = new FormData();
+                    formData.append("emailTo", $("#emailTo").val());
+                    formData.append("emailSubject", $("#emailSubject").val());
+                    formData.append("emailBody", $('#emailBody').summernote('code'));
+                    for (i = 0; i < files.length; i++) {
+                        formData.append("emailAttachment", $("#emailAttachment")[0].files[i]);
+                    }
+
+                    $.ajax({
+                        type: 'POST',
+                        url: '/Mail/SendCustomMail',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        beforeSend: function () {
+                            $('#btnSendEmail').attr("disabled", true);
+                        },
+                        success: function (data) {
+                            Toast.fire({
+                                icon: 'success',
+                                title: data.result
+                            })
+                        },
+                        error: function (data) {
+                            Toast.fire({
+                                icon: 'error',
+                                title: 'Sự cố khi gửi mail.'
+                            })
+                        },
+                        complete: function () {
+                            $('#btnSendEmail').attr("disabled", false);
+
+                        },
+                    })
+                }
+                else {
+                    event.preventDefault()
+                    event.stopPropagation()
+                    form.addClass('was-validated');
+                }
+            });
+        });
+    </script>
+}
+
+

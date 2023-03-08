@@ -49,6 +49,17 @@ namespace WebTools.Controllers
             return Json(new { data = await _services.ThongKe.GetData_BaoCaoDocHieu(search) });
         }
 
+        public IActionResult ThongKeDocHieuChiTiet(string idvb)
+        {
+            ViewBag.IDVB = idvb;
+            return PartialView("_ThongKeDocHieu_ChiTiet");
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> Get_ThongKeDocHieuChiTiet(string idvb)
+        {
+            return Json(new { data = await _services.ThongKe.GetData_BaoCaoDocHieuChiTiet(idvb) });
+        }
         #endregion
 
         #region Báo cáo thống kê tổng hợp

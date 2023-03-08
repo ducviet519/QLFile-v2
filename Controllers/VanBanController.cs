@@ -451,6 +451,7 @@ namespace WebTools.Controllers
             model.VanBanInfo = data.FirstOrDefault();
             ViewBag.PhienBan = Convert.ToInt32(data.FirstOrDefault().PhienBan.Substring(data.FirstOrDefault().PhienBan.IndexOf("V") + 1)) + 1;
             ViewBag.IDFileLink = data.FirstOrDefault().IDFileLink;
+            ViewBag.GhiChu = data.FirstOrDefault().GhiChu;
             return PartialView("_VanBan_PhienBan", model);
         }
 

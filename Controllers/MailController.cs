@@ -19,6 +19,30 @@ namespace WebTools.Controllers
         }
         #endregion
 
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> SendCustomMail(EMail mailData)
+        {
+            string result = String.Empty;
+            var listEmail = mailData.emailTo.Split(",");
+            foreach(string mail in listEmail)
+            {
+                MailRequest request = new MailRequest()
+                {
+                    Body = mailData.emailBody,
+                    ToEmail = mail,
+                    Attachments = mailData.emailAttachment,
+                    Subject = mailData.emailSubject
+                };
+                result = await _services.MailService.SendEmailAsync(request);
+            }            
+            return Json(new { result = result });
+        }
+
         [HttpPost]
         public IActionResult MailTemplate([FromBody]List<VanBan_BanHanh> vanban)
         {

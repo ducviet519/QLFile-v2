@@ -68,31 +68,34 @@
                         </li>
                         @if (User.IsInRole("Admin") || User.IsInRole("Document"))
                         {
-                        <li class="nav-item dropdown dropdown-hover narh-50">
-                            <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">Phân quyền</a>
-                            <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
-                                @if (User.IsInRole("Admin") || User.IsInRole("Document"))
-                                {
-                                <li><a asp-area="" asp-controller="PhanQuyen" asp-action="QuyenLoaiVanBan" class="dropdown-item">Theo loại văn bản</a></li>
-                                        }
-                                @if (User.IsInRole("Admin"))
-                                {
-                                <li><a asp-area="" asp-controller="PhanQuyen" asp-action="QuyenHeThong" class="dropdown-item">Theo hệ thống</a></li>
+                            <li class="nav-item dropdown dropdown-hover narh-50">
+                                <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">Phân quyền</a>
+                                <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
+                                    @if (User.IsInRole("Admin") || User.IsInRole("Document"))
+                                    {
+                                        <li><a asp-area="" asp-controller="PhanQuyen" asp-action="QuyenLoaiVanBan" class="dropdown-item">Theo loại văn bản</a></li>
                                     }
-                            </ul>
-                        </li>
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <li><a asp-area="" asp-controller="PhanQuyen" asp-action="QuyenHeThong" class="dropdown-item">Theo hệ thống</a></li>
+                                    }
+                                </ul>
+                            </li>
+                            <li class="nav-item d-none d-sm-inline-block narh-50">
+                                <a class="nav-link narh-50" asp-area="" asp-controller="Mail" asp-action="Index">Gửi email</a>
+                            </li>
                         }
                         @if (User.IsInRole("Admin"))
                         {
-                        <li class="nav-item dropdown dropdown-hover narh-50">
-                            <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">Test</a>
-                            <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
-                                <li><a asp-area="" asp-controller="Preview" asp-action="VanBanKy" class="dropdown-item">Chữ ký Demo</a></li>
-                                <li><a asp-area="" asp-controller="VanBan" asp-action="GoogleDocs" class="dropdown-item">Tạo File Google Docs</a></li>
-                                <li><a asp-area="" asp-controller="VanBan" asp-action="SendMail" class="dropdown-item">Send Mail</a></li>
-                                <li><a asp-area="" asp-controller="DocEditer" asp-action="Index" class="dropdown-item">Document Editer</a></li>
-                            </ul>
-                        </li>
+                            <li class="nav-item dropdown dropdown-hover narh-50">
+                                <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">Test</a>
+                                <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
+                                    <li><a asp-area="" asp-controller="Preview" asp-action="VanBanKy" class="dropdown-item">Chữ ký Demo</a></li>
+                                    <li><a asp-area="" asp-controller="VanBan" asp-action="GoogleDocs" class="dropdown-item">Tạo File Google Docs</a></li>
+                                    <li><a asp-area="" asp-controller="DocEditer" asp-action="Index" class="dropdown-item">Document Editer</a></li>
+                                    <li><a asp-area="" asp-controller="Reports" asp-action="Index" class="dropdown-item">Report Test</a></li>
+                                </ul>
+                            </li>
                         }
                     </ul>
                     <ul class="navbar-nav ml-auto narh-50">

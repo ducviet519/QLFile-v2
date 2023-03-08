@@ -31,10 +31,12 @@ namespace WebTools.Services.Repositories
             _mailSettings  = _configuration.GetSection("MailSettings").Get<MailSettings>();
         }
 
-        public async Task SendEmailAsync(MailRequest mailRequest)
+        public async Task<string> SendEmailAsync(MailRequest mailRequest)
         {
+            string result = String.Empty;
             try
             {
+                // create message
                 var email = new MimeMessage();
                 email.Sender = MailboxAddress.Parse(_mailSettings.Mail);
                 email.To.Add(MailboxAddress.Parse(mailRequest.ToEmail));
@@ -58,15 +60,18 @@ namespace WebTools.Services.Repositories
                 }
                 builder.HtmlBody = mailRequest.Body;
                 email.Body = builder.ToMessageBody();
+
+                //send email
                 using var smtp = new SmtpClient();
                 smtp.Connect(_mailSettings.Host, _mailSettings.Port, SecureSocketOptions.StartTls);
                 smtp.Authenticate(_mailSettings.Mail, _mailSettings.Password);
-                await smtp.SendAsync(email);
+                result = await smtp.SendAsync(email);
                 smtp.Disconnect(true);
+                return result;
             }
             catch (Exception ex)
             {
-                string result = ex.Message;
+                result = ex.Message;
                 throw;
             }
         }

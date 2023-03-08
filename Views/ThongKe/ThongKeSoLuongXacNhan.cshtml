@@ -291,7 +291,12 @@
                         return stt;
                     },
                 },
-                { "data": "tenVanBan" },
+                {
+                    "data": { tenVanBan: "tenVanBan", id: "id" },
+                    "render": function (data, type, full, meta) {
+                        return '<a class="btn btn-link" data-toggle="ajax-modal" data-target="#modalThongKeDocHieuChiTiet-' + meta.row + '" data-url="/ThongKe/ThongKeDocHieuChiTiet?idvb=' + data.id + '">' + data.tenVanBan + '</a>'
+                    },
+                },
                 { "data": "maVanBan" },
                 {
                     "data": "soLuongDoc",
@@ -307,7 +312,10 @@
                 tableThongKeVanBan("#tbThongKeXacNhan", columnData, "/ThongKe/GetTable_ThongKeSoLuongXacNhan?" + data)
             });
         });
-
+        $('body #tbThongKeXacNhan').on('click', 'a[data-toggle="ajax-modal"]', function (e) {
+            var url = $(this).data('url');
+            $(this).callModal(url);
+        });
     </script>
 }
 

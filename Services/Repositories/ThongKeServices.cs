@@ -146,5 +146,32 @@ namespace WebTools.Services.Repositories
                 return data;
             }
         }
+
+        public async Task<List<ThongKe_BaoCaoDocHieuChiTiet>> GetData_BaoCaoDocHieuChiTiet(string idvb)
+        {
+            List<ThongKe_BaoCaoDocHieuChiTiet> data = new List<ThongKe_BaoCaoDocHieuChiTiet>();
+
+            try
+            {
+                using (IDbConnection dbConnection = Connection)
+                {
+                    if (dbConnection.State == ConnectionState.Closed)
+                        dbConnection.Open();
+                    data = (await dbConnection.QueryAsync<ThongKe_BaoCaoDocHieuChiTiet>("sp_Report_BaoCaoDocHieuChiTiet",
+                    new
+                    {
+                        IDVB = idvb
+                    },
+                    commandType: CommandType.StoredProcedure)).ToList();
+                    dbConnection.Close();
+                }
+                return data;
+            }
+            catch (Exception ex)
+            {
+                string errorMsg = ex.Message;
+                return data;
+            }
+        }
     }
 }

@@ -92,7 +92,12 @@
             { "data": "NgayHieuLuc" },
             { "data": "KPApDung" },
             { "data": "DoiTuongApDung" },
-            { "data": "NoiDung" },
+            {
+                "data": { NoiDung: "NoiDung" },
+                "render": function (data, type, full, meta) {
+                    return '<input type="text" class="form-control" id="NoiDung-' + meta.row + '" name="NoiDung-' + meta.row + '" value="' + data.NoiDung + '">';
+                },
+            },
         ];
 
         var table = $("#tbVanBanBanHanh").DataTable({
@@ -178,9 +183,10 @@
                     vanban.NgayHieuLuc = value.NgayHieuLuc;
                     vanban.KPApDung = value.KPApDung;
                     vanban.DoiTuongApDung = value.DoiTuongApDung;
-                    vanban.NoiDung = value.NoiDung;
+                    vanban.NoiDung = ((document.getElementById("NoiDung-" + index) || {}).value) || "";
                     listVanBan.push(vanban);
                 });
+                console.log(listVanBan)
                 if ($('#customControlAutosizing').is(':checked')) {
                     var toEmail = $('#ToEmail').val();
                     var htmldata = getData(JSON.stringify(listVanBan));

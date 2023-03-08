@@ -23,6 +23,17 @@ namespace WebTools.Models.Entities
         public string MaVanBan { get; set; }
         public string SoLuongDoc { get; set; }
         public string SoLuongHieu { get; set; }
+        public string ID { get; set; }
+    }
+
+    public class ThongKe_BaoCaoDocHieuChiTiet
+    {
+        public string HoTen { get; set; }
+        public string MaNV { get; set; }
+        public string KhoaPhong { get; set; }
+        public string DoiTuong { get; set; }
+        public string NgayDoc { get; set; }
+        public string NgayXacNhan { get; set; }
     }
 
     public class SearchThongKe
