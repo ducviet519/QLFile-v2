@@ -138,6 +138,7 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
+
         $('#PhienBan').inputmask({ alias: 'numeric' });
 
                             bsCustomFileInput.init()
@@ -404,6 +405,8 @@
 
         $('#modalPhienBan').on('shown.bs.modal', function (e) {
             $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();
-                });
+            $(document.body).removeClass("loading");
+
+         });
     });
 </script>

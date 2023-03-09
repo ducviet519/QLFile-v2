@@ -201,8 +201,14 @@ namespace WebTools.Models.Entities
 
     public class VanBanBanHanhRequest
     {
-        public string emailBody { get; set; }
-        public List<string> listEmail { get; set; }
         public List<VanBanPhienBan_ID> listID { get; set; }
+    }
+
+    public class EmailBanHanhRequest
+    {
+        public string emailBody { get; set; }
+        public string emailAccount { get; set; }
+        public string emailPassword { get; set; }
+        public List<string> listEmail { get; set; }
     }
 }

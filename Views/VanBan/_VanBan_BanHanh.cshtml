@@ -24,6 +24,30 @@
     #sendMail {
         display: none;
     }
+
+    .col-125 {
+        width: 125px;
+        padding-left: 7.5px;
+        padding-right: 7.5px;
+    }
+
+    #modalPhatHanhVanBan select:invalid + .select2-container > span.selection > span.select2-selection {
+        border-color: #dc3545;
+    }
+
+    #modalPhatHanhVanBan select:invalid + .select2-container--focus > span.selection > span.select2-selection {
+        border-color: #dc3545;
+        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+    }
+
+    #modalPhatHanhVanBan select:valid + .select2-container > span.selection > span.select2-selection {
+        border-color: #28a745;
+    }
+
+    #modalPhatHanhVanBan select:valid + .select2-container--focus > span.selection > span.select2-selection {
+        border-color: #28a745;
+        box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+    }
 </style>
 @await Html.PartialAsync("Shared/_StyleUI_ComboBox")
 <!-- Modal -->
@@ -41,14 +65,29 @@
                     <div class="col pl-0">
                         <label class="label-checkbox"><input type="checkbox" id="customControlAutosizing" name="customControlAutosizing" />Gửi mail phát hành văn bản</label>
                     </div>
-                    <div class="" id="sendMail">
-                        <div class="form-group row col-12">
-                            <label class="col-form-label col-auto">Email người nhận: </label>
-                            <div class="col">
-                                <select class="form-control" id="ToEmail" name="ToEmail" multiple="multiple"></select>
+                    <form id="frmSendEmail">
+                        <div class="" id="sendMail">
+                            <div class="form-group row col-12">
+                                <label class="col-form-label col-125">Email người gửi: </label>
+                                <div class="col">
+                                    <div class="row">
+                                        <div class="col">
+                                            <input type="email" class="form-control" id="emailAccount" name="emailAccount" placeholder="Tài khoản" autocomplete="off" required>
+                                        </div>
+                                        <div class="col">
+                                            <input type="password" class="form-control" id="emailPassword" name="emailPassword" placeholder="Mật khẩu" autocomplete="off" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row col-12">
+                                <label class="col-form-label col-125">Email người nhận: </label>
+                                <div class="col">
+                                    <select class="form-control" id="ToEmail" name="ToEmail" multiple="multiple" required></select>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </form>
                 </div>
                 <table id="tbVanBanBanHanh" class="table table-bordered table-striped" width="100%">
                     <thead class="thead">
@@ -186,39 +225,49 @@
                     vanban.NoiDung = ((document.getElementById("NoiDung-" + index) || {}).value) || "";
                     listVanBan.push(vanban);
                 });
-                console.log(listVanBan)
+                var vanbanData = JSON.stringify({ 'listID': listID });
                 if ($('#customControlAutosizing').is(':checked')) {
-                    var toEmail = $('#ToEmail').val();
-                    var htmldata = getData(JSON.stringify(listVanBan));
-                    var dataToSend = JSON.stringify({ 'emailBody': htmldata, 'listEmail': toEmail, 'listID': listID });
-                    SendAjax(dataToSend);
-                }
-                else {                   
-                    var dataToSend = JSON.stringify({ 'listID': listID });
-                    SendAjax(dataToSend);
-                }
+                    var form = $("#frmSendEmail")
+                    if (form[0].checkValidity() === true) {
+                        var toEmail = $('#ToEmail').val();
+                        var htmldata = getData(JSON.stringify(listVanBan));
+                        var mailAccount = ((document.getElementById("emailAccount") || {}).value) || "";
+                        var mailPassword = ((document.getElementById("emailPassword") || {}).value) || "";
+                        var dataToSend = JSON.stringify({ 'emailBody': htmldata, 'emailAccount': mailAccount, 'emailPassword': mailPassword, 'listEmail': toEmail });
 
-                function SendAjax(dataToSend) {
-                    $.ajax({
-                        type: 'POST',
-                        url: '/VanBan/BanHanhVanBanUpsert',
-                        contentType: 'application/json; charset=UTF-8',
-                        data: dataToSend,
-                        dataType: "json",
-                        beforeSend: function () {
-                            $('button[data-save="phathanhvanban"]').attr("disabled", true);
-                        },
-                        success: function (data) {
-                            $(this).callToast(data.result, data.title, data.message);
-                        },
-                        error: function (data) {
-                            $(this).callToast(data.result, data.title, data.message);
-                        },
-                        complete: function () {
-                            $('button[data-save="phathanhvanban"]').attr("disabled", false);
-                        },
-                    });
+                        $.ajax({
+                            type: 'POST',
+                            url: '/VanBan/SendEmailBanHanh',
+                            contentType: 'application/json; charset=UTF-8',
+                            data: dataToSend,
+                            dataType: "json",
+                            beforeSend: function () {
+                                $('button[data-save="phathanhvanban"]').attr("disabled", true);
+                            },
+                            success: function (data) {
+                                $(this).callToast(data.result, data.title, data.message);
+                                if (data.result === "success") {
+                                    SendAjax('/VanBan/BanHanhVanBanUpsert', vanbanData);
+                                }
+                                
+                            },
+                            error: function (data) {
+                                $(this).callToast(data.result, data.title, data.message);
+                            },
+                            complete: function () {
+                                $('button[data-save="phathanhvanban"]').attr("disabled", false);
+                            },
+                        });
+                    }
+                    else {
+                        event.preventDefault()
+                        event.stopPropagation()
+                        form.addClass('was-validated');
+                    }
                 }
+                else {
+                    SendAjax('/VanBan/BanHanhVanBanUpsert', vanbanData);
+                }                
             }
             else {
                 Swal.fire(
@@ -229,6 +278,28 @@
             }
             e.preventDefault();
         });
+
+        function SendAjax(url, dataToSend) {
+            $.ajax({
+                type: 'POST',
+                url: url,
+                contentType: 'application/json; charset=UTF-8',
+                data: dataToSend,
+                dataType: "json",
+                beforeSend: function () {
+                    $('button[data-save="phathanhvanban"]').attr("disabled", true);
+                },
+                success: function (data) {
+                    $(this).callToast(data.result, data.title, data.message);
+                },
+                error: function (data) {
+                    $(this).callToast(data.result, data.title, data.message);
+                },
+                complete: function () {
+                    $('button[data-save="phathanhvanban"]').attr("disabled", false);
+                },
+            });
+        }        
 
         $('#modalPhatHanhVanBan').on('shown.bs.modal', function (e) {
             $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();

@@ -139,18 +139,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="CrystalDecisions.CrystalReports.Engine">
-      <HintPath>CrystalDecisions.CrystalReports.Engine.dll</HintPath>
-    </Reference>
-    <Reference Include="CrystalDecisions.ReportSource">
-      <HintPath>CrystalDecisions.ReportSource.dll</HintPath>
-    </Reference>
-    <Reference Include="CrystalDecisions.Shared">
-      <HintPath>CrystalDecisions.Shared.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
     <Service Include="{c0c07587-41a7-46c8-8fbd-3f9c8ebe2ddc}" />
   </ItemGroup>
 

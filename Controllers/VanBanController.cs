@@ -764,20 +764,51 @@ namespace WebTools.Controllers
                 {
                     message = $"Đã phát hành {data.listID.Count} văn bản";
                     title = "Thành công!";
-                    result = "success";
-                    if(data.listEmail != null)
+                    result = "success";                             
+                }
+                else
+                {
+                    message = $"Lỗi! {result}";
+                    title = "Lỗi!";
+                    result = "error";
+                }
+            }
+            catch (Exception ex)
+            {
+                message = ex.Message;
+                title = "Lỗi!";
+                result = "error";
+            }
+            return Json(new { Result = result, Title = title, Message = message });
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> SendEmailBanHanh([FromBody] EmailBanHanhRequest data)
+        {
+            string message = "";
+            string title = "";
+            string result = "";
+            string user = HttpContext.User.Claims.First(c => c.Type == ClaimTypes.GivenName).Value ?? HttpContext.User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
+            try
+            {
+                if (data.listEmail != null)
+                {
+                    foreach (var email in data.listEmail)
                     {
-                        foreach (var email in data.listEmail)
+                        MailRequest request = new MailRequest()
                         {
-                            MailRequest request = new MailRequest()
-                            {
-                                Body = data.emailBody,
-                                ToEmail = email,
-                                Subject = "Thông báo ban hành văn bản"
-                            };
-                            await _services.MailService.SendEmailAsync(request);
-                        }
-                    }               
+                            Body = data.emailBody,
+                            ToEmail = email,
+                            Subject = "Thông báo ban hành văn bản"
+                        };
+                        result = await _services.MailService.SendEmailAsync(request, new MailAccount() { AccountName = data.emailAccount, Password = data.emailPassword });
+                    }
+                }
+                if (result == "OK")
+                {
+                    message = $"Gửi email phát hành văn bản thành công";
+                    title = "Thành công!";
+                    result = "success";
                 }
                 else
                 {

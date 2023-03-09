@@ -1092,6 +1092,11 @@
                 window.history.pushState(null, null, "/VanBan/DanhSach_VanBanChiTiet?loaivb=" + exid);
                 tableVanBanChiTiet("#tbVanBanChiTiet", columnData, "/VanBan/GetData_VanBanChiTiet?loaitimkiem=1&loaivb=" + exid);
             });
+            $(document).on('hidden.bs.modal', '#modalPhatHanhVanBan', function () {
+                var exid = document.getElementById('exID').value;
+                window.history.pushState(null, null, "/VanBan/DanhSach_VanBanChiTiet?loaivb=" + exid);
+                tableVanBanChiTiet("#tbVanBanChiTiet", columnData, "/VanBan/GetData_VanBanChiTiet?loaitimkiem=1&loaivb=" + exid);
+            });          
         });
     </script>
 }

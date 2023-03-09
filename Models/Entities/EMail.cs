@@ -39,4 +39,10 @@ namespace WebTools.Models.Entities
         public string emailAttachments { get; set; }
         public string emailSubject { get; set; }
     }
+
+    public class MailAccount
+    {
+        public string AccountName { get; set; }
+        public string Password { get; set; }
+    }
 }

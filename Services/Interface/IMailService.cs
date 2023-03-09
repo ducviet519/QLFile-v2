@@ -8,6 +8,6 @@ namespace WebTools.Services.Interface
 {
     public interface IMailService
     {
-        Task<string> SendEmailAsync(MailRequest mailRequest);
+        Task<string> SendEmailAsync(MailRequest mailRequest, MailAccount mailAccount);
     }
 }

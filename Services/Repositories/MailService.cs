@@ -31,7 +31,7 @@ namespace WebTools.Services.Repositories
             _mailSettings  = _configuration.GetSection("MailSettings").Get<MailSettings>();
         }
 
-        public async Task<string> SendEmailAsync(MailRequest mailRequest)
+        public async Task<string> SendEmailAsync(MailRequest mailRequest, MailAccount mailAccount)
         {
             string result = String.Empty;
             try
@@ -64,15 +64,15 @@ namespace WebTools.Services.Repositories
                 //send email
                 using var smtp = new SmtpClient();
                 smtp.Connect(_mailSettings.Host, _mailSettings.Port, SecureSocketOptions.StartTls);
-                smtp.Authenticate(_mailSettings.Mail, _mailSettings.Password);
-                result = await smtp.SendAsync(email);
+                smtp.Authenticate(mailAccount.AccountName, mailAccount.Password);
+                var respone = await smtp.SendAsync(email);
                 smtp.Disconnect(true);
-                return result;
+                return result = "OK";
             }
             catch (Exception ex)
             {
-                result = ex.Message;
-                throw;
+                string Msg = ex.Message;
+                return result = "Tài khoản hoặc mật khẩu Email không chính xác";                
             }
         }
     }
