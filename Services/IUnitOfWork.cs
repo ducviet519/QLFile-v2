@@ -26,5 +26,7 @@ namespace WebTools.Services
         IPhanQuyenServices PhanQuyen { get;}
         IThongKeServices ThongKe { get; }
         IEasySignServices DigitalSign { get; }
+
+        IReportsAPIServices ReportsAPI { get; }
     }
 }

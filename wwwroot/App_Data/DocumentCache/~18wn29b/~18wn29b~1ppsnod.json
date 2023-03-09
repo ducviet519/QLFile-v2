@@ -1,0 +1,29 @@
+{
+  "CacheSourceKey": "18wn29b",
+  "CachePdfKey": "18wn29b/18wn29b-npq31v.pdf",
+  "CacheXpzKey": "18wn29b/18wn29b-1ppsnod.xpz",
+  "CacheInfoKey": "18wn29b/18wn29b-1ppsnod.json",
+  "CacheCopyKey": null,
+  "Document": "TestReport.pdf",
+  "DocumentHandlerType": null,
+  "DocumentHandlerParameters": null,
+  "DocumentLocation": "D:\\VanBan",
+  "DocumentFileName": "TestReport.pdf",
+  "InputOptions": {
+    "Format": "Pdf",
+    "Password": null
+  },
+  "PdfOutputOptions": {
+    "Watermarks": [],
+    "FastWebViewEnabled": false,
+    "Password": null,
+    "Attachments": [],
+    "Format": "Pdf"
+  },
+  "XpzOutputOptions": {
+    "Password": "18wn29b",
+    "HighQualityEnabled": false,
+    "Format": "Xpz"
+  },
+  "Attachments": null
+}

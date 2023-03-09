@@ -1,0 +1,35 @@
+﻿
+@{
+    ViewData["Title"] = "GetReport";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .iframe-preview {
+        width: 100%;
+        height: 800px;
+    }
+</style>
+<div class="row col-12 m-0 p-0">
+    <iframe class="iframe-preview" frameborder="0" scrolling="no" id="myIframe"></iframe>
+    <input type="hidden" id="filePath" name="filePath" value="@ViewBag.FilePath"/>
+</div> 
+
+@section Scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {           
+            var filePath = document.getElementById('filePath').value;
+            $.ajax({
+                url: '/Reports/Overview',
+                dataType: 'html',
+                data: { filePath: filePath},
+                success: function (data) {
+                    $('body').find(".iframe-preview").attr("srcdoc", data);
+                },
+                complete: function (data) {
+                }
+            });           
+        });
+    </script>
+}
+
+

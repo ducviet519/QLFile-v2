@@ -17,5 +17,6 @@ namespace WebTools.Services.Interface
         Task<List<FileData>> FileImport(string loaiFile, DataTable table, string user);
         Task<string> UpdateFileLink(string IDFileLink, string FileLink);
         Task<string> UpsertDataExcel(string user, List<FileData> listFiles);
+        Task<string> UploadImageAsync(IFormFile fileUpload);
     }
 }

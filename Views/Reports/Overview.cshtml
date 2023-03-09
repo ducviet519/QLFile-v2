@@ -1,0 +1,24 @@
+﻿@using GleamTech.AspNet.Core
+@using GleamTech.DocumentUltimate.AspNet.UI
+@model DocumentViewer
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    @this.RenderHead(Model)
+    <link rel="stylesheet" href="~/css/like.css">
+    <style>
+        .dv-control {
+            width: 100% !important;
+            height: 790px !important;
+        }
+    </style>
+    <script type="text/javascript" src="~/lib/jquery/jquery.min.js"></script>
+</head>
+<body>
+    @this.RenderBody(Model)
+</body>
+</html>

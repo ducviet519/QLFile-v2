@@ -1,0 +1,29 @@
+{
+  "CacheSourceKey": "1urc401",
+  "CachePdfKey": "1urc401/1urc401-npq31v.pdf",
+  "CacheXpzKey": "1urc401/1urc401-xsllo7.xpz",
+  "CacheInfoKey": "1urc401/1urc401-xsllo7.json",
+  "CacheCopyKey": null,
+  "Document": "TestReport.pdf",
+  "DocumentHandlerType": null,
+  "DocumentHandlerParameters": null,
+  "DocumentLocation": "D:\\VanBan",
+  "DocumentFileName": "TestReport.pdf",
+  "InputOptions": {
+    "Format": "Pdf",
+    "Password": null
+  },
+  "PdfOutputOptions": {
+    "Watermarks": [],
+    "FastWebViewEnabled": false,
+    "Password": null,
+    "Attachments": [],
+    "Format": "Pdf"
+  },
+  "XpzOutputOptions": {
+    "Password": "1urc401",
+    "HighQualityEnabled": false,
+    "Format": "Xpz"
+  },
+  "Attachments": null
+}

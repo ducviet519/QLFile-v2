@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,5 +17,12 @@ namespace WebTools.Models.Entities
         public int X { get; set; }
         public int Y { get; set; }
         public int pageIndex { get; set; }
+    }
+
+    public class FileSignData
+    {
+        public int Type { get; set; }
+        public string filePath { get; set; }
+        public IFormFile imageFile { get; set; }
     }
 }

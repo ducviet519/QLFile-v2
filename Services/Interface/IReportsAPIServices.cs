@@ -7,5 +7,6 @@ namespace WebTools.Services.Interface
 {
     public interface IReportsAPIServices
     {
+        Task<string> GetReport(string reportName, string jsonContent);
     }
 }

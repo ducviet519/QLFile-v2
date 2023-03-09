@@ -30,6 +30,7 @@ namespace WebTools.Services
             services.AddTransient<IThongKeServices, ThongKeServices>();
             services.AddTransient<IMailService, MailService>();
             services.AddTransient<IEasySignServices, EasySignServices>();
+            services.AddTransient<IReportsAPIServices, ReportsAPIServices>();
         }
     }
 }

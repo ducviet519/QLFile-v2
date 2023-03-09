@@ -279,5 +279,30 @@ namespace WebTools.Services
                 return result;
             }
         }
+
+        public async Task<string> UploadImageAsync(IFormFile fileUpload)
+        {
+            string FileLink = "";
+            string getDateS = Guid.NewGuid().ToString("N");
+            string uploadsFolder = "D:\\ReportsExport";
+            if (!Directory.Exists(uploadsFolder)) { Directory.CreateDirectory(uploadsFolder); }
+
+            if (fileUpload != null && fileUpload.Length > 0)
+            {
+                string fileName = $"{getDateS}_{fileUpload.FileName}";
+                string filePath = Path.Combine(uploadsFolder, fileName);
+                using (var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
+                {
+                    await fileUpload.CopyToAsync(fileStream);
+                }
+                if (File.Exists(filePath))
+                {
+                    return FileLink = filePath;
+                }
+                else { return FileLink = ""; }
+            }
+            else
+                return FileLink = "";
+        }
     }
 }

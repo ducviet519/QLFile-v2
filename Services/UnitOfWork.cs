@@ -30,6 +30,8 @@ namespace WebTools.Services
         public IMailService MailService { get; }
         public IEasySignServices DigitalSign { get; }
 
+        public IReportsAPIServices ReportsAPI { get; }
+
         public UnitOfWork
             (
                 IReportListServices _Report_List,
@@ -49,7 +51,8 @@ namespace WebTools.Services
                 IPhanQuyenServices _phanQuyenServices,
                 IThongKeServices _thongKeServices,
                 IMailService _mailService,
-                IEasySignServices _easySignServices
+                IEasySignServices _easySignServices,
+                IReportsAPIServices _reportsAPIServices
             )
         {
             Report_List = _Report_List;
@@ -74,6 +77,7 @@ namespace WebTools.Services
             ThongKe = _thongKeServices;
 
             DigitalSign = _easySignServices;
+            ReportsAPI = _reportsAPIServices;
         }
 
     }

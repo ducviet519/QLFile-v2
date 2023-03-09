@@ -30,11 +30,11 @@ namespace WebTools.Controllers
         #endregion
 
         #region Convert file to PDF and Sign
-        private async Task<FileSignPDF> SignPDFWithImage(string filePath = null, string imagePath = null)
+        private async Task<FileSignPDF> SignPDFWithImage(string filePath, string imagePath, string textSign)
         {
             List<SigningRequestContents> ListFilesData = new List<SigningRequestContents>();
             string fileName = Path.GetFileNameWithoutExtension(filePath);
-            var textCoordinates = GetTextCoordinates("(Ký, ghi rõ họ tên)", filePath);
+            var textCoordinates = GetTextCoordinates(textSign, filePath);
             if (textCoordinates == null) { return new FileSignPDF(); }
             SigningRequestContents fileData = new SigningRequestContents()
             {
@@ -135,7 +135,7 @@ namespace WebTools.Controllers
             string fileOutput = DocConvert(filePathInput, "D:\\SignFileOutput");
 
             string imagePath = "C:\\Users\\vietld\\Downloads\\logo_300x300.png";
-            var signImageOutput = SignPDFWithImage(fileOutput, imagePath);
+            var signImageOutput = SignPDFWithImage(fileOutput, imagePath, "(Ký)");
 
             List<FileSignPDF> listFilePDF = new List<FileSignPDF>()
             {
@@ -144,6 +144,25 @@ namespace WebTools.Controllers
             var signInviableOuput = SignPDFInviciable(listFilePDF);
 
             return Json(new { filePath = fileOutput, signImageOutput = signImageOutput, signInviableOuput = signInviableOuput });
+        }
+
+        public async Task<JsonResult> SignFilePDF(FileSignData signFile)
+        {
+            string fileOutput = String.Empty;
+            if (signFile.Type == 1 && signFile.imageFile != null)
+            {
+                string imagePath = await _services.UploadFile.UploadImageAsync(signFile.imageFile);
+                var signImageOutput = SignPDFWithImage(fileOutput, imagePath, "ký");
+            }
+            if (signFile.Type == 2)
+            {
+                List<FileSignPDF> listFilePDF = new List<FileSignPDF>()
+                {
+                    new FileSignPDF() { filePath = fileOutput }
+                };
+                var signInviableOuput = SignPDFInviciable(listFilePDF);
+            }
+            return Json(new { });
         }
     }
 }
